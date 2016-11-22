@@ -1,18 +1,20 @@
 <?php
-TESSTTTT
+/*TESSTTTT
 test van rogier
 test van jasper
 Test van rogier2
 
-hoihoihohiohiohioio mooie test merge ding
+hoihoihohiohiohioio mooie test merge ding*/
 
-/**
- * Created by PhpStorm.
- * User: Robin
- * Date: 22-11-2016
- * Time: 09:14
- */
-class Test
-{
+class Testtt{
+    public $variabel;
 
+    function printen(){
+        echo $this->variabel;
+    }
 }
+
+$test = new Testtt();
+$test->variabel = "hoi";
+$test->printen();
+?>
