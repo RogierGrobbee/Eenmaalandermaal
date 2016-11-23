@@ -41,16 +41,14 @@ body{
     left: 0px;
     top: 0px;
     width: 100%;
-    height: 14%;
+    height: 7%;
     z-index: 3;
 }
 
 .EenmaalAndermaal {
     position: absolute;
-    left: 292.938px;
-    top: 12.087px;
-    width: 415px;
-    height: 50px;
+    left: 15%;
+    top: 1%;
     z-index: 4;
 }
 
