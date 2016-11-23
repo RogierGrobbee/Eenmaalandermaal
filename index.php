@@ -4,13 +4,25 @@
 
 <html lang="en">
 <head>
-    <title>Bootstrap Example</title>
+    <title>EenmaalAndermaal</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+
+<header>
+    <p  class="headerbar">
+        <img class="EenmaalAndermaal" src="logo.png" alt="Logo EenmaalAndermaal">
+    </p>
+</header>
+
+<footer>
+    <p> Copyright © EenmaalAndermaal 2016 </p>
+    <p> Alle rechten voorbehouden </p>
+</footer>
 <div class="container">
     <div class="list-group col-sm-3">
         <a class="list-group-item" href="#">Boeken</a>
