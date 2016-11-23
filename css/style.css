@@ -1,0 +1,33 @@
+.veilingitem{
+    height: 116px;
+    border: #ddd solid 1px;
+    padding: 10px;
+    float: left;
+}
+
+.veilingitem img{
+    float: left;
+    height: 96px;
+    width: 128px;
+    margin-right: 10px;
+}
+
+.veilingitem p{
+    text-align: justify;
+    text-justify: inter-word;
+    width: 80%;
+}
+
+.veilingitem a{
+    color: inherit;
+}
+
+.veilingitem a:hover{
+    text-decoration: none;
+    color: #000080;
+}
+
+.datumprijs{
+    float: right;
+    width: 10%;
+}
