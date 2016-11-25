@@ -38,21 +38,6 @@
                     <img src="logo.jpg" alt="veilingsitem">
                     <h4>Veilingsitem 1</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                    Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-                    magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
-                    pellentesque eu,   asd sa as asd  iu eiqwewquiewuqiyqweuqy uiqwyeiwyewuey wuqey wquey</p>
-                </div>
-                <div class="col-sm-2">
-                    <p class="prijsdatum">€14.99<br>2:59:00</p>
-                </div>
-            </a>
-        </div>
-        <div class="veilingitem row">
-            <a href="#">
-                <div class="col-sm-10">
-                    <img src="logo.jpg" alt="veilingsitem">
-                    <h4>Veilingsitem 1</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
                         Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
                         magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
                         pellentesque eu,   asd sa as asd  iu eiqwewquiewuqiyqweuqy uiqwyeiwyewuey wuqey wquey</p>
@@ -71,6 +56,21 @@
                         Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
                         magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
                         pellentesque eu,   asd sa as asd  iu eiqwewquiewuqiyqweuqy uiqwyeiwyewuey wuqey wquey</p>
+                </div>
+                <div class="col-sm-2">
+                    <p class="prijsdatum">€14.99<br>2:59:00</p>
+                </div>
+            </a>
+        </div>
+        <div class="veilingitem row">
+            <a href="#">
+                <div class="col-sm-10">
+                    <img src="logo.jpg" alt="veilingsitem">
+                    <h4>Veilingsitem 1</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+                        Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
+                        magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
+                        pellentesque eu,   asd sa as asd  adas daasd asdassa ad asd as as a as asasdas sd asd sa asd sad ad asdsad iu eiqwewquiewuqiyqweuqy uiqwyeiwyewuey wuqey wquey</p>
                 </div>
                 <div class="col-sm-2">
                     <p class="prijsdatum">€14.99<br>2:59:00</p>
