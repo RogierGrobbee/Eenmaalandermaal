@@ -1,5 +1,5 @@
 <?php include_once('partial files\header.php')?>
-<h1>Hoofdpagina</h1>
+<h1>Welkom!</h1>
 <?php include_once('partial files\sidebar.php') ?>
 
 <div class="col-sm-9">

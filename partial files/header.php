@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-    <title>EenmaalAndermaal</title>
+    <title>Muziek, Film & Games</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.css">
@@ -11,7 +11,7 @@
 
 <header>
     <p class="headerbar">
-        <img id="headerLogo" src="images/logo.png" alt="Logo EenmaalAndermaal">
+        <a href="index.php"><img id="headerLogo" src="images/logo.png" alt="Logo EenmaalAndermaal"></a>
     </p>
 </header>
 

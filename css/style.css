@@ -55,6 +55,27 @@
     border: none;
 }
 
+/* Rubriek */
+.subrubrieken{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.subrubrieken a{
+    font-size: 20px;
+    color: #4d79ff;
+    text-decoration: none;
+    line-height: 40px;
+}
+
+.subrubrieken a:hover{
+    color: #4d79ff;
+}
+
+
+
+
+
 .headerbar {
     background-color: #4d79ff;
     box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.35),inset 0px 3px 7px 0px rgba(0, 0, 0, 0.35);
