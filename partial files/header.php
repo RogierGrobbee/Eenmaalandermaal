@@ -11,10 +11,8 @@
 
 <header>
     <p class="headerbar">
-        <img class="EenmaalAndermaal" src="images/logo.png" alt="Logo EenmaalAndermaal">
+        <img id="headerLogo" src="images/logo.png" alt="Logo EenmaalAndermaal">
     </p>
 </header>
 
 <div class="container">
-
-    <?php include_once('sidebar.php') ?>
