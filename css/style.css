@@ -92,13 +92,20 @@ a{
     float: right;
 }
 
-.veiling img{
+.bigpicture{
     width:80vw;
-    max-width: 250px;
+    max-width: 300px;
     height: 80vw;
     max-height: 250px;
     margin: 10px;
     border: #dddddd solid 2px;
+}
+
+.smallpicture{
+    width: 250px;
+    float:left;
+    margin-right: 15px;
+    margin-bottom: 15px;
 }
 
 .details{

@@ -3,7 +3,7 @@
 <?php include_once('partial files\sidebar.php') ?>
     <div class="col-sm-9 veiling">
         <div class="row">
-            <img src="logo.jpg" alt=" geveilde voorwerp">
+            <img class="bigpicture" src="logo.jpg" alt="geveilde voorwerp">
 
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-7 details">
                 <div class="prijstijd">
@@ -31,6 +31,18 @@
                                                                                 en dan de betalingsinstructie-->
                 <h4>Verzendkosten- en instructie</h4>
                 <p>3.00 verzendkosten, breekbaar</p> <!--eerst getal, daarna "verzendkosten," daarna de verzendinstructie-->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="sm-3">
+                <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp1">
+            </div>
+            <div class="sm-3">
+                <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp2">
+            </div>
+            <div class="sm-3">
+                <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp3">
             </div>
         </div>
 <?php include_once('partial files\footer.php')?>
