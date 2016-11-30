@@ -1,48 +1,62 @@
-<?php include_once('partial files\header.php')?>
-<h1>Welkom!</h1>
-<?php include_once('partial files\sidebar.php') ?>
+<?php
+//input rubriekId wordt opgehaald
+if ($_GET != null) {
+    if (is_numeric($_GET['rubriek'])) {
+        $inputRubriekId = $_GET['rubriek'];
+    } else {
+        $inputRubriekId = 0;
+    }
+} else {
+    $inputRubriekId = 0;
+}
+//rubrieken worden opgehaald uit db
+$db = new PDO ("sqlsrv:Server=LAPTOP-AOSH53E4\SQLEXPRESS;Database=eenmaalandermaal;ConnectionPooling=0", "sa", "Kanarie//////////");
+$query = $db->query('SELECT * FROM rubriek ORDER BY volgnr, rubrieknaam');
+$rubriekArray = array();
+$huidigeRubriek = null;
+//lijst wordt gevult met alle rubrieken
+while ($rubriek = $query->fetch(PDO::FETCH_OBJ)) {
+    array_push($rubriekArray, $rubriek);
+}
 
-<div class="col-sm-9">
-    <div class="veilingitem">
-        <a href="#">
-            <img src="logo.jpg" alt="veilingsfoto">
-            <h4>Veilingsitem 1</h4>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-                magnis dis parturient montes, nascetur ridiculus mus. </p>
-            <p class="prijs">€14.99</p> <div class="veilingInfo"><span class="tijd">23:00:00</span> <button class="veilingDetail">Meer informatie</button> </div>
-        </a>
-    </div>
-    <div class="veilingitem">
-        <a href="#">
-            <img src="logo.jpg" alt="veilingsfoto">
-            <h4>Veilingsitem 1</h4>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-                magnis dis parturient montes, nascetur ridiculus mus. </p>
-            <p class="prijs">€14.99</p> <p class="veilingInfo"><span class="tijd">23:00:00</span> <button class="veilingDetail">Meer informatie</button> </p>
-        </a>
-    </div>
-    <div class="veilingitem">
-        <a href="#">
-            <img src="logo.jpg" alt="veilingsfoto">
-            <h4>Veilingsitem 1</h4>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-                magnis dis parturient montes, nascetur ridiculus mus. </p>
-            <p class="prijs">€14.99</p> <p class="veilingInfo"><span class="tijd">23:00:00</span> <button class="veilingDetail">Meer informatie</button> </p>
-        </a>
-    </div>
-    <div class="veilingitem">
-        <a href="#">
-            <img src="logo.jpg" alt="veilingsfoto">
-            <h4>Veilingsitem 1</h4>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-                magnis dis parturient montes, nascetur ridiculus mus. </p>
-            <p class="prijs">€14.99</p> <p class="veilingInfo"><span class="tijd">23:00:00</span> <button class="veilingDetail">Meer informatie</button> </p>
-        </a>
-    </div>
-</div>
+foreach ($rubriekArray as $k => $rubriek) {
+    if ($rubriek->rubrieknummer == $inputRubriekId) {
+        $huidigeRubriek = $rubriek;
+    }
+}
+?>
 
-<?php include_once('partial files\footer.php')?>
+<?php include_once('partial files\header.php') ?>
+
+
+<?php
+//De koptekst wordt gezet, als er geen rubriek is geselecteerd id het Welkom
+if ($huidigeRubriek != null) {
+    echo '<h1>' . $huidigeRubriek->rubrieknaam . '</h1>';
+} else {
+    echo '<h1>Welkom</h1>';
+}
+?>
+
+<?php
+include_once('partial files\sidebar.php');
+loadSidebar($rubriekArray, $huidigeRubriek);
+?>
+
+
+    <div class="col-sm-9">
+        <?php
+        if ($huidigeRubriek != null) {
+            include 'subrubrieken.php';
+            loadSubrubrieken($rubriekArray, $huidigeRubriek);
+        }
+        ?>
+        <?php
+        include 'veilingsTabs.php';
+        loadVeilingItems($inputRubriekId);
+        ?>
+
+
+    </div>
+
+<?php include_once('partial files\footer.php') ?>
