@@ -1,6 +1,6 @@
 <?php
 //input rubriekId wordt opgehaald
-if (!empty($_GET['rubriek'])) {
+if ($_GET != null) {
     if (is_numeric($_GET['rubriek'])) {
         $inputRubriekId = $_GET['rubriek'];
     } else {
@@ -12,7 +12,7 @@ if (!empty($_GET['rubriek'])) {
 
 include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-
+$huidigeRubriek = null;
 foreach ($rubriekArray as $k => $rubriek) {
     if ($rubriek->rubrieknummer == $inputRubriekId) {
         $huidigeRubriek = $rubriek;
