@@ -10,8 +10,8 @@ if (!empty($_GET['voorwerpnummer'])) {
 }
 
 include_once('partial files\databaseconnection.php');
-$query = $db->query("SELECT * FROM voorwerp WHERE voorwerpnummer=$voorwerpnummer");
-$voorwerp = $query->fetch(PDO::FETCH_OBJ);
+
+$voorwerp = getVoorwerp($voorwerpnummer);
 
 /*$query = $db->query("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer=$voorwerpnummer");
 $voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
@@ -27,9 +27,8 @@ echo "<h1>$voorwerp->titel</h1>";
 include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, $huidigeRubriek);
 
-include "./partial files/loadBestanden.php";
 $list = loadBestanden($voorwerp->voorwerpnummer);
-$image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+$image = $list[0];
 ?>
 
     <div class="col-sm-9 veiling">

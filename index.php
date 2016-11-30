@@ -10,7 +10,15 @@ if (!empty($_GET['rubriek'])) {
     $inputRubriekId = 0;
 }
 
-include_once('partial files\rubrieken.php');
+include_once('partial files\databaseconnection.php');
+$rubriekArray = loadRubrieken();
+
+foreach ($rubriekArray as $k => $rubriek) {
+    if ($rubriek->rubrieknummer == $inputRubriekId) {
+        $huidigeRubriek = $rubriek;
+    }
+}
+
 include_once('partial files\header.php');
 
 //De koptekst wordt gezet, als er geen rubriek is geselecteerd id het Welkom
@@ -34,7 +42,6 @@ loadSidebar($rubriekArray, $huidigeRubriek);
         }
         ?>
         <?php
-        include 'partial files\veilingsTabs.php';
         loadVeilingItems($inputRubriekId);
         ?>
 
