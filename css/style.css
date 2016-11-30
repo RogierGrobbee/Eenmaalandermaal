@@ -128,9 +128,8 @@ a{
 }
 
 #headerLogo {
-    position: absolute;
-    left: 12%;
     top: 10px;
+    position: absolute;
 }
 
 footer {

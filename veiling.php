@@ -6,7 +6,7 @@ if (!empty($_GET['voorwerpnummer'])) {
         $voorwerpnummer = 0;
     }
 } else {
-    $voorwerpnummer = 0;
+    $voorwerpnummer = 1;
 }
 
 include_once('partial files\databaseconnection.php');
@@ -42,7 +42,7 @@ loadSidebar($rubriekArray, $huidigeRubriek)?>
                 <p><?php echo $voorwerp->beschrijving ?></p>
             </div>
 
-            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 betaalverzendinformatie">
+            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5 betaalverzendinformatie">
                 <h4>Betalingswijze- en instructie</h4>
                 <p><?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?></p>
 

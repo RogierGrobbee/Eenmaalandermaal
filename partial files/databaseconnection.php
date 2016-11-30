@@ -1,3 +1,3 @@
 <?php
-$db = new PDO ("sqlsrv:Server=mssql.iproject.icasites.nl;Database=iproject2;ConnectionPooling=0", "iproject2", "ekEu7bpJ");
+$db = new PDO ("sqlsrv:Server=LEON\\SQLEXPRESS;Database=eenmaalandermaal;ConnectionPooling=0", "sa", "wachtwoord123");
 ?>
