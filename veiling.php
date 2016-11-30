@@ -25,11 +25,16 @@ include_once('partial files\header.php');
 echo "<h1>$voorwerp->titel</h1>";
 
 include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, $huidigeRubriek)?>
+loadSidebar($rubriekArray, $huidigeRubriek);
+
+include "./partial files/loadBestanden.php";
+$list = loadBestanden($voorwerp->voorwerpnummer);
+$image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+?>
 
     <div class="col-sm-9 veiling">
         <div class="row">
-            <img class="bigpicture" src="logo.jpg" alt="geveilde voorwerp">
+            <?php echo '<img class="bigpicture" src="./bestanden/'.$image.'" alt="geveilde voorwerp">' ?>
             <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 details">
                 <div class="prijstijd">
                     <div class="veilingprijs"><?php echo "€$voorwerp->startprijs" ?></div>
@@ -56,17 +61,15 @@ loadSidebar($rubriekArray, $huidigeRubriek)?>
                     }?>
             </div>
         </div>
+<?php
 
-        <div class="row">
-            <div class="sm-3">
-                <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp1">
-            </div>
-            <div class="sm-3">
-                <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp2">
-            </div>
-            <div class="sm-3">
-                <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp3">
-            </div>
-        </div>
-
+echo '<div class="row">';
+foreach ($list as $k => $smallImage) {
+    if ($smallImage != $image){
+        echo '<div class="sm-3">
+                <img class="smallpicture" src="./bestanden/'.$smallImage.'" alt="geveilde voorwerp1">
+            </div>';
+    }
+}
+?>
 <?php include_once('partial files\footer.php')?>
