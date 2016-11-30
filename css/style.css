@@ -110,11 +110,12 @@ a{
 
 .details{
     padding: 10px;
+    float: left;
 }
 
-.betaalinformatie{
-    padding: 0;
-    margin: 10px;
+.betaalverzendinformatie{
+    padding: 10px;
+    float: right;
 }
 
 

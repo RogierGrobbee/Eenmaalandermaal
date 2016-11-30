@@ -8,7 +8,7 @@ function loadSidebar($rubriekArray, $selectedRubriek)
             if ($rubriek == $selectedRubriek) {
                 $listItemClass = "list-group-item active";
             }
-            echo '<a class="' . $listItemClass . '" href=\index.php?rubriek=' . $rubriek->rubrieknummer . '#>' . $rubriek->rubrieknaam . '</a>';
+            echo '<a class="' . $listItemClass . '"href=index.php?rubriek=' . $rubriek->rubrieknummer . '#>' . $rubriek->rubrieknaam . '</a>';
         }
     }
     echo '</div>';

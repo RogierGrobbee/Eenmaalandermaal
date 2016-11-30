@@ -1,36 +1,59 @@
-<?php include_once('partial files\header.php')?>
-    <h1>Leuke voorwerp</h1>
-<?php include_once('partial files\sidebar.php') ?>
+<?php
+if (!empty($_GET['voorwerpnummer'])) {
+    if (is_numeric($_GET['voorwerpnummer'])) {
+        $voorwerpnummer = $_GET['voorwerpnummer'];
+    } else {
+        $voorwerpnummer = 0;
+    }
+} else {
+    $voorwerpnummer = 0;
+}
+
+include_once('partial files\databaseconnection.php');
+$query = $db->query("SELECT * FROM voorwerp WHERE voorwerpnummer=$voorwerpnummer");
+$voorwerp = $query->fetch(PDO::FETCH_OBJ);
+
+/*$query = $db->query("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer=$voorwerpnummer");
+$voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
+$inputRubriekId = $voorwerpinrubriek->rubriekoplaagsteniveau;*/
+
+$inputRubriekId = 0;
+
+include_once('partial files\rubrieken.php');
+include_once('partial files\header.php');
+
+echo "<h1>$voorwerp->titel</h1>";
+
+include_once('partial files\sidebar.php');
+loadSidebar($rubriekArray, $huidigeRubriek)?>
+
     <div class="col-sm-9 veiling">
         <div class="row">
             <img class="bigpicture" src="logo.jpg" alt="geveilde voorwerp">
-
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-7 details">
+            <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 details">
                 <div class="prijstijd">
-                    <div class="veilingprijs">€24.99</div>
+                    <div class="veilingprijs"><?php echo "€$voorwerp->startprijs" ?></div>
                     <div class="veilingtijd">0:10:39</div>
                 </div>
 
-                <p>gerard92 (Almelo, Nederland)</p>
+                <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
                 <h4>Beschrijving</h4>
-                <p>Ik heb een mooie boek en ik wil deze graag verk ik wil deze graag verkopen via deze geweldige site genaamd
-                    EenmaalAndermaal. Het is wel een ik wil deze graag verkopen via deze geweldige site genaamd EenmaalAndermaal. Het
-                    is wel ee qdw wqd  ik wil deze graag verkopen via deze geweldige site genaamd EenmaalAndermaal. Het is wel een ik wil
-                    deze graag verkopen via deze geweldige site genaamd Eenma dw alAndermaal. Het is wel een ik wil deze graag verkopen
-                    via deze geweldige site genaamd EenmaalAndermaal. Het is wel dqwdqwdw qwd qw wqd qeen ik wil deze grdqwedwqdqwdwqaag
-                    verkopen via deze geweldige site genaamd EenmaalAndermaal. Het is wel een dwdwopen via deze geweldige site genaamd
-                    EenmaalAndermaal. Het is wel een luisterboek dus hij kost wel iets duurder, ik hou veel van boeken maar deze boek is zo
-                    leuk dat ik hem wil verkopen adlk admlasdmslkmsakldamdl askldm ads masld malkad d ansd kasndk adsnjk n ik weet niet waar
-                    ik over moet schrijven misschien had ik beter lorem ipsum kunnen typen.</p>
-            </div> <!--maximale aantal karakters-->
+                <p><?php echo $voorwerp->beschrijving ?></p>
+            </div>
 
-            <div class="col-xs-12 col-sm-4 col-md-6 col-lg-4 betaalinformatie">
+            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 betaalverzendinformatie">
                 <h4>Betalingswijze- en instructie</h4>
-                <p>Contant, ik hou van contant geld dus geef me geld </p> <!--Dus betalingswijze eerst, dan een komma
-                                                                                en dan de betalingsinstructie-->
+                <p><?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?></p>
+
                 <h4>Verzendkosten- en instructie</h4>
-                <p>3.00 verzendkosten, breekbaar</p> <!--eerst getal, daarna "verzendkosten," daarna de verzendinstructie-->
+                <p><?php
+                    if($voorwerp->verzendkosten == 0){
+                        echo "Geen verzendkosten, $voorwerp->verzendinstructies";
+                    }
+                    else{
+                        echo "€$voorwerp->verzendkosten, $voorwerp->verzendinstructies";
+                    }?>
             </div>
         </div>
 
@@ -45,4 +68,5 @@
                 <img class="smallpicture" src="logo.jpg" alt="geveilde voorwerp3">
             </div>
         </div>
+
 <?php include_once('partial files\footer.php')?>
