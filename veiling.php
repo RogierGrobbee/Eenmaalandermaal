@@ -1,3 +1,4 @@
+<script type="text/javascript" src="js/countdown.js"></script>
 <?php
 if (!empty($_GET['voorwerpnummer'])) {
     if (is_numeric($_GET['voorwerpnummer'])) {
@@ -37,7 +38,12 @@ $image = $list[0];
             <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 details">
                 <div class="prijstijd">
                     <div class="veilingprijs"><?php echo "€$voorwerp->startprijs" ?></div>
-                    <div class="veilingtijd">0:10:39</div>
+                    <div class="veilingtijd">
+                        <div class="tijd">
+                            <span class="tijd-hidden"><?php echo $voorwerp->looptijdeindeveiling ?></span>
+                            <span class="tijd-display"></span>
+                        </div>
+                    </div>
                 </div>
 
                 <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
