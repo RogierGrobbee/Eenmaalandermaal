@@ -18,15 +18,16 @@ $voorwerp = getVoorwerp($voorwerpnummer);
 $voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
 $inputRubriekId = $voorwerpinrubriek->rubriekoplaagsteniveau;*/
 
-$inputRubriekId = 0;
+$inputRubriekId = getVoorwerpRubriek($voorwerpnummer);
 
 include_once('partial files\rubrieken.php');
 include_once('partial files\header.php');
+include_once('partial files\navigatie.php');
 
 echo "<h1>$voorwerp->titel</h1>";
 
 include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, $huidigeRubriek);
+loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
 
 $list = loadBestanden($voorwerp->voorwerpnummer);
 $image = $list[0];
