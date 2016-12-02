@@ -37,10 +37,14 @@ $image = $list[0];
             <?php echo '<img class="bigpicture" src="./bestanden/'.$image.'" alt="geveilde voorwerp">' ?>
             <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 details">
                 <div class="prijstijd">
-                    <div class="veilingprijs"><?php echo "€$voorwerp->startprijs" ?></div>
+                    <div class="veilingprijs">
+                        <?php echo "€$voorwerp->startprijs" ?>
+                    </div>
                     <div class="veilingtijd">
                         <div class="tijd">
-                            <span class="tijd-hidden"><?php echo $voorwerp->looptijdeindeveiling ?></span>
+                            <span class="tijd-hidden">
+                                <?php echo $voorwerp->looptijdeindeveiling ?>
+                            </span>
                             <span class="tijd-display"></span>
                         </div>
                     </div>
@@ -54,23 +58,27 @@ $image = $list[0];
 
             <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5 betaalverzendinformatie">
                 <h4>Betalingswijze- en instructie</h4>
-                <p><?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?></p>
+                <p>
+                    <?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?>
+                </p>
 
                 <h4>Verzendkosten- en instructie</h4>
-                <p><?php
-                    if($voorwerp->verzendkosten == 0){
-                        echo "Geen verzendkosten, $voorwerp->verzendinstructies";
-                    }
-                    else{
-                        echo "€$voorwerp->verzendkosten, $voorwerp->verzendinstructies";
-                    }?>
+                <p>
+                    <?php
+                        if($voorwerp->verzendkosten == 0) {
+                            echo "Geen verzendkosten, $voorwerp->verzendinstructies";
+                        }
+                        else{
+                            echo "€$voorwerp->verzendkosten, $voorwerp->verzendinstructies";
+                        }
+                    ?>
             </div>
         </div>
 <?php
 
 echo '<div class="row">';
 foreach ($list as $k => $smallImage) {
-    if ($smallImage != $image){
+    if ($smallImage != $image) {
         echo '<div class="sm-3">
                 <img class="smallpicture" src="./bestanden/'.$smallImage.'" alt="geveilde voorwerp1">
             </div>';

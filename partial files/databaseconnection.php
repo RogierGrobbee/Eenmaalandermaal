@@ -57,7 +57,7 @@ function loadVeilingItems($rubriekId)
                                 <span class="tijd-hidden">'.$voorwerp->looptijdeindeveiling.'</span>
                                 <span class="tijd-display"></span>
                             </div>
-                            <button class="veiling-detail">Meer informatie</button>
+                            <button class="veiling-detail more-info">Meer informatie</button>
                         </div>
                     </a>
                 </div>';

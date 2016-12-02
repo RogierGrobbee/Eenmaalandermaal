@@ -92,8 +92,17 @@ a{
     float: right;
 }
 
+.more-info {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
 .tijd-hidden {
     display: none;
+}
+
+.tijd {
+    float: left;
 }
 
 .bigpicture{

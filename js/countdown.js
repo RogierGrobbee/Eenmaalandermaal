@@ -51,6 +51,7 @@ function refreshVeilingTijd () {
         showDifference(veilingsTijden[i]);
     }
 
+    //TODO: Javascript collects the garbage every time setInterval is called. Is there a better alternative?
     var timer = setInterval(refreshVeilingTijd, 1000);
 }
 
