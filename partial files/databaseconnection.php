@@ -8,13 +8,6 @@ function getVoorwerp($voorwerpId){
     return $voorwerp;
 }
 
-function getVoorwerpRubriek($voorwerpId){
-    global $db;
-    $query = $db->query("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer=$voorwerpId");
-    $voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
-    return $voorwerpinrubriek->rubriekoplaagsteniveau;
-}
-
 function loadBestanden($voorwerpId){
     global $db;
     $query = $db->query("SELECT * FROM bestand WHERE voorwerpnummer ='" . $voorwerpId . "' ORDER BY filenaam");
@@ -39,32 +32,17 @@ function loadRubrieken(){
     return $rubriekArray;
 }
 
-function loadVeilingItems($rubriekId) {
+function loadVeilingItems($rubriekId)
+{
     if (is_numeric($rubriekId)) {
-        displayVoorwerp("select * from voorwerp where voorwerpnummer in(
+        global $db;
+        $query = $db->query("select * from voorwerp where voorwerpnummer in(
 	                          select voorwerpnummer from voorwerpinrubriek where rubriekoplaagsteniveau in
 	                          (
 		                        select rubrieknummer from rubriek where superrubriek='".$rubriekId."' or rubrieknummer = '".$rubriekId."'
 	                          )
                             )");
-    }
-    else {
-        displayVoorwerp("SELECT voorwerpnummer,
-                                    titel,
-                                    beschrijving,
-                                    looptijdeindeveiling,
-                                    startprijs
-                                    FROM voorwerp 
-                                      WHERE looptijdeindeveiling > DATEADD(MINUTE, 10, GETDATE())
-                                      ORDER BY looptijdeindeveiling ASC");
-    }
-}
-
-function displayVoorwerp($queryString) {
-    global $db;
-
-    $query = $db->query($queryString);
-    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
+        while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
 
             $list = loadbestanden($voorwerp->voorwerpnummer);
             $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
