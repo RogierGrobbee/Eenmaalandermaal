@@ -1,5 +1,5 @@
 <?php
-$db = new PDO ("sqlsrv:Server=LAPTOP-AOSH53E4\SQLEXPRESS;Database=eenmaalandermaal;ConnectionPooling=0", "sa", "Kanarie//////////");
+$db = new PDO ("sqlsrv:Server=Iproject2.icasites.nl;Database=Iproject2;ConnectionPooling=0", "iproject2", "ekEu7bpJ");
 
 function getVoorwerp($voorwerpId){
     global $db;
@@ -51,7 +51,14 @@ function loadVeilingItems($rubriekId)
                         <img src="./bestanden/'.$image.'" alt="veilingsfoto">
                         <h4>'. $voorwerp->titel .'</h4>
                         <p>' . $voorwerp->beschrijving . '</p>
-                        <p class="prijs">€' . $voorwerp->startprijs . '</p> <div class="veilingInfo"><span class="tijd">'.$voorwerp->looptijdeindeveiling.'</span> <button class="veilingDetail">Meer informatie</button> </div>
+                        <p class="prijs">€' . $voorwerp->startprijs . '</p>
+                        <div class="veiling-info">
+                            <div class="tijd">
+                                <span class="tijd-hidden">'.$voorwerp->looptijdeindeveiling.'</span>
+                                <span class="tijd-display"></span>
+                            </div>
+                            <button class="veiling-detail">Meer informatie</button>
+                        </div>
                     </a>
                 </div>';
         }

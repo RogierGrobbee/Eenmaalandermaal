@@ -47,12 +47,12 @@ a{
     color: #4d79ff;
 }
 
-.veilingInfo {
+.veiling-info {
     float: right;
     font-size: 24px;
 }
 
-.veilingDetail {
+.veiling-detail {
     color: #ffffff;
     background-color: #4d79ff;
     text-shadow: -1px 1px #4d79ff;
@@ -90,6 +90,10 @@ a{
 
 .veilingtijd{
     float: right;
+}
+
+.tijd-hidden {
+    display: none;
 }
 
 .bigpicture{
