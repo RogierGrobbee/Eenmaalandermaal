@@ -2,7 +2,7 @@
 <?php
 //input rubriekId wordt opgehaald
 $inputRubriekId = null;
-if ($_GET != null) {
+if (isset($_GET['rubriek'])) {
     if (is_numeric($_GET['rubriek'])) {
         $inputRubriekId = $_GET['rubriek'];
     }

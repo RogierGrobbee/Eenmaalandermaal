@@ -1,5 +1,5 @@
 <?php
-$db = new PDO ("sqlsrv:Server=Iproject2.icasites.nl;Database=Iproject2;ConnectionPooling=0", "iproject2", "ekEu7bpJ");
+$db = new PDO ("sqlsrv:Server=LEON\SQLEXPRESS;Database=eenmaalandermaal;ConnectionPooling=0", "sa", "wachtwoord123");
 
 function getVoorwerp($voorwerpId){
     global $db;
@@ -53,11 +53,16 @@ function loadVeilingItems($rubriekId)
 
             $list = loadbestanden($voorwerp->voorwerpnummer);
             $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+
+            $beschrijving = $voorwerp->beschrijving;
+            if(strlen($beschrijving)>300){
+                $beschrijving = substr($beschrijving,0,280) . "... <span>lees verder</span>";
+            }
             echo '  <div class="veilingitem">
                     <a href="./veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
                         <img src="./bestanden/'.$image.'" alt="veilingsfoto">
                         <h4>'. $voorwerp->titel .'</h4>
-                        <p>' . $voorwerp->beschrijving . '</p>
+                        <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $voorwerp->startprijs . '</p>
                         <div class="veiling-info">
                             <div class="tijd">

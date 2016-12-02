@@ -3,6 +3,7 @@ a, span{
     text-decoration: none;
 }
 
+
 .veilingitem {
     border: #dddddd solid 2px;
     background-color: #f2f2f2;
@@ -169,4 +170,8 @@ footer {
     position: relative;
     margin-top: 10px;
     clear:both;
+}
+
+footer a{
+    font-size: 18px;
 }
