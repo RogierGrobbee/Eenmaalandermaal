@@ -8,6 +8,13 @@ function getVoorwerp($voorwerpId){
     return $voorwerp;
 }
 
+function getVoorwerpRubriek($voorwerpId){
+    global $db;
+    $query = $db->query("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer=$voorwerpId");
+    $voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
+    return $voorwerpinrubriek->rubriekoplaagsteniveau;
+}
+
 function loadBestanden($voorwerpId){
     global $db;
     $query = $db->query("SELECT * FROM bestand WHERE voorwerpnummer ='" . $voorwerpId . "' ORDER BY filenaam");
