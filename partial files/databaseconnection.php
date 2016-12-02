@@ -1,5 +1,5 @@
 <?php
-$db = new PDO ("sqlsrv:Server=LEON\SQLEXPRESS;Database=eenmaalandermaal;ConnectionPooling=0", "sa", "wachtwoord123");
+$db = new PDO ("sqlsrv:Server=Iproject2.icasites.nl;Database=Iproject2;ConnectionPooling=0", "iproject2", "ekEu7bpJ");
 
 function getVoorwerp($voorwerpId){
     global $db;
@@ -31,6 +31,7 @@ function loadRubrieken(){
     global $db;
     $query = $db->query('SELECT * FROM rubriek ORDER BY volgnr, rubrieknaam');
     $rubriekArray = array();
+    $huidigeRubriek = null;
 //lijst wordt gevult met alle rubrieken
     while ($rubriek = $query->fetch(PDO::FETCH_OBJ)) {
         array_push($rubriekArray, $rubriek);
@@ -52,16 +53,11 @@ function loadVeilingItems($rubriekId)
 
             $list = loadbestanden($voorwerp->voorwerpnummer);
             $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
-            $beschrijving = $voorwerp->beschrijving;
-            if(strlen($beschrijving) > 300){
-                $beschrijving = substr($beschrijving,0,280) . '... <span>Lees verder</span>';
-            }
-
             echo '  <div class="veilingitem">
                     <a href="./veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
                         <img src="./bestanden/'.$image.'" alt="veilingsfoto">
                         <h4>'. $voorwerp->titel .'</h4>
-                        <p>' . $beschrijving . '</p>
+                        <p>' . $voorwerp->beschrijving . '</p>
                         <p class="prijs">€' . $voorwerp->startprijs . '</p>
                         <div class="veiling-info">
                             <div class="tijd">

@@ -1,14 +1,11 @@
 <script type="text/javascript" src="js/countdown.js"></script>
 <?php
 //input rubriekId wordt opgehaald
+$inputRubriekId = null;
 if ($_GET != null) {
     if (is_numeric($_GET['rubriek'])) {
         $inputRubriekId = $_GET['rubriek'];
-    } else {
-        $inputRubriekId = 0;
     }
-} else {
-    $inputRubriekId = 0;
 }
 
 include_once('partial files\databaseconnection.php');
