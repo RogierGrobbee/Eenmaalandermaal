@@ -15,6 +15,8 @@ include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
 $huidigeRubriek = null;
 
+$huidigeRubriek = null;
+
 foreach ($rubriekArray as $k => $rubriek) {
     if ($rubriek->rubrieknummer == $inputRubriekId) {
         $huidigeRubriek = $rubriek;
@@ -22,6 +24,7 @@ foreach ($rubriekArray as $k => $rubriek) {
 }
 
 include_once('partial files\header.php');
+include_once('partial files\navigatie.php');
 
 //De koptekst wordt gezet, als er geen rubriek is geselecteerd id het Welkom
 if ($huidigeRubriek != null) {
@@ -32,11 +35,13 @@ if ($huidigeRubriek != null) {
 
 //sidebar maken op basis van rubrieken
 include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, $huidigeRubriek);
+if(isset($navigatieArray)) {
+    loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
+}
+else{
+    loadSidebar($rubriekArray, $huidigeRubriek);
+}
 ?>
-
-
-
 
     <div class="col-sm-9">
         <?php

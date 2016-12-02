@@ -1,4 +1,4 @@
-a{
+a, span{
     color: #4d79ff;
     text-decoration: none;
 }
@@ -48,14 +48,14 @@ a{
 }
 
 .veiling-info {
-    float: right;
+    margin-left: 5px;
     font-size: 24px;
+    float: right;
 }
 
 .veiling-detail {
     color: #ffffff;
     background-color: #4d79ff;
-    text-shadow: -1px 1px #4d79ff;
     font-size: 18px;
     border: none;
 }
@@ -131,6 +131,24 @@ a{
     float: right;
 }
 
+/*Navigatie*/
+.navigatie{
+    margin-top: 10px;
+    padding: 3px;
+    border: #dddddd solid 2px;
+    background-color: #f2f2f2;
+    font-size: 16px;
+}
+
+/*Contactpagina*/
+.contact{
+    border: #dddddd solid 2px;
+    padding: 10px;
+}
+
+.map{
+    padding: 0;
+}
 
 /*Header en footer*/
 .headerbar {
