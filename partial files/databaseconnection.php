@@ -8,6 +8,13 @@ function getVoorwerp($voorwerpId){
     return $voorwerp;
 }
 
+function getVoorwerpRubriek($voorwerpId){
+    global $db;
+    $query = $db->query("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer=$voorwerpId");
+    $voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
+    return $voorwerpinrubriek->rubriekoplaagsteniveau;
+}
+
 function loadBestanden($voorwerpId){
     global $db;
     $query = $db->query("SELECT * FROM bestand WHERE voorwerpnummer ='" . $voorwerpId . "' ORDER BY filenaam");
@@ -59,28 +66,29 @@ function displayVoorwerp($queryString) {
     $query = $db->query($queryString);
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
-        echoVoorwerp($voorwerp, $image);
+            $list = loadbestanden($voorwerp->voorwerpnummer);
+            $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+            echo '  <div class="veilingitem">
+                    <a href="./veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+                        <img src="./bestanden/'.$image.'" alt="veilingsfoto">
+                        <h4>'. $voorwerp->titel .'</h4>
+                        <p>' . $voorwerp->beschrijving . '</p>
+                        <p class="prijs">€' . $voorwerp->startprijs . '</p>
+                        <div class="veiling-info">
+                            <div class="tijd">
+                                <span class="tijd-hidden">'.$voorwerp->looptijdeindeveiling.'</span>
+                                <span class="tijd-display"></span>
+                            </div>
+                            <button class="veiling-detail more-info">Meer informatie</button>
+                        </div>
+                    </a>
+                </div>';
+        }
+    }
+    else {
+        echo 'Rubriek niet gevonden';
     }
 }
 
-function echoVoorwerp($voorwerp, $image) {
-    echo '<div class="veilingitem">
-                <a href="./veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-                    <img src="./bestanden/'.$image.'" alt="veilingsfoto">
-                    <h4>'. $voorwerp->titel .'</h4>
-                    <p>' . $voorwerp->beschrijving . '</p>
-                    <p class="prijs">€' . $voorwerp->startprijs . '</p>
-                    <div class="veiling-info">
-                        <div class="tijd">
-                            <span class="tijd-hidden">'.$voorwerp->looptijdeindeveiling.'</span>
-                            <span class="tijd-display"></span>
-                        </div>
-                        <button class="veiling-detail more-info">Meer informatie</button>
-                    </div>
-                </a>
-          </div>';
-}
 
 ?>
