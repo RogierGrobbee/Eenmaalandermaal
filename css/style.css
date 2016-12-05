@@ -3,6 +3,10 @@ a, span{
     text-decoration: none;
 }
 
+a:hover{
+    text-decoration: none;
+}
+
 
 .veilingitem {
     border: #dddddd solid 2px;
@@ -36,7 +40,6 @@ a, span{
 }
 
 .veilingitem a:hover, .veilingitem a:active {
-    text-decoration: none;
     color: #000080;
 }
 
@@ -69,7 +72,6 @@ a, span{
 
 .subrubrieken a{
     font-size: 20px;
-    text-decoration: none;
     line-height: 40px;
 }
 

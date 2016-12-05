@@ -1,5 +1,5 @@
 <?php
-if($inputRubriekId != 0) {
+if($inputRubriekId != 0 && $huidigeRubriek != null) {
     $navigatieArray = array();
     $navigatieRubriek = $huidigeRubriek;
     array_push($navigatieArray, $navigatieRubriek);
