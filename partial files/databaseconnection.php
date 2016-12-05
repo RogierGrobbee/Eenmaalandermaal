@@ -100,14 +100,21 @@ function loadVeilingItems($rubriekId)
 function queryVoorwerpen($queryString) {
     global $db;
     $query = $db->query($queryString);
-
+    $voorwerpArray = array();
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
+
+        array_push($voorwerpArray, $voorwerp);
 
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
 
         echoVoorwerp($voorwerp, $image);
     }
+
+    if (count($voorwerpArray) < 1){
+        echo "Geen voorwerpen gevonden";
+    }
+
 }
 
 /**
