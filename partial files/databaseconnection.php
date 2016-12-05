@@ -42,17 +42,42 @@ function loadRubrieken(){
 function loadVeilingItems($rubriekId)
 {
     if (is_numeric($rubriekId)) {
+
+        $rubriekenArray = loadRubrieken();
+        $subRubriekenArray = array();
+        $subsubRubriekenArray = array();
+        $subsubsubRubriekenArray = array();
+        foreach ($rubriekenArray as $k => $rubriek) {
+            if ($rubriek->superrubriek == $rubriekId){
+                array_push($subRubriekenArray, $rubriek->rubrieknummer);
+            }
+        }
+        foreach ($rubriekenArray as $k => $rubriek){
+            if ( in_array($rubriek->superrubriek, $subRubriekenArray)){
+                array_push($subsubRubriekenArray, $rubriek->rubrieknummer);
+            }
+        }
+        foreach ($rubriekenArray as $k => $rubriek){
+            if (in_array($rubriek->superrubriek, $subsubRubriekenArray)){
+                array_push($subsubsubRubriekenArray, $rubriek->rubrieknummer);
+            }
+        }
+
+        $temp = array_merge($subRubriekenArray, $subsubRubriekenArray, $subsubsubRubriekenArray);
+
+        $ids = implode(',',$temp);
+        if ($ids == ""){
+            $ids = "0";
+        }
+
         queryVoorwerpen("select voorwerpnummer,
                                 titel,
                                 beschrijving,
                                 startprijs,
                                 looptijdeindeveiling
                                 from voorwerp where voorwerpnummer in(
-	                          select voorwerpnummer from voorwerpinrubriek where rubriekoplaagsteniveau in
-	                          (
-		                        select rubrieknummer from rubriek where superrubriek='".$rubriekId."' or rubrieknummer = '".$rubriekId."'
+	                          select voorwerpnummer from voorwerpinrubriek where rubriekoplaagsteniveau in ($ids) or rubriekoplaagsteniveau = $rubriekId 
 	                          )
-                            )
                             AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
     }
     else {
