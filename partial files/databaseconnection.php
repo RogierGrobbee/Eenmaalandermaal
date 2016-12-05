@@ -137,10 +137,7 @@ function echoVoorwerp($voorwerp, $image) {
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $voorwerp->startprijs . '</p>
                         <div class="veiling-info">
-                            <div class="tijd">
-                                <span class="tijd-hidden">'.$voorwerp->looptijdeindeveiling.'</span>
-                                <span class="tijd-display"></span>
-                            </div>
+                            <span data-tijd="'.$voorwerp->looptijdeindeveiling.'" class="tijd"></span>
                             <button class="veiling-detail more-info">Meer informatie</button>
                         </div>
                     </a>

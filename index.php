@@ -44,7 +44,7 @@ else{
 
     <div class="col-sm-9">
         <?php
-        if (/*$huidigeRubriek != null*/!is_null($huidigeRubriek)) {
+        if (!is_null($huidigeRubriek)) {
             include 'partial files\subrubrieken.php';
             loadSubrubrieken($rubriekArray, $huidigeRubriek);
         }

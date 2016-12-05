@@ -10,7 +10,7 @@ function formatTimeSegment(timeSegment) {
 }
 
 function showDifference(timeElement) {
-    var end = new Date(timeElement.getElementsByClassName("tijd-hidden")[0].innerHTML);
+    var end = new Date(timeElement.getAttribute('data-tijd'));
 
     var _second = 1000;
     var _minute = _second * 60;
@@ -25,24 +25,22 @@ function showDifference(timeElement) {
     var minutes = Math.floor((distance % _hour) / _minute);
     var seconds = Math.floor((distance % _minute) / _second);
 
-    var displayElement = timeElement.getElementsByClassName("tijd-display")[0];
-
     if (distance < 0) {
 
-        displayElement.innerHTML = 'Beëindigd!';
+        timeElement.innerHTML = 'Beëindigd!';
         return;
     }
 
-    displayElement.innerHTML = '';
+    timeElement.innerHTML = '';
 
     if (days > 0) {
         var pluralCounter = days > 1 ? 'dagen' : 'dag';
-        displayElement.innerHTML += days + ' ' + pluralCounter;
+        timeElement.innerHTML += days + ' ' + pluralCounter;
     }
     else {
-        displayElement.innerHTML += formatTimeSegment(hours) + ':';
-        displayElement.innerHTML += formatTimeSegment(minutes) + ':';
-        displayElement.innerHTML += formatTimeSegment(seconds);
+        timeElement.innerHTML += formatTimeSegment(hours) + ':';
+        timeElement.innerHTML += formatTimeSegment(minutes) + ':';
+        timeElement.innerHTML += formatTimeSegment(seconds);
     }
 }
 

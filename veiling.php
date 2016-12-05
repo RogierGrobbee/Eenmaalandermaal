@@ -45,12 +45,7 @@ $image = $list[0];
                         <?php echo "€$voorwerp->startprijs" ?>
                     </div>
                     <div class="veilingtijd">
-                        <div class="tijd">
-                            <span class="tijd-hidden">
-                                <?php echo $voorwerp->looptijdeindeveiling ?>
-                            </span>
-                            <span class="tijd-display"></span>
-                        </div>
+                        <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
                     </div>
                 </div>
 
