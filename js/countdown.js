@@ -19,17 +19,19 @@ function showDifference(timeElement) {
 
     var now = new Date();
     var distance = end - now;
-    if (distance < 0) {
 
-        end.innerHTML = 'Beëindigd!';
-        return;
-    }
     var days = Math.floor(distance / _day);
     var hours = Math.floor((distance % _day) / _hour);
     var minutes = Math.floor((distance % _hour) / _minute);
     var seconds = Math.floor((distance % _minute) / _second);
 
     var displayElement = timeElement.getElementsByClassName("tijd-display")[0];
+
+    if (distance < 0) {
+
+        displayElement.innerHTML = 'Beëindigd!';
+        return;
+    }
 
     displayElement.innerHTML = '';
 

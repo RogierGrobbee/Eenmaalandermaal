@@ -52,7 +52,8 @@ function loadVeilingItems($rubriekId)
 	                          (
 		                        select rubrieknummer from rubriek where superrubriek='".$rubriekId."' or rubrieknummer = '".$rubriekId."'
 	                          )
-                            )");
+                            )
+                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
     }
     else {
         queryVoorwerpen("SELECT voorwerpnummer,
@@ -60,7 +61,9 @@ function loadVeilingItems($rubriekId)
                                 beschrijving,
                                 startprijs,
                                 looptijdeindeveiling
-                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) ORDER BY looptijdeindeveiling ASC");
+                                FROM voorwerp
+                                WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
+                                ORDER BY looptijdeindeveiling ASC");
     }
 }
 
