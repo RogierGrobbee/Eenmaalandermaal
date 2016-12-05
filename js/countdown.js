@@ -53,8 +53,7 @@ function refreshVeilingTijd () {
         showDifference(veilingsTijden[i]);
     }
 
-    var timer = setTimeout(refreshVeilingTijd, 1000);
-    console.log('hoi');
+    setTimeout(refreshVeilingTijd, 1000);
 }
 
 window.onload = function() {

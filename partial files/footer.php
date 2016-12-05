@@ -4,5 +4,10 @@
             <p> Alle rechten voorbehouden </p>
         </footer>
         </div>
+        <?php
+        if (function_exists('loadJSScripts')) {
+            loadJSScripts();
+        }
+        ?>
     </body>
 </html>

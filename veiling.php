@@ -1,5 +1,8 @@
-<script type="text/javascript" src="js/countdown.js"></script>
 <?php
+function loadJSScripts() {
+    echo '<script type="text/javascript" src="js/countdown.js"></script>';
+}
+
 if (!empty($_GET['voorwerpnummer'])) {
     if (is_numeric($_GET['voorwerpnummer'])) {
         $voorwerpnummer = $_GET['voorwerpnummer'];
@@ -75,6 +78,7 @@ $image = $list[0];
                     ?>
             </div>
         </div>
+    </div>
 <?php
 
 echo '<div class="row">';
@@ -85,5 +89,6 @@ foreach ($list as $k => $smallImage) {
             </div>';
     }
 }
+echo '</div>';
 ?>
 <?php include_once('partial files\footer.php')?>

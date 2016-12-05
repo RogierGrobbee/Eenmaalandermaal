@@ -78,7 +78,8 @@ function loadVeilingItems($rubriekId)
                                 from voorwerp where voorwerpnummer in(
 	                          select voorwerpnummer from voorwerpinrubriek where rubriekoplaagsteniveau in ($ids) or rubriekoplaagsteniveau = $rubriekId 
 	                          )
-                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
+                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
+                            ORDER BY looptijdeindeveiling ASC");
     }
     else {
         queryVoorwerpen("SELECT voorwerpnummer,

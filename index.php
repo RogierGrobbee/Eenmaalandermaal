@@ -1,4 +1,8 @@
-<script type="text/javascript" src="js/countdown.js"></script>
+<?php
+function loadJSScripts() {
+    echo '<script type="text/javascript" src="js/countdown.js"></script>';
+}
+?>
 <?php
 //input rubriekId wordt opgehaald
 $inputRubriekId = null;
@@ -10,8 +14,6 @@ if (isset($_GET['rubriek'])) {
 
 include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-$huidigeRubriek = null;
-
 $huidigeRubriek = null;
 
 foreach ($rubriekArray as $k => $rubriek) {
@@ -42,7 +44,7 @@ else{
 
     <div class="col-sm-9">
         <?php
-        if ($huidigeRubriek != null) {
+        if (/*$huidigeRubriek != null*/!is_null($huidigeRubriek)) {
             include 'partial files\subrubrieken.php';
             loadSubrubrieken($rubriekArray, $huidigeRubriek);
         }
