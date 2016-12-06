@@ -73,7 +73,6 @@ $image = $list[0];
                     ?>
             </div>
         </div>
-    </div>
 <?php
 
 echo '<div class="row">';
@@ -86,4 +85,5 @@ foreach ($list as $k => $smallImage) {
 }
 echo '</div>';
 ?>
+</div>
 <?php include_once('partial files\footer.php')?>
