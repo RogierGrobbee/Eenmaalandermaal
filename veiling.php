@@ -35,46 +35,43 @@ loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
 $list = loadBestanden($voorwerp->voorwerpnummer);
 $image = $list[0];
 ?>
-
-    <div class="col-sm-9 veiling">
-        <div class="row">
-            <?php echo '<img class="bigpicture" src="./bestanden/'.$image.'" alt="geveilde voorwerp">' ?>
-            <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 details">
-                <div class="prijstijd">
-                    <div class="veilingprijs">
-                        <?php echo "€$voorwerp->startprijs" ?>
-                    </div>
-                    <div class="veilingtijd">
-                        <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
-                    </div>
+    <div class="row">
+        <?php echo '<img class="bigpicture" src="./bestanden/'.$image.'" alt="geveilde voorwerp">' ?>
+        <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 detail">
+            <div class="prijstijd">
+                <div class="veilingprijs">
+                    <?php echo "€$voorwerp->startprijs" ?>
                 </div>
-
-                <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
-
-                <h4>Beschrijving</h4>
-                <p><?php echo $voorwerp->beschrijving ?></p>
+                <div class="veilingtijd">
+                    <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
+                </div>
             </div>
 
-            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5 betaalverzendinformatie">
-                <h4>Betalingswijze- en instructie</h4>
-                <p>
-                    <?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?>
-                </p>
+            <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
-                <h4>Verzendkosten- en instructie</h4>
-                <p>
-                    <?php
-                        if($voorwerp->verzendkosten == 0) {
-                            echo "Geen verzendkosten, $voorwerp->verzendinstructies";
-                        }
-                        else{
-                            echo "€$voorwerp->verzendkosten, $voorwerp->verzendinstructies";
-                        }
-                    ?>
-            </div>
+            <h4>Beschrijving</h4>
+            <p><?php echo $voorwerp->beschrijving ?></p>
         </div>
-<?php
 
+        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5 extrainfo">
+            <h4>Betalingswijze- en instructie</h4>
+            <p>
+                <?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?>
+            </p>
+
+            <h4>Verzendkosten- en instructie</h4>
+            <p>
+                <?php
+                    if($voorwerp->verzendkosten == 0) {
+                        echo "Geen verzendkosten, $voorwerp->verzendinstructies";
+                    }
+                    else{
+                        echo "€$voorwerp->verzendkosten, $voorwerp->verzendinstructies";
+                    }
+                ?>
+        </div>
+    </div>
+<?php
 echo '<div class="row">';
 foreach ($list as $k => $smallImage) {
     if ($smallImage != $image) {
@@ -85,5 +82,4 @@ foreach ($list as $k => $smallImage) {
 }
 echo '</div>';
 ?>
-</div>
 <?php include_once('partial files\footer.php')?>

@@ -1,5 +1,5 @@
 <?php
-$db = new PDO ("sqlsrv:Server=Iproject2.icasites.nl;Database=Iproject2;ConnectionPooling=0", "iproject2", "ekEu7bpJ");
+$db = new PDO ("sqlsrv:Server=LEON\\SQLEXPRESS;Database=eenmaalandermaal;ConnectionPooling=0", "sa", "wachtwoord123");
 
 function getVoorwerp($voorwerpId){
     global $db;
@@ -118,6 +118,33 @@ function queryVoorwerpen($queryString) {
 
 }
 
+function queryHomepageVoorwerpen($queryString){
+    global $db;
+
+    $query = $db->query($queryString);
+
+    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+
+        echoHomepageVoorwerp($voorwerp, $image);
+    }
+}
+
+function featuredVoorwerp(){
+    global $db;
+
+    $query = $db->query("SELECT TOP 1 voorwerpnummer,
+                                titel,
+                                beschrijving,
+                                startprijs,
+                                looptijdeindeveiling
+                                FROM voorwerp");
+    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
+        return $voorwerp;
+    }
+}
+
 /**
  * Prints the voorwerp onto the page.
  *
@@ -138,10 +165,20 @@ function echoVoorwerp($voorwerp, $image) {
                         <p class="prijs">€' . $voorwerp->startprijs . '</p>
                         <div class="veiling-info">
                             <span data-tijd="'.$voorwerp->looptijdeindeveiling.'" class="tijd"></span>
-                            <button class="veiling-detail more-info">Meer informatie</button>
+                            <button class="veiling-detail btn-bied">Bied</button>
                         </div>
                     </a>
                 </div>';
+}
+
+function echoHomepageVoorwerp($voorwerp, $image){
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-11 homepage-veiling">
+                    <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+                    <img src="bestanden/'. $image .'"alt="veiling">
+                    <h4>'.$voorwerp->titel.'</h4>
+                    <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
+                    <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+                    <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
 ?>

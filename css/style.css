@@ -1,5 +1,7 @@
-a, span{
-    color: #4d79ff;
+a,
+a:visited,
+span{
+    color: inherit;
     text-decoration: none;
 }
 
@@ -7,7 +9,82 @@ a:hover{
     text-decoration: none;
 }
 
+/*Voorpagina*/
+.homepage-featured-img{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
 
+.homepage-featured-detail{
+    background: rgba(0,0,0,0.5);
+    min-height: 200px;
+    padding: 5px;
+    padding-bottom: 50px;
+    position: absolute;
+    top: 0;
+    right: 15px;
+    color: #fff;
+    margin-bottom: 50px;
+}
+
+.homepage-featured-detail h2{
+    font-size: 25px;
+    margin: 0;
+    opacity: 1.0;
+}
+
+.homepage-featured-prijs{
+    color: #ff8c1a;
+    font-size: 20px;
+    position: absolute;
+    padding: 0;
+    bottom: 0;
+    left: 5px;
+}
+
+.homepage-featured-prijs span{
+    color: inherit;
+}
+
+.btn-homepage {
+    position: absolute;
+    height: 30px;
+    width: 80px;
+    bottom: 8px;
+    right: 10px;
+}
+
+.btn-homepage:hover{
+    background-color: #e67300;
+}
+
+.homepage-veiling{
+    border: #dddddd solid 2px;
+    padding: 10px;
+    margin: 5px;
+    min-height: 410px;
+    max-width: 260px;
+}
+
+.homepage-veiling:hover{
+    color: #000080;
+}
+
+.homepage-veiling img{
+    height: 270px;
+    width: 100%;
+}
+
+.homepage-veiling-prijstijd{
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    color: #4d79ff;
+    font-weight: bold;
+}
+
+/*Rubrieken veilinglijst*/
 .veilingitem {
     border: #dddddd solid 2px;
     background-color: #f2f2f2;
@@ -34,12 +111,8 @@ a:hover{
     margin: 0;
 }
 
-.veilingitem a, .veilingitem a:visited {
-    color: inherit;
-    text-decoration: none;
-}
-
-.veilingitem a:hover, .veilingitem a:active {
+.veilingitem a:hover,
+.veilingitem a:active {
     color: #000080;
 }
 
@@ -59,12 +132,12 @@ a:hover{
 
 .veiling-detail {
     color: #ffffff;
-    background-color: #4d79ff;
+    background-color: #ff8c1a;
     font-size: 18px;
     border: none;
 }
 
-/* Rubriek */
+/* Subrubrieken*/
 .subrubrieken{
     text-align: center;
     margin-bottom: 20px;
@@ -95,7 +168,7 @@ a:hover{
     float: right;
 }
 
-.more-info {
+.btn-bied {
     margin-top: 5px;
     margin-left: 5px;
 }
@@ -124,23 +197,27 @@ a:hover{
     margin-bottom: 15px;
 }
 
-.details{
+.detail {
     padding: 10px;
     float: left;
 }
 
-.betaalverzendinformatie{
+.extrainfo {
     padding: 10px;
     float: right;
 }
 
 /*Navigatie*/
-.navigatie{
+.navigation {
     margin-top: 10px;
     padding: 3px;
     border: #dddddd solid 2px;
     background-color: #f2f2f2;
     font-size: 16px;
+}
+
+.navigation a{
+    color: #4d79ff;
 }
 
 /*Contactpagina*/
@@ -161,7 +238,7 @@ a:hover{
     height: 70px;
 }
 
-#headerLogo {
+.headerLogo {
     top: 10px;
     position: absolute;
 }

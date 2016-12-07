@@ -1,3 +1,4 @@
+        </div>
         <footer>
             <p> <a href="contact.php">Contact</a> <br>
              Copyright © EenmaalAndermaal 2016 </p>

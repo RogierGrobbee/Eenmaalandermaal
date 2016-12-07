@@ -15,9 +15,9 @@ if($inputRubriekId != 0 && $huidigeRubriek != null) {
 
     $aantal = count($navigatieArray)-1;
 
-    echo '<div class="navigatie">';
+    echo '<div class="navigation">';
     while ($aantal >= 0) {
-        echo '<a href=index.php?rubriek=' . $navigatieArray[$aantal]->rubrieknummer . '>' . $navigatieArray[$aantal]->rubrieknaam . '</a>';
+        echo '<a href=rubriek.php?rubriek=' . $navigatieArray[$aantal]->rubrieknummer . '>' . $navigatieArray[$aantal]->rubrieknaam . '</a>';
 
         if ($aantal != 0) {
             echo " > ";

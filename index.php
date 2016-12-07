@@ -2,58 +2,53 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
-?>
-<?php
-//input rubriekId wordt opgehaald
-$inputRubriekId = null;
-if (isset($_GET['rubriek'])) {
-    if (is_numeric($_GET['rubriek'])) {
-        $inputRubriekId = $_GET['rubriek'];
-    }
-}
 
 include_once('partial files\databaseconnection.php');
-$rubriekArray = loadRubrieken();
-$huidigeRubriek = null;
-
-foreach ($rubriekArray as $k => $rubriek) {
-    if ($rubriek->rubrieknummer == $inputRubriekId) {
-        $huidigeRubriek = $rubriek;
-    }
-}
-
 include_once('partial files\header.php');
-include_once('partial files\navigatie.php');
-
-//De koptekst wordt gezet, als er geen rubriek is geselecteerd id het Welkom
-if ($huidigeRubriek != null) {
-    echo '<h1>' . $huidigeRubriek->rubrieknaam . '</h1>';
-} else {
-    echo '<h1>Welkom</h1>';
-}
-
-//sidebar maken op basis van rubrieken
-include_once('partial files\sidebar.php');
-if(isset($navigatieArray)) {
-    loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
-}
-else{
-    loadSidebar($rubriekArray, $huidigeRubriek);
-}
 ?>
 
-    <div class="col-sm-9">
+<h1>Meer dan 2000 veilingen! Bied nu!</h1>
+
+<?php
+//sidebar maken op basis van rubrieken
+include_once('partial files\sidebar.php');
+$rubriekArray = loadRubrieken();
+loadSidebar($rubriekArray, null);
+?>
+    <?php
+        $voorwerp = featuredVoorwerp();
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+        echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+        <img src="./bestanden/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
+
+        echo '<div class="col-lg-4 col-md-5 col-sm-7 col-xs-11 homepage-featured-detail">
+            <h2>'. $voorwerp->titel .'</h2>
+            <div class="homepage-featured-prijs">€'. $voorwerp->startprijs .'<br>
+                <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span>
+            </div>
+            <button class="veiling-detail btn-homepage">Bied</button></div></a>' ?>
+
+
+        <h1>Meest populaire veilingen</h1>
+        <div class="row">
+            <?php
+            queryHomepageVoorwerpen("SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY voorwerpnummer ASC) AS rownumber
+                          FROM voorwerp) AS TEST WHERE TEST.rownumber BETWEEN 2 AND 4");
+            ?>
+        </div>
+
+        <h1>Nieuwe veilingen</h1>
+        <div class="row">
         <?php
-        if (!is_null($huidigeRubriek)) {
-            include 'partial files\subrubrieken.php';
-            loadSubrubrieken($rubriekArray, $huidigeRubriek);
-        }
+        queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp ORDER BY looptijdbeginveiling ASC");
         ?>
-        <?php
-        loadVeilingItems($inputRubriekId);
-        ?>
+        </div>
 
-
-    </div>
-
+        <h1>Laagste prijzen</h1>
+        <div class="row">
+            <?php
+            queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp ORDER BY startprijs ASC");
+            ?>
+        </div>
 <?php include_once('partial files\footer.php') ?>
