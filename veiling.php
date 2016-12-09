@@ -13,7 +13,7 @@ if (!empty($_GET['voorwerpnummer'])) {
     $voorwerpnummer = 1;
 }
 
-include_once('partial files\databaseconnection.php');
+require('partial files\databaseconnection.php');
 
 $voorwerp = getVoorwerp($voorwerpnummer);
 
@@ -23,13 +23,13 @@ $inputRubriekId = $voorwerpinrubriek->rubriekoplaagsteniveau;*/
 
 $inputRubriekId = getVoorwerpRubriek($voorwerpnummer);
 
-include_once('partial files\rubrieken.php');
-include_once('partial files\header.php');
-include_once('partial files\navigatie.php');
+require('partial files\rubrieken.php');
+require('partial files\header.php');
+require('partial files\navigatie.php');
 
 echo "<h1>$voorwerp->titel</h1>";
 
-include_once('partial files\sidebar.php');
+require('partial files\sidebar.php');
 loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
 
 $list = loadBestanden($voorwerp->voorwerpnummer);
@@ -82,4 +82,4 @@ foreach ($list as $k => $smallImage) {
 }
 echo '</div>';
 ?>
-<?php include_once('partial files\footer.php')?>
+<?php require('partial files\footer.php')?>

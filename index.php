@@ -3,15 +3,15 @@ function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
 
-include_once('partial files\databaseconnection.php');
-include_once('partial files\header.php');
+require('partial files\databaseconnection.php');
+require('partial files\header.php');
 ?>
 
 <h1>Meer dan 2000 veilingen! Bied nu!</h1>
 
 <?php
 //sidebar maken op basis van rubrieken
-include_once('partial files\sidebar.php');
+require('partial files\sidebar.php');
 $rubriekArray = loadRubrieken();
 loadSidebar($rubriekArray, null);
 ?>
@@ -51,4 +51,4 @@ loadSidebar($rubriekArray, null);
             queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp ORDER BY startprijs ASC");
             ?>
         </div>
-<?php include_once('partial files\footer.php') ?>
+<?php require('partial files\footer.php') ?>
