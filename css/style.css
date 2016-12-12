@@ -236,6 +236,19 @@ a:hover{
     position: relative;
 }
 
+@media (max-width: 768px) {
+    .headerbar{
+        height: 140px;
+    }
+}
+
+@media (max-width: 420px) {
+    .headerbar{
+        height: 100px;
+    }
+}
+
+
 .headerbarContent{
     background-color: #4d79ff;
     padding-top: 10px;
