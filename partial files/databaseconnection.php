@@ -202,7 +202,7 @@ function echoVoorwerp($voorwerp, $image)
 }
 
 function echoHomepageVoorwerp($voorwerp, $image){
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-11 homepage-veiling">
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
                     <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
                     <img src="bestanden/'. $image .'"alt="veiling">
                     <h4>'.$voorwerp->titel.'</h4>

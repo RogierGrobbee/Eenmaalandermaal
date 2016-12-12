@@ -19,7 +19,7 @@
         <div class="container headerbarContent">
             <div class="row">
                 <a href="index.php">
-                    <img class="img-responsive col-xs-12 col-sm-8 col-md-6 col-lg-5" src="images/logo.png" alt="Logo EenmaalAndermaal">
+                    <img class="col-xs-12 col-sm-8 col-md-6 col-lg-5" src="images/logo.png" alt="Logo EenmaalAndermaal">
                 </a>
                 <form action='zoeken.php' method='GET'>
                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 search">
