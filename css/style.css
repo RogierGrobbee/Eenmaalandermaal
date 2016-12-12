@@ -55,7 +55,7 @@ a:hover{
     right: 10px;
 }
 
-.btn-homepage:hover{
+.btn-homepage:hover, .btn-search:hover{
     background-color: #e67300;
 }
 
@@ -146,11 +146,9 @@ a:hover{
 .subrubrieken a{
     font-size: 20px;
     line-height: 40px;
-}
-
-.subrubrieken a:hover{
     color: #4d79ff;
 }
+
 
 /*veiling item*/
 .prijstijd {
@@ -234,13 +232,45 @@ a:hover{
 .headerbar {
     background-color: #4d79ff;
     box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.35);
-    margin-bottom: 7px;
     height: 70px;
+    position: relative;
 }
 
-.headerLogo {
-    top: 10px;
-    position: absolute;
+.headerbarContent{
+    background-color: #4d79ff;
+    padding-top: 10px;
+}
+
+.search{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    float: right;
+}
+
+.search-bar{
+    border: solid 1px #e3e3e3;
+    width: 70%;
+    height: 30px;
+    float: left;
+}
+
+.search-bar:focus{
+    border: solid 1px #000000;
+}
+
+.search-bar:invalid{
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-search{
+    width: 30%;
+    height: 30px;
+    background-color: #ff8c1a;
+    color: #ffffff;
+    border: none;
 }
 
 footer {
