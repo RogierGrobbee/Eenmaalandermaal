@@ -272,4 +272,16 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
+function doesValidationCodeexist($validationCode) {
+    global $db;
+    $exist = false;
+    $query = $db->query("SELECT validatiecode FROM validation");
+    foreach ($query as $row) {
+        if ($row["validatiecode"] == $validationCode) {
+            $exist = true;
+        }
+    }
+    return $exist;
+}
+
 ?>

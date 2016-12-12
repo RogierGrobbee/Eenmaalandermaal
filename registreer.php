@@ -6,6 +6,7 @@ include_once('partial files\header.php'); ?>
 
 <?php include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
+
 $errorMessage = "";
 $successMessage = "";
 if (!empty($_POST['wachtwoord'])) {
@@ -27,6 +28,7 @@ if (isset($_POST['registreer'])) {
         empty($_POST['telefoon1']) ||
         empty($_POST['antwoord'])
 ) {
+
         $errorMessage = "Niet alles ingevuld.";
     } else
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
@@ -44,16 +46,28 @@ if (isset($_POST['registreer'])) {
     } else {
         $validatieCode = generateRandomString();
         $to      = $_POST['email'];
-        $subject = 'Validatie eenmaalAndermaal';
-        $message = 'Validatie code: ' . $validatieCode;
-        $headers = 'From: eenmaalAndermaal';
+        $subject = 'Validatie EenmaalAndermaal';
+        $message = 'Validatiecode: ' . $validatieCode;
+        $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
+            'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+
         mail($to, $subject, $message, $headers);
 
-        $successMessage = "Validatie mail verstuurd.";
+        $successMessage = "Validatie mail is verstuurd.";
+
+
+
+
+//        header('Location: validatie.php');
     }
 }
 
+
+
 ?>
+
+
 
     <form method="post">
         <row>
@@ -61,27 +75,27 @@ if (isset($_POST['registreer'])) {
                 <table class="registration-table">
                     <tr>
                         <td>Email</td>
-                        <td><input type="text" name="email" required></td>
+                        <td><input type="text" name="email" ></td>
                     </tr>
                     <tr>
                         <td>Gebruikersnaam</td>
-                        <td><input type="text" name="gebruikersnaam" required></td>
+                        <td><input type="text" name="gebruikersnaam" ></td>
                     </tr>
                     <tr>
                         <td>Voornaam</td>
-                        <td><input type="text" name="voornaam" required></td>
+                        <td><input type="text" name="voornaam" ></td>
                     </tr>
                     <tr>
                         <td>Achternaam</td>
-                        <td><input type="text" name="achternaam" required></td>
+                        <td><input type="text" name="achternaam" ></td>
                     </tr>
                     <tr>
                         <td>Wachtwoord</td>
-                        <td><input type="password" name="wachtwoord" required></td>
+                        <td><input type="password" name="wachtwoord" ></td>
                     </tr>
                     <tr>
                         <td>Wachtwoord 2</td>
-                        <td><input type="password" name="wachtwoord2" required></td>
+                        <td><input type="password" name="wachtwoord2" ></td>
                     </tr>
                     <tr>
                         <td>Geboortedatum</td>
@@ -100,19 +114,19 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Adres</td>
-                        <td><input type="text" name="adres" required></td>
+                        <td><input type="text" name="adres" ></td>
                     </tr>
                     <tr>
                         <td>Plaats</td>
-                        <td><input type="text" name="plaats" required></td>
+                        <td><input type="text" name="plaats" ></td>
                     </tr>
                     <tr>
                         <td>Postcode</td>
-                        <td><input type="text" name="postcode"required></td>
+                        <td><input type="text" name="postcode" ></td>
                     </tr>
                     <tr>
                         <td>Telefoon 1</td>
-                        <td><input type="text" name="telefoon1"required></td>
+                        <td><input type="text" name="telefoon1"></td>
                     </tr>
                     <tr>
                         <td>Telefoon 2</td>
@@ -126,7 +140,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Antwoord</td>
-                        <td><input type="text" name="antwoord"required></td>
+                        <td><input type="text" name="antwoord"></td>
                     </tr>
 
                 </table>
