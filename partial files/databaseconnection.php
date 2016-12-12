@@ -1,5 +1,6 @@
 <?php
-$db = new PDO ("sqlsrv:Server=Iproject2.icasites.nl;Database=Iproject2;ConnectionPooling=0", "iproject2", "ekEu7bpJ");
+$db = new PDO ("sqlsrv:Server=mssql.iproject.icasites.nl;Database=iproject2;ConnectionPooling=0",
+    "iproject2", "ekEu7bpJ");
 
 function getVoorwerp($voorwerpId)
 {
@@ -41,6 +42,28 @@ function loadRubrieken()
         array_push($rubriekArray, $rubriek);
     }
     return $rubriekArray;
+}
+
+function loadVeilingItemsSearch($searchQuery){
+    global $db;
+    $statement = $db->prepare("SELECT * FROM voorwerp WHERE titel LIKE :search 
+                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
+                            ORDER BY looptijdeindeveiling ASC");
+    $statement->bindValue(':search', '%'.$searchQuery.'%');
+    $statement->execute();
+    $voorwerpArray = array();
+    while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {
+        array_push($voorwerpArray, $voorwerp);
+
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+
+        echoVoorwerp($voorwerp, $image);
+    }
+
+    if (count($voorwerpArray) < 1){
+        echo "Geen voorwerpen gevonden";
+    }
 }
 
 function loadVeilingItems($rubriekId)
@@ -145,7 +168,7 @@ function featuredVoorwerp()
                                 beschrijving,
                                 startprijs,
                                 looptijdeindeveiling
-                                FROM voorwerp");
+                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         return $voorwerp;
     }
@@ -178,14 +201,13 @@ function echoVoorwerp($voorwerp, $image)
                 </div>';
 }
 
-function echoHomepageVoorwerp($voorwerp, $image)
-{
+function echoHomepageVoorwerp($voorwerp, $image){
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-11 homepage-veiling">
-                    <a href="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                    <img src="bestanden/' . $image . '"alt="veiling">
-                    <h4>' . $voorwerp->titel . '</h4>
-                    <div class="homepage-veiling-prijstijd">€' . $voorwerp->startprijs . '<br>
-                    <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span></div>
+                    <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+                    <img src="bestanden/'. $image .'"alt="veiling">
+                    <h4>'.$voorwerp->titel.'</h4>
+                    <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
+                    <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
                     <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 

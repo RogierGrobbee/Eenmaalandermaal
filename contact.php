@@ -1,10 +1,10 @@
-<?php include_once('partial files\databaseconnection.php');
+<?php require('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-include_once('partial files\header.php'); ?>
+require('partial files\header.php'); ?>
 
 <h1>Contact</h1>
 
-<?php include_once('partial files\sidebar.php');
+<?php require('partial files\sidebar.php');
 loadSidebar($rubriekArray, null); ?>
 
         <div class="row">
@@ -23,4 +23,4 @@ loadSidebar($rubriekArray, null); ?>
                 width="100%" height="450px" frameborder="0"></iframe>
         </div>
 
-<?php include_once('partial files\footer.php')?>
+<?php require('partial files\footer.php')?>

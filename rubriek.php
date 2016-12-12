@@ -2,8 +2,7 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
-?>
-<?php
+
 //input rubriekId wordt opgehaald
 $inputRubriekId = null;
 if (isset($_GET['rubriek'])) {
@@ -11,8 +10,14 @@ if (isset($_GET['rubriek'])) {
         $inputRubriekId = $_GET['rubriek'];
     }
 }
+$page = 1;
+if (isset($_GET['page'])) {
+    if (is_numeric($_GET['page'])) {
+        $page = $_GET['page'];
+    }
+}
 
-include_once('partial files\databaseconnection.php');
+require('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
 $huidigeRubriek = null;
 
@@ -22,8 +27,8 @@ foreach ($rubriekArray as $k => $rubriek) {
     }
 }
 
-include_once('partial files\header.php');
-include_once('partial files\navigatie.php');
+require('partial files\header.php');
+require('partial files\navigatie.php');
 
 //De koptekst wordt gezet, als er geen rubriek is geselecteerd id het Welkom
 if ($huidigeRubriek != null) {
@@ -33,7 +38,7 @@ if ($huidigeRubriek != null) {
 }
 
 //sidebar maken op basis van rubrieken
-include_once('partial files\sidebar.php');
+require('partial files\sidebar.php');
 if(isset($navigatieArray)) {
     loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
 }
@@ -49,7 +54,7 @@ else{
     }
     ?>
     <?php
-    loadVeilingItems($inputRubriekId);
+    loadVeilingItems($inputRubriekId, $page);
     ?>
 
-<?php include_once('partial files\footer.php') ?>
+<?php require('partial files\footer.php') ?>
