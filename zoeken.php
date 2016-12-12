@@ -8,7 +8,9 @@ $rubriekArray = loadRubrieken();
 
 require('partial files\header.php');
 
-echo '<h1>Nieuwste veilingen</h1>';
+if(isset($search)){
+    echo "<h1>Zoeken op $search</h1>";
+}
 
 require('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
