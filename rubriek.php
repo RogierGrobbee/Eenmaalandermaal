@@ -11,6 +11,12 @@ if (isset($_GET['rubriek'])) {
         $inputRubriekId = $_GET['rubriek'];
     }
 }
+$page = 1;
+if (isset($_GET['page'])) {
+    if (is_numeric($_GET['page'])) {
+        $page = $_GET['page'];
+    }
+}
 
 include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
@@ -49,7 +55,7 @@ else{
     }
     ?>
     <?php
-    loadVeilingItems($inputRubriekId);
+    loadVeilingItems($inputRubriekId, $page);
     ?>
 
 <?php require('partial files\footer.php') ?>
