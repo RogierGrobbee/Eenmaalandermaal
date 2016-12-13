@@ -19,6 +19,27 @@ button:hover{
     background-color: #e67300;
 }
 
+input{
+    border: solid 1px #e3e3e3;
+}
+
+input:focus{
+    border: solid 1px #000000;
+}
+
+input:invalid{
+    outline: none;
+    box-shadow: none;
+}
+
+.left{
+    float:left;
+}
+
+.right{
+    float: right;
+}
+
 /*Voorpagina*/
 .homepage-featured-img {
     width: 100%;
@@ -162,20 +183,49 @@ button:hover{
 
 
 /*veiling item*/
-.veilingprijs {
-    float: left;
-    font-size: 24px;
-    color: #4d79ff;
-}
-
 .veilingtijd {
-    text-align: center;
     font-size: 40px;
     color: #4d79ff;
 }
 
 .tijd-hidden {
     display: none;
+}
+
+.bieden{
+    font-size: 30px;
+}
+
+.bied-bar{
+    width: 150px;
+    box-sizing: border-box;
+    height: 50px;
+}
+
+.btn-bied{
+    height: 50px;
+}
+
+.boddetail {
+    padding: 5px;
+    background-color: #f9f9f9;
+    border: solid 1px #c0c0c0;
+    text-align: center;
+}
+
+.highest-bod, .bod{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.highest-bod{
+    font-size: 28px;
+    color: #4d79ff;
+}
+
+.bod{
+    font-size: 24px;
+    color: #000000;
 }
 
 .bigpicture {
@@ -192,10 +242,6 @@ button:hover{
     float: left;
     margin-right: 15px;
     margin-bottom: 15px;
-}
-
-.detail {
-    padding: 10px;
 }
 
 .extrainfo {
@@ -261,25 +307,14 @@ button:hover{
 }
 
 .search-bar{
-    border: solid 1px #e3e3e3;
     width: 70%;
     height: 30px;
     float: left;
 }
 
-.search-bar:focus{
-    border: solid 1px #000000;
-}
-
-.search-bar:invalid{
-    outline: none;
-    box-shadow: none;
-}
-
 .btn-search{
     width: 30%;
     height: 30px;
-    border: none;
 }
 
 footer {
