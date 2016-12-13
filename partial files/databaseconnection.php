@@ -27,7 +27,7 @@ function loadBestanden($voorwerpId)
         array_push($bestandenList, $bestand->filenaam);
     }
 
-    $bestandenList[0] = $bestandenList != null ? $bestandenList[0] : "NoImageAvalible.jpg";
+    $bestandenList[0] = $bestandenList != null ? $bestandenList[0] : "NoImageAvailable.jpg";
     return $bestandenList;
 }
 
@@ -56,7 +56,7 @@ function loadVeilingItemsSearch($searchQuery){
         array_push($voorwerpArray, $voorwerp);
 
         $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
         echoVoorwerp($voorwerp, $image);
     }
@@ -66,7 +66,7 @@ function loadVeilingItemsSearch($searchQuery){
     }
 }
 
-function loadVeilingItems($rubriekId)
+function loadVeilingItems($rubriekId, $currentPageNumber)
 {
     //
     $itemsPerPage = 3;
@@ -152,7 +152,7 @@ function queryVoorwerpen($queryString, $rubriekId, $itemsPerPage, $totalItems, $
         array_push($voorwerpArray, $voorwerp);
 
         $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
         echoVoorwerp($voorwerp, $image);
     }
@@ -222,7 +222,7 @@ function queryHomepageVoorwerpen($queryString)
 
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
         echoHomepageVoorwerp($voorwerp, $image);
     }

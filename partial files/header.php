@@ -27,7 +27,7 @@
                             if(isset($search)){
                                 echo $search;
                             }
-                        ?>" required>
+                        ?>" maxlength="100" required>
                         <button type="submit" class="btn-search">Zoeken</button>
                     </div>
                 </form>
