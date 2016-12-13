@@ -68,8 +68,7 @@ function loadVeilingItemsSearch($searchQuery){
 
 function loadVeilingItems($rubriekId, $currentPageNumber)
 {
-    //
-    $itemsPerPage = 3;
+    $itemsPerPage = 10;
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
     if (is_numeric($rubriekId)) {
 
@@ -98,41 +97,29 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
         if ($ids == "") {
             $ids = "0";
         }
+        $ids = $ids.','.$rubriekId;
 
         //count number of record to determine pages
         global $db;
-        $countQuery = $db->query("select count(voorwerpnummer) as amount from voorwerp where voorwerpnummer in(
-	                          select voorwerpnummer from voorwerpinrubriek where rubriekoplaagsteniveau in ($ids) or rubriekoplaagsteniveau = $rubriekId 
-	                          )AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
-                            
-                            ");
+        $countQuery = $db->prepare("execute sp_CountVoorwerpenInRubrieken @ids=?");
+        $countQuery->bindParam(1, $ids, PDO::PARAM_STR);
+        $countQuery->execute();
+
+        $totalItems = 0;
         while ($item = $countQuery->fetch(PDO::FETCH_OBJ)) {
             $totalItems = $item->amount;
         }
 
-        queryVoorwerpen("select voorwerpnummer,
-                                titel,
-                                beschrijving,
-                                startprijs,
-                                looptijdeindeveiling
-                                from voorwerp where voorwerpnummer in(
-	                          select voorwerpnummer from voorwerpinrubriek where rubriekoplaagsteniveau in ($ids) or rubriekoplaagsteniveau = $rubriekId 
-	                          )
-                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
-                            
-                            ORDER BY looptijdeindeveiling ASC
-                            OFFSET " . $nSkippedRecords . " ROWS
-                            FETCH NEXT " . $itemsPerPage . " ROWS ONLY
-                            ", $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber);
+        $voorwerpQuery = $db->prepare("execute sp_GetVoorwerpenInRubrieken @ids=?, @nSkippedRecords=?, @itemPerPage=?");
+        $voorwerpQuery->bindParam(1, $ids, PDO::PARAM_STR);
+        $voorwerpQuery->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
+        $voorwerpQuery->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
+
+        queryVoorwerpen($voorwerpQuery, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber);
+
+
     } else {
-        queryVoorwerpen("SELECT voorwerpnummer,
-                                titel,
-                                beschrijving,
-                                startprijs,
-                                looptijdeindeveiling
-                                FROM voorwerp
-                                WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
-                                ORDER BY looptijdeindeveiling ASC", $rubriekId, $itemsPerPage, 0, $currentPageNumber);
+        echo 'Geen rubriek geselecteerd';
     }
 
 }
@@ -142,10 +129,10 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
  *
  * @param $queryString The SELECT query in a string.
  */
-function queryVoorwerpen($queryString, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber)
+function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber)
 {
     global $db;
-    $query = $db->query($queryString);
+    $query->execute();
     $voorwerpArray = array();
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
 
@@ -252,6 +239,9 @@ function featuredVoorwerp()
 function echoVoorwerp($voorwerp, $image)
 {
     $beschrijving = $voorwerp->beschrijving;
+
+    $beschrijving = strip_html_tags($beschrijving);
+
     if (strlen($beschrijving) > 300) {
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
     }
@@ -270,27 +260,44 @@ function echoVoorwerp($voorwerp, $image)
                 </div>';
 }
 
-function echoHomepageVoorwerp($voorwerp, $image){
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
-                    <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-                    <img src="pics/'. $image .'"alt="veiling">
-                    <h4>'.$voorwerp->titel.'</h4>
-                    <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
-                    <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
-                    <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+function strip_html_tags($str){
+    $str = preg_replace('/(<|>)\1{2}/is', '', $str);
+    $str = preg_replace(
+        array(// Remove invisible content
+            '@<head[^>]*?>.*?</head>@siu',
+            '@<style[^>]*?>.*?</style>@siu',
+            '@<script[^>]*?.*?</script>@siu',
+            '@<noscript[^>]*?.*?</noscript>@siu',
+        ),
+        "", //replace above with nothing
+        $str );
+    $str = replaceWhitespace($str);
+    $str = strip_tags($str, '<br>');
+    return $str;
+} //function strip_html_tags ENDS
+
+//To replace all types of whitespace with a single space
+function replaceWhitespace($str) {
+    $result = $str;
+    foreach (array(
+                 "  ", " \t",  " \r",  " \n",
+                 "\t\t", "\t ", "\t\r", "\t\n",
+                 "\r\r", "\r ", "\r\t", "\r\n",
+                 "\n\n", "\n ", "\n\t", "\n\r",
+             ) as $replacement) {
+        $result = str_replace($replacement, $replacement[0], $result);
+    }
+    return $str !== $result ? replaceWhitespace($result) : $result;
 }
 
-function getVoorwerpBiedingen($voorwerpnummer){
-    global $db;
-
-    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
-    $biedingen = array();
-
-    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
-        array_push($biedingen, $bod);
-    }
-
-    return $biedingen;
+function echoHomepageVoorwerp($voorwerp, $image)
+{
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-11 homepage-veiling">
+                    <a href="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
+                    <img src="bestanden/' . $image . '"alt="veiling">
+                    <h4>' . $voorwerp->titel . '</h4>
+                    <div class="homepage-veiling-prijstijd">€' . $voorwerp->startprijs . '<br>
+                    <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span></div>
 }
 
 function returnGeheimeVragen()
