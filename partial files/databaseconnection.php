@@ -46,6 +46,7 @@ function loadRubrieken()
 
 function loadVeilingItems($rubriekId, $currentPageNumber)
 {
+    //
     $itemsPerPage = 3;
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
     if (is_numeric($rubriekId)) {
