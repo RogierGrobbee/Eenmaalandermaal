@@ -16,10 +16,7 @@ if (!empty($_GET['voorwerpnummer'])) {
 require('partial files\databaseconnection.php');
 
 $voorwerp = getVoorwerp($voorwerpnummer);
-
-/*$query = $db->query("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer=$voorwerpnummer");
-$voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
-$inputRubriekId = $voorwerpinrubriek->rubriekoplaagsteniveau;*/
+$biedingen = getVoorwerpBiedingen($voorwerpnummer);
 
 $inputRubriekId = getVoorwerpRubriek($voorwerpnummer);
 
@@ -34,17 +31,46 @@ loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
 
 $list = loadBestanden($voorwerp->voorwerpnummer);
 $image = $list[0];
+
+function calculateIncrease($prijs){
+   switch(true){
+       case $prijs >= 5000:
+           return 50;
+           break;
+       case $prijs >= 1000:
+           return 10;
+           break;
+       case $prijs >= 500:
+           return 5;
+           break;
+       case $prijs >= 50:
+           return 1;
+           break;
+       default:
+           return 0.50;
+       break;
+   }
+}
 ?>
     <div class="row">
-        <?php echo '<img class="bigpicture" src="./bestanden/'.$image.'" alt="geveilde voorwerp">' ?>
+        <?php echo '<img class="bigpicture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
         <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 detail">
-            <div class="prijstijd">
-                <div class="veilingprijs">
-                    <?php echo "€$voorwerp->startprijs" ?>
+            <div class="veilingtijd">
+                <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
+            </div>
+
+            <form action='' method='GET'>
+                <div class="search">
+                    <input type="text" class="search-bar" name="search" value="<?php
+                    echo $biedingen[0]->bodbedrag + calculateIncrease($biedingen->bodbedrag);
+                    ?>" required>
+                    <button type="submit" class="btn-bied">Bied</button>
                 </div>
-                <div class="veilingtijd">
-                    <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
-                </div>
+            </form>
+
+
+            <div class="veilingprijs">
+                <?php echo "€". $biedingen[0]->bodbedrag ?>
             </div>
 
             <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
