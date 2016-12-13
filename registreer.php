@@ -24,7 +24,9 @@ if (isset($_POST['registreer'])) {
         empty($_POST['wachtwoord']) ||
         empty($_POST['wachtwoord2']) ||
         empty($_POST['adres']) ||
+        empty($_POST['postcode']) ||
         empty($_POST['plaats']) ||
+        empty($_POST['geboortedatum']) ||
         empty($_POST['telefoon1']) ||
         empty($_POST['antwoord'])
 ) {
@@ -56,10 +58,43 @@ if (isset($_POST['registreer'])) {
 
         $successMessage = "Validatie mail is verstuurd.";
 
+        $password = hashPass($_POST['wachtwoord']);
 
+        global $db;
+        $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES 
+                (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':username', $_POST['gebruikersnaam'], PDO::PARAM_STR);
+        $stmt->bindValue(':firstname', $_POST['voornaam'], PDO::PARAM_STR);
+        $stmt->bindValue(':lastname', $_POST['achternaam'], PDO::PARAM_STR);
+        $stmt->bindValue(':adres', $_POST['adres'], PDO::PARAM_STR);
+        $stmt->bindValue(':postcode', $_POST['postcode'], PDO::PARAM_STR);
+        $stmt->bindValue(':plaatsnaam', $_POST['plaats'], PDO::PARAM_STR);
+        $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);                 //////////////////
+        $stmt->bindValue(':geboortedatum', $_POST['geboortedatum'], PDO::PARAM_STR);
+        $stmt->bindValue(':email', $_POST['email'], PDO::PARAM_STR);
+        $stmt->bindValue(':wachtwoord', $password, PDO::PARAM_STR);
+        $stmt->bindValue(':verkoper', 0, PDO::PARAM_INT);
+        $stmt->bindValue(':vraag', $_POST['geheimeVraag'], PDO::PARAM_INT);                 //////////////////
+        $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
+        $stmt->execute();
 
+        $sql2 = "INSERT INTO validation (gebruikersnaam, validatiecode) VALUES 
+                (:gebruiker, :validate)";
+        $stmt = $db->prepare($sql2);
+        $stmt->bindValue(':gebruiker', $_POST['gebruikersnaam'], PDO::PARAM_STR);
+        $stmt->bindValue(':validate', $validatieCode, PDO::PARAM_STR);
+        $stmt->execute();
 
-//        header('Location: validatie.php');
+        $sql3 = "INSERT INTO antwoord (vraagnummer, gebruikersnaam, antwoordtekst) VALUES 
+                (:nummer, :gebruikersnaam, :antwoord)";
+        $stmt = $db->prepare($sql3);
+        $stmt->bindValue(':nummer', $_POST['geheimeVraag'], PDO::PARAM_STR);
+        $stmt->bindValue(':gebruikersnaam', $_POST['gebruikersnaam'], PDO::PARAM_STR);
+        $stmt->bindValue(':antwoord', hashPass($_POST['antwoord']), PDO::PARAM_STR);
+        $stmt->execute();
+
+        header('Location: validatie.php');
     }
 }
 
@@ -99,7 +134,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Geboortedatum</td>
-                        <td><input type="date" data-date-inline-picker="true"/></td>
+                        <td><input name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
                     </tr>
 
                 </table>
@@ -174,4 +209,8 @@ if (isset($_POST['registreer'])) {
         </div>
 
     </row>
+
+
+
+
 <?php include_once('partial files\footer.php') ?>

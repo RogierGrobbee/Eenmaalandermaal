@@ -54,23 +54,45 @@ function calculateIncrease($prijs){
 ?>
     <div class="row">
         <?php echo '<img class="bigpicture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
-        <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 detail">
-            <div class="veilingtijd">
-                <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
-            </div>
-
-            <form action='' method='GET'>
-                <div class="search">
-                    <input type="text" class="search-bar" name="search" value="<?php
-                    echo $biedingen[0]->bodbedrag + calculateIncrease($biedingen->bodbedrag);
-                    ?>" required>
-                    <button type="submit" class="btn-bied">Bied</button>
+        <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7">
+            <div class="boddetail">
+                <div class="veilingtijd">
+                    <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
                 </div>
-            </form>
 
+                <form action='' method='POST'>
+                    <div class="bieden">
+                        <label for="bied-bar">€</label>
+                        <input type="text" class="bied-bar" name="bod" id="bied-bar" value="<?php
+                        if($biedingen == null){
+                            $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
+                            echo $minimalePrijs;
+                        }
+                        else {
+                            $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
+                            echo number_format((float)$minimalePrijs, 2, '.', '');
+                        }
+                        ?>" required><button type="submit" class="btn-bied">Bied</button>
+                    </div>
+                </form>
 
-            <div class="veilingprijs">
-                <?php echo "€". $biedingen[0]->bodbedrag ?>
+                <?php
+                if($biedingen == null){
+                    echo "<div class='bod'>Er zijn nog geen biedingen! Bied snel!</div>";
+                }
+                else {
+                    for($i=0; $i<count($biedingen); $i++){
+                        if($i == 0){
+                            echo "<div class='highest-bod'>";
+                        }
+                        else {
+                            echo "<div class='bod'>";
+                        }
+
+                        echo "<div class='left'>".$biedingen[$i]->gebruikersnaam."</div>
+                        <div class='right'>".$biedingen[$i]->bodbedrag."</div><br></div>";
+                    }
+                }?>
             </div>
 
             <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>

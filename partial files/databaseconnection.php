@@ -2,6 +2,7 @@
 $db = new PDO ("sqlsrv:Server=mssql.iproject.icasites.nl;Database=iproject2;ConnectionPooling=0",
     "iproject2", "ekEu7bpJ");
 
+
 function getVoorwerp($voorwerpId)
 {
     global $db;
@@ -263,6 +264,29 @@ function echoVoorwerp($voorwerp, $image)
                 </div>';
 }
 
+function echoHomepageVoorwerp($voorwerp, $image){
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
+            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+            <img src="pics/'. $image .'"alt="veiling">
+            <h4>'.$voorwerp->titel.'</h4>
+            <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
+            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+            <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function getVoorwerpBiedingen($voorwerpnummer){
+    global $db;
+
+    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
+    $biedingen = array();
+
+    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
+        array_push($biedingen, $bod);
+    }
+
+    return $biedingen;
+}
+
 function strip_html_tags($str){
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
     $str = preg_replace(
@@ -293,40 +317,53 @@ function replaceWhitespace($str) {
     return $str !== $result ? replaceWhitespace($result) : $result;
 }
 
-function echoHomepageVoorwerp($voorwerp, $image)
-{
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-11 homepage-veiling">
-                    <a href="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                    <img src="bestanden/' . $image . '"alt="veiling">
-                    <h4>' . $voorwerp->titel . '</h4>
-                    <div class="homepage-veiling-prijstijd">€' . $voorwerp->startprijs . '<br>
-                    <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span></div>
-}
-
 function returnGeheimeVragen()
 {
     global $db;
 
-    $query = $db->query("SELECT tekstvraag FROM vraag");
-    echo "<select>";
+    $query = $db->query("SELECT tekstvraag, vraagnummer FROM vraag");
+    echo "<select  name='geheimeVraag'>";
     foreach ($query as $row) {
-        echo "<option value = " . $row['tekstvraag'] . " >" . $row['tekstvraag'] . "</option >";
+        echo "<option value = " . $row['vraagnummer'] . " >" . $row['tekstvraag'] . "</option >";
 
     }
     echo "</select>";
 }
+
 
 function returnAllCountries()
 {
     global $db;
     $query = $db->query("SELECT landnaam FROM land");
-    echo "<select>";
+    echo "<select name='country'>";
     foreach ($query as $row) {
         echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
-
     }
     echo "</select>";
 }
+
+//function calculateTimePlusFour($code)
+//{
+//    global $db;
+//    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
+//    $statement->execute(array(':validatiecode' => $code));
+//    $row = $statement->fetch();
+//    $newtime = date("Y-m-d H:i:s", strtotime('+3 hours', $row['datumTijd']));
+//        return $newtime;
+//}
+
+//function validateUser($code)
+//{
+//    global $db;
+//    $sth = "UPDATE g
+//SET g.gevalideerd = 0
+//FROM gebruiker AS g
+//INNER JOIN validation AS v
+//       ON g.gebruikersnaam = v.gebruikersnaam
+//WHERE v.validatiecode  = :id";
+//    $q = $db->prepare($sth);
+//    $q->execute(array(':location'=>$location, ':id'=>$id));
+//}
 
 
 function doesUsernameAlreadyExist($username)
@@ -375,5 +412,13 @@ function doesValidationCodeexist($validationCode) {
     }
     return $exist;
 }
+
+function hashPass($pass) {
+    $options = [
+        'cost' => 12,
+    ];
+    return password_hash($pass, PASSWORD_BCRYPT, $options)."\n";
+}
+
 
 ?>
