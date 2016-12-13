@@ -66,7 +66,7 @@ function loadVeilingItemsSearch($searchQuery){
     }
 }
 
-function loadVeilingItems($rubriekId)
+function loadVeilingItems($rubriekId, $currentPageNumber)
 {
     //
     $itemsPerPage = 3;
