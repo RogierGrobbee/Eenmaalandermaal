@@ -27,7 +27,7 @@ function loadBestanden($voorwerpId)
         array_push($bestandenList, $bestand->filenaam);
     }
 
-    $bestandenList[0] = $bestandenList != null ? $bestandenList[0] : "NoImageAvalible.jpg";
+    $bestandenList[0] = $bestandenList != null ? $bestandenList[0] : "NoImageAvailable.jpg";
     return $bestandenList;
 }
 
@@ -42,6 +42,28 @@ function loadRubrieken()
         array_push($rubriekArray, $rubriek);
     }
     return $rubriekArray;
+}
+
+function loadVeilingItemsSearch($searchQuery){
+    global $db;
+    $statement = $db->prepare("SELECT * FROM voorwerp WHERE titel LIKE :search 
+                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
+                            ORDER BY looptijdeindeveiling ASC");
+    $statement->bindValue(':search', '%'.$searchQuery.'%');
+    $statement->execute();
+    $voorwerpArray = array();
+    while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {
+        array_push($voorwerpArray, $voorwerp);
+
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
+
+        echoVoorwerp($voorwerp, $image);
+    }
+
+    if (count($voorwerpArray) < 1){
+        echo "Geen voorwerpen gevonden";
+    }
 }
 
 function loadVeilingItems($rubriekId, $currentPageNumber)
@@ -117,7 +139,7 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
         array_push($voorwerpArray, $voorwerp);
 
         $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
         echoVoorwerp($voorwerp, $image);
     }
@@ -187,7 +209,7 @@ function queryHomepageVoorwerpen($queryString)
 
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
         echoHomepageVoorwerp($voorwerp, $image);
     }
@@ -202,7 +224,7 @@ function featuredVoorwerp()
                                 beschrijving,
                                 startprijs,
                                 looptijdeindeveiling
-                                FROM voorwerp");
+                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         return $voorwerp;
     }
@@ -277,6 +299,79 @@ function echoHomepageVoorwerp($voorwerp, $image)
                     <div class="homepage-veiling-prijstijd">€' . $voorwerp->startprijs . '<br>
                     <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span></div>
                     <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function returnGeheimeVragen()
+{
+    global $db;
+
+    $query = $db->query("SELECT tekstvraag FROM vraag");
+    echo "<select>";
+    foreach ($query as $row) {
+        echo "<option value = " . $row['tekstvraag'] . " >" . $row['tekstvraag'] . "</option >";
+
+    }
+    echo "</select>";
+}
+
+function returnAllCountries()
+{
+    global $db;
+    $query = $db->query("SELECT landnaam FROM land");
+    echo "<select>";
+    foreach ($query as $row) {
+        echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
+
+    }
+    echo "</select>";
+}
+
+
+function doesUsernameAlreadyExist($username)
+{
+    global $db;
+    $exist = false;
+    $query = $db->query("SELECT gebruikersnaam FROM gebruiker");
+    foreach ($query as $row) {
+        if ($row["gebruikersnaam"] == $username) {
+            $exist = true;
+        }
+    }
+    return $exist;
+}
+
+function postCodeCheck($postcode)
+{
+    $remove = str_replace(" ","", $postcode);
+    $upper = strtoupper($remove);
+
+    if( preg_match("/^\W*[1-9]{1}[0-9]{3}\W*[a-zA-Z]{2}\W*$/",  $upper)) {
+        return $upper;
+    } else {
+        return false;
+    }
+}
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+function doesValidationCodeexist($validationCode) {
+    global $db;
+    $exist = false;
+    $query = $db->query("SELECT validatiecode FROM validation");
+    foreach ($query as $row) {
+        if ($row["validatiecode"] == $validationCode) {
+            $exist = true;
+        }
+    }
+    return $exist;
 }
 
 ?>
