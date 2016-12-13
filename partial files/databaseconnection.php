@@ -44,7 +44,29 @@ function loadRubrieken()
     return $rubriekArray;
 }
 
-function loadVeilingItems($rubriekId, $currentPageNumber)
+function loadVeilingItemsSearch($searchQuery){
+    global $db;
+    $statement = $db->prepare("SELECT * FROM voorwerp WHERE titel LIKE :search 
+                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
+                            ORDER BY looptijdeindeveiling ASC");
+    $statement->bindValue(':search', '%'.$searchQuery.'%');
+    $statement->execute();
+    $voorwerpArray = array();
+    while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {
+        array_push($voorwerpArray, $voorwerp);
+
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvalible.jpg";
+
+        echoVoorwerp($voorwerp, $image);
+    }
+
+    if (count($voorwerpArray) < 1){
+        echo "Geen voorwerpen gevonden";
+    }
+}
+
+function loadVeilingItems($rubriekId)
 {
     //
     $itemsPerPage = 3;
@@ -215,7 +237,7 @@ function featuredVoorwerp()
                                 beschrijving,
                                 startprijs,
                                 looptijdeindeveiling
-                                FROM voorwerp");
+                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         return $voorwerp;
     }
@@ -248,15 +270,87 @@ function echoVoorwerp($voorwerp, $image)
                 </div>';
 }
 
-function echoHomepageVoorwerp($voorwerp, $image)
-{
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-11 homepage-veiling">
-                    <a href="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                    <img src="bestanden/' . $image . '"alt="veiling">
-                    <h4>' . $voorwerp->titel . '</h4>
-                    <div class="homepage-veiling-prijstijd">€' . $voorwerp->startprijs . '<br>
-                    <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span></div>
+function echoHomepageVoorwerp($voorwerp, $image){
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
+                    <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+                    <img src="bestanden/'. $image .'"alt="veiling">
+                    <h4>'.$voorwerp->titel.'</h4>
+                    <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
+                    <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
                     <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function returnGeheimeVragen()
+{
+    global $db;
+
+    $query = $db->query("SELECT tekstvraag FROM vraag");
+    echo "<select>";
+    foreach ($query as $row) {
+        echo "<option value = " . $row['tekstvraag'] . " >" . $row['tekstvraag'] . "</option >";
+
+    }
+    echo "</select>";
+}
+
+function returnAllCountries()
+{
+    global $db;
+    $query = $db->query("SELECT landnaam FROM land");
+    echo "<select>";
+    foreach ($query as $row) {
+        echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
+
+    }
+    echo "</select>";
+}
+
+
+function doesUsernameAlreadyExist($username)
+{
+    global $db;
+    $exist = false;
+    $query = $db->query("SELECT gebruikersnaam FROM gebruiker");
+    foreach ($query as $row) {
+        if ($row["gebruikersnaam"] == $username) {
+            $exist = true;
+        }
+    }
+    return $exist;
+}
+
+function postCodeCheck($postcode)
+{
+    $remove = str_replace(" ","", $postcode);
+    $upper = strtoupper($remove);
+
+    if( preg_match("/^\W*[1-9]{1}[0-9]{3}\W*[a-zA-Z]{2}\W*$/",  $upper)) {
+        return $upper;
+    } else {
+        return false;
+    }
+}
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+function doesValidationCodeexist($validationCode) {
+    global $db;
+    $exist = false;
+    $query = $db->query("SELECT validatiecode FROM validation");
+    foreach ($query as $row) {
+        if ($row["validatiecode"] == $validationCode) {
+            $exist = true;
+        }
+    }
+    return $exist;
 }
 
 ?>

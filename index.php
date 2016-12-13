@@ -34,21 +34,21 @@ loadSidebar($rubriekArray, null);
         <div class="row">
             <?php
             queryHomepageVoorwerpen("SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY voorwerpnummer ASC) AS rownumber
-                          FROM voorwerp) AS TEST WHERE TEST.rownumber BETWEEN 2 AND 4");
+                          FROM voorwerp) AS TEST WHERE TEST.rownumber BETWEEN 2 AND 4 AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
             ?>
         </div>
 
         <h1>Nieuwe veilingen</h1>
         <div class="row">
         <?php
-        queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp ORDER BY looptijdbeginveiling ASC");
+        queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) ORDER BY looptijdbeginveiling ASC");
         ?>
         </div>
 
         <h1>Laagste prijzen</h1>
         <div class="row">
             <?php
-            queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp ORDER BY startprijs ASC");
+            queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) ORDER BY startprijs ASC");
             ?>
         </div>
 <?php require('partial files\footer.php') ?>

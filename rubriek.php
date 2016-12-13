@@ -2,8 +2,7 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
-?>
-<?php
+
 //input rubriekId wordt opgehaald
 $inputRubriekId = null;
 if (isset($_GET['rubriek'])) {
@@ -18,7 +17,7 @@ if (isset($_GET['page'])) {
     }
 }
 
-include_once('partial files\databaseconnection.php');
+require('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
 $huidigeRubriek = null;
 
