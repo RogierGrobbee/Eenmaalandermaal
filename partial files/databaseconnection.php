@@ -258,13 +258,13 @@ function echoVoorwerp($voorwerp, $image)
 
     echo '  <div class="veilingitem">
                     <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="./bestanden/' . $image . '" alt="veilingsfoto">
+                        <img src="pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $voorwerp->startprijs . '</p>
                         <div class="veiling-info">
                             <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
-                            <button class="veiling-detail btn-bied">Bied</button>
+                            <button class="veiling-detail">Bied</button>
                         </div>
                     </a>
                 </div>';
@@ -273,11 +273,24 @@ function echoVoorwerp($voorwerp, $image)
 function echoHomepageVoorwerp($voorwerp, $image){
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
                     <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-                    <img src="bestanden/'. $image .'"alt="veiling">
+                    <img src="pics/'. $image .'"alt="veiling">
                     <h4>'.$voorwerp->titel.'</h4>
                     <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
                     <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
                     <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function getVoorwerpBiedingen($voorwerpnummer){
+    global $db;
+
+    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
+    $biedingen = array();
+
+    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
+        array_push($biedingen, $bod);
+    }
+
+    return $biedingen;
 }
 
 function returnGeheimeVragen()

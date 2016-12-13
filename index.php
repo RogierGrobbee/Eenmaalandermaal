@@ -20,7 +20,7 @@ loadSidebar($rubriekArray, null);
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
         echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-        <img src="./bestanden/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
+        <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
 
         echo '<div class="col-lg-4 col-md-5 col-sm-7 col-xs-11 homepage-featured-detail">
             <h2>'. $voorwerp->titel .'</h2>
