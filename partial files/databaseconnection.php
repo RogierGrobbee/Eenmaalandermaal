@@ -1,7 +1,7 @@
 <?php
 $db = new PDO ("sqlsrv:Server=mssql.iproject.icasites.nl;Database=iproject2;ConnectionPooling=0",
     "iproject2", "ekEu7bpJ");
-
+$itemsPerPage = 10;
 
 function getVoorwerp($voorwerpId)
 {
@@ -47,12 +47,26 @@ function loadRubrieken()
     return $rubriekArray;
 }
 
-function loadVeilingItemsSearch($searchQuery){
+function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
     global $db;
-    $statement = $db->prepare("SELECT * FROM voorwerp WHERE titel LIKE :search 
-                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
-                            ORDER BY looptijdeindeveiling ASC");
-    $statement->bindValue(':search', '%'.$searchQuery.'%');
+    global $itemsPerPage;
+    $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
+
+    $countQuery = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search=?");
+    $countQuery->bindValue(1, '%'.$searchQuery.'%', PDO::PARAM_STR);
+    $countQuery->execute();
+
+    $totalItems = 0;
+    while ($item = $countQuery->fetch(PDO::FETCH_OBJ)) {
+        $totalItems = $item->amount;
+    }
+
+    $statement = $db->prepare("execute sp_SearchVoorwerpenByTitle @search=?, @nSkippedRecords=?, @itemPerPage=?, @filter=?");
+    $statement->bindValue(1, '%'.$searchQuery.'%', PDO::PARAM_STR);
+    $statement->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
+    $statement->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
+    $statement->bindValue(4, 'laagstebod', PDO::PARAM_STR);
+
     $statement->execute();
     $voorwerpArray = array();
     while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {
@@ -67,11 +81,62 @@ function loadVeilingItemsSearch($searchQuery){
     if (count($voorwerpArray) < 1){
         echo "Geen voorwerpen gevonden";
     }
+
+    //Pagina's VVVV
+
+    if ($totalItems > $itemsPerPage) {
+        $nPages = ceil($totalItems / $itemsPerPage);
+        echo '<div class="row">
+            <div class="col-sm-12">
+            ';
+        if ($currentPageNumber > 1) {
+            echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchQuery . "&page=" . ($currentPageNumber - 1) . "'\">Previous</button>");
+        }
+        if ($nPages > 9) {
+            if ($currentPageNumber < 6) {
+                for ($i = 1; $i < 10; $i++) {
+                    echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+                }
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echoSearchPageNumber($nPages, $currentPageNumber, $searchQuery);
+            } else if ($currentPageNumber > ($nPages - 5)) {
+                echoSearchPageNumber(1, $currentPageNumber, $searchQuery);
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                for ($i = ($nPages - 8); $i < $nPages+1; $i++) {
+                    echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+                }
+            } else {
+                echoSearchPageNumber(1, $currentPageNumber, $searchQuery);
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
+                    echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+                }
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echoSearchPageNumber($nPages, $currentPageNumber, $searchQuery);
+            }
+
+        } else {
+            for ($i = 1; $i < $nPages + 1; $i++) {
+                echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+            }
+        }
+        if ($currentPageNumber < $nPages) {
+            echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchQuery . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
+        }
+    }
+}
+
+function echoSearchPageNumber($pageNumber, $currentPageNumber, $search){
+    if (($pageNumber) == $currentPageNumber) {
+        echo '<b style="margin: 5px">' . $pageNumber . '</b>';
+    } else {
+        echo '<a style="margin: 5px" href=./zoeken.php?search=' . $search . '&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+    }
 }
 
 function loadVeilingItems($rubriekId, $currentPageNumber)
 {
-    $itemsPerPage = 10;
+    global $itemsPerPage;
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
     if (is_numeric($rubriekId)) {
 
@@ -133,8 +198,9 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
  *
  * @param $queryString The SELECT query in a string.
  */
-function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber)
+function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber )
 {
+    echoFilterBox();
     global $db;
     $query->execute();
     $voorwerpArray = array();
@@ -272,6 +338,15 @@ function echoHomepageVoorwerp($voorwerp, $image){
             <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
             <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function echoFilterBox(){
+    echo '<select>
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>';
 }
 
 function getVoorwerpBiedingen($voorwerpnummer){
