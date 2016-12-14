@@ -357,6 +357,7 @@ function insertNewBod($voorwerp, $bod, $gebruiker){
     if($query){
         return true;
     }
+    return false;
 }
 
 /**
@@ -463,8 +464,7 @@ function echoFilterBox($param, $filter, $isRubriek)
 {
     if ($isRubriek) {
         echo '<select onchange="rubriekFilterSelect(this.value, ' . $param . ')">';
-    }
-    else {
+    } else {
         echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
     }
 
@@ -489,20 +489,6 @@ function rubriekFilterSelect(filter, rubriek) {
   window.location.href = "./rubriek.php?rubriek="+rubriek+"&filter="+filter;
 }
 </script>';
-
-function getVoorwerpBiedingen($voorwerpnummer)
-{
-    global $db;
-
-    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
-    $biedingen = array();
-
-    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
-        array_push($biedingen, $bod);
-    }
-
-    return $biedingen;
-}
 
 function strip_html_tags($str)
 {
