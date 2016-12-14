@@ -339,28 +339,40 @@ function returnAllCountries()
     echo "</select>";
 }
 
-//function calculateTimePlusFour($code)
-//{
-//    global $db;
-//    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
-//    $statement->execute(array(':validatiecode' => $code));
-//    $row = $statement->fetch();
-//    $newtime = date("Y-m-d H:i:s", strtotime('+3 hours', $row['datumTijd']));
-//        return $newtime;
-//}
+function calculateExpire($code)
+{
+    global $db;
+    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
+    $statement->execute(array(':validatiecode' => $code));
+    $row = $statement->fetch();
 
-//function validateUser($code)
-//{
-//    global $db;
-//    $sth = "UPDATE g
-//SET g.gevalideerd = 0
-//FROM gebruiker AS g
-//INNER JOIN validation AS v
-//       ON g.gebruikersnaam = v.gebruikersnaam
-//WHERE v.validatiecode  = :id";
-//    $q = $db->prepare($sth);
-//    $q->execute(array(':location'=>$location, ':id'=>$id));
-//}
+    $expire = date("Y-m-d H:i:s", strtotime('+0 hour'));
+    $timestamp1 = strtotime($expire);
+    $timestamp2 = strtotime($row['datumTijd']);
+    $hour = abs($timestamp2 - $timestamp1)/(60*60);
+    if ($hour > 4 ) {
+        return false;
+    } else {
+        return true;
+    }
+
+
+}
+
+function validateUser($code)
+{
+    global $db;
+    $sth = "UPDATE g
+            SET g.gevalideerd = 1
+            FROM gebruiker AS g
+            INNER JOIN validation AS v
+            ON g.gebruikersnaam = v.gebruikersnaam
+            WHERE v.validatiecode  = :validatie";
+    $sthm = $db->prepare($sth);
+    $sthm->bindParam(':validatie', $code);
+    $sthm->execute();
+
+}
 
 
 function doesUsernameAlreadyExist($username)
@@ -398,16 +410,18 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
-function doesValidationCodeexist($validationCode) {
+function doesValidationCodeexist($code)
+{
     global $db;
-    $exist = false;
-    $query = $db->query("SELECT validatiecode FROM validation");
-    foreach ($query as $row) {
-        if ($row["validatiecode"] == $validationCode) {
-            $exist = true;
-        }
+    $statement = $db->prepare("SELECT validatiecode FROM validation WHERE validatiecode = :code");
+    $statement->execute(array(':code' => $code));
+    $row = $statement->fetch();
+    if (!$row) {
+        return false;
+    } else {
+        return true;
     }
-    return $exist;
+
 }
 
 function hashPass($pass) {
