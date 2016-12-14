@@ -2,6 +2,13 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
+
+$filter = "looptijdeindeveilingASC";
+if (isset($_GET['filter'])) {
+    $filter = $_GET['filter'];
+}
+
+
 $page = 1;
 if (isset($_GET['page'])) {
     if (is_numeric($_GET['page'])) {
@@ -24,7 +31,7 @@ loadSidebar($rubriekArray, null);
 ?>
 
 <?php
-    loadVeilingItemsSearch($search, $page);
+    loadVeilingItemsSearch($search, $page, $filter);
 ?>
 
 <?php require('partial files\footer.php') ?>

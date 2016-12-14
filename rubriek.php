@@ -10,6 +10,10 @@ if (isset($_GET['rubriek'])) {
         $inputRubriekId = $_GET['rubriek'];
     }
 }
+$filter = "looptijdeindeveilingASC";
+if (isset($_GET['filter'])) {
+    $filter = $_GET['filter'];
+}
 $page = 1;
 if (isset($_GET['page'])) {
     if (is_numeric($_GET['page'])) {
@@ -53,9 +57,8 @@ else{
         loadSubrubrieken($rubriekArray, $huidigeRubriek);
     }
     ?>
-
     <?php
-    loadVeilingItems($inputRubriekId, $page);
+    loadVeilingItems($inputRubriekId, $page, $filter);
     ?>
 
 <?php require('partial files\footer.php') ?>
