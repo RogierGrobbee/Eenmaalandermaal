@@ -1,7 +1,7 @@
 <?php
 $db = new PDO ("sqlsrv:Server=mssql.iproject.icasites.nl;Database=iproject2;ConnectionPooling=0",
     "iproject2", "ekEu7bpJ");
-
+$itemsPerPage = 10;
 
 function getVoorwerp($voorwerpId)
 {
@@ -51,12 +51,26 @@ function loadRubrieken()
 * Returns all voorwerpen relevant to $searchQuery
 * @param $searchQuery the word to search
 */
-function loadVeilingItemsSearch($searchQuery){
+function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
     global $db;
-    $statement = $db->prepare("SELECT * FROM voorwerp WHERE titel LIKE :search 
-                            AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
-                            ORDER BY looptijdeindeveiling ASC");
-    $statement->bindValue(':search', '%'.$searchQuery.'%');
+    global $itemsPerPage;
+    $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
+
+    $countQuery = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search=?");
+    $countQuery->bindValue(1, '%'.$searchQuery.'%', PDO::PARAM_STR);
+    $countQuery->execute();
+
+    $totalItems = 0;
+    while ($item = $countQuery->fetch(PDO::FETCH_OBJ)) {
+        $totalItems = $item->amount;
+    }
+
+    $statement = $db->prepare("execute sp_SearchVoorwerpenByTitle @search=?, @nSkippedRecords=?, @itemPerPage=?, @filter=?");
+    $statement->bindValue(1, '%'.$searchQuery.'%', PDO::PARAM_STR);
+    $statement->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
+    $statement->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
+    $statement->bindValue(4, 'laagstebod', PDO::PARAM_STR);
+
     $statement->execute();
     $voorwerpArray = array();
     while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {
@@ -71,11 +85,62 @@ function loadVeilingItemsSearch($searchQuery){
     if (count($voorwerpArray) < 1){
         echo "Geen voorwerpen gevonden";
     }
+
+    //Pagina's VVVV
+
+    if ($totalItems > $itemsPerPage) {
+        $nPages = ceil($totalItems / $itemsPerPage);
+        echo '<div class="row">
+            <div class="col-sm-12">
+            ';
+        if ($currentPageNumber > 1) {
+            echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchQuery . "&page=" . ($currentPageNumber - 1) . "'\">Previous</button>");
+        }
+        if ($nPages > 9) {
+            if ($currentPageNumber < 6) {
+                for ($i = 1; $i < 10; $i++) {
+                    echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+                }
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echoSearchPageNumber($nPages, $currentPageNumber, $searchQuery);
+            } else if ($currentPageNumber > ($nPages - 5)) {
+                echoSearchPageNumber(1, $currentPageNumber, $searchQuery);
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                for ($i = ($nPages - 8); $i < $nPages+1; $i++) {
+                    echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+                }
+            } else {
+                echoSearchPageNumber(1, $currentPageNumber, $searchQuery);
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
+                    echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+                }
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echoSearchPageNumber($nPages, $currentPageNumber, $searchQuery);
+            }
+
+        } else {
+            for ($i = 1; $i < $nPages + 1; $i++) {
+                echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
+            }
+        }
+        if ($currentPageNumber < $nPages) {
+            echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchQuery . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
+        }
+    }
+}
+
+function echoSearchPageNumber($pageNumber, $currentPageNumber, $search){
+    if (($pageNumber) == $currentPageNumber) {
+        echo '<b style="margin: 5px">' . $pageNumber . '</b>';
+    } else {
+        echo '<a style="margin: 5px" href=./zoeken.php?search=' . $search . '&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+    }
 }
 
 function loadVeilingItems($rubriekId, $currentPageNumber)
 {
-    $itemsPerPage = 10;
+    global $itemsPerPage;
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
     if (is_numeric($rubriekId)) {
 
@@ -137,8 +202,9 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
  *
  * @param $queryString The SELECT query in a string.
  */
-function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber)
+function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber )
 {
+    echoFilterBox();
     global $db;
     $query->execute();
     $voorwerpArray = array();
@@ -353,6 +419,33 @@ function echoHomepageVoorwerp($voorwerp, $image){
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
+function echoFilterBox(){
+    echo '<select>
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>';
+}
+
+/**
+ * Returns an array of biedingen on a voorwerp
+ *
+ * @param $voorwerpnummer the number of the voorwerp.
+ */
+function getVoorwerpBiedingen($voorwerpnummer){
+    global $db;
+
+    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
+    $biedingen = array();
+
+    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
+        array_push($biedingen, $bod);
+    }
+
+    return $biedingen;
+}
+
 function strip_html_tags($str){
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
     $str = preg_replace(
@@ -408,28 +501,40 @@ function returnAllCountries()
     echo "</select>";
 }
 
-//function calculateTimePlusFour($code)
-//{
-//    global $db;
-//    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
-//    $statement->execute(array(':validatiecode' => $code));
-//    $row = $statement->fetch();
-//    $newtime = date("Y-m-d H:i:s", strtotime('+3 hours', $row['datumTijd']));
-//        return $newtime;
-//}
+function calculateExpire($code)
+{
+    global $db;
+    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
+    $statement->execute(array(':validatiecode' => $code));
+    $row = $statement->fetch();
 
-//function validateUser($code)
-//{
-//    global $db;
-//    $sth = "UPDATE g
-//SET g.gevalideerd = 0
-//FROM gebruiker AS g
-//INNER JOIN validation AS v
-//       ON g.gebruikersnaam = v.gebruikersnaam
-//WHERE v.validatiecode  = :id";
-//    $q = $db->prepare($sth);
-//    $q->execute(array(':location'=>$location, ':id'=>$id));
-//}
+    $expire = date("Y-m-d H:i:s", strtotime('+0 hour'));
+    $timestamp1 = strtotime($expire);
+    $timestamp2 = strtotime($row['datumTijd']);
+    $hour = abs($timestamp2 - $timestamp1)/(60*60);
+    if ($hour > 4 ) {
+        return false;
+    } else {
+        return true;
+    }
+
+
+}
+
+function validateUser($code)
+{
+    global $db;
+    $sth = "UPDATE g
+            SET g.gevalideerd = 1
+            FROM gebruiker AS g
+            INNER JOIN validation AS v
+            ON g.gebruikersnaam = v.gebruikersnaam
+            WHERE v.validatiecode  = :validatie";
+    $sthm = $db->prepare($sth);
+    $sthm->bindParam(':validatie', $code);
+    $sthm->execute();
+
+}
 
 
 function doesUsernameAlreadyExist($username)
@@ -467,16 +572,18 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
-function doesValidationCodeexist($validationCode) {
+function doesValidationCodeexist($code)
+{
     global $db;
-    $exist = false;
-    $query = $db->query("SELECT validatiecode FROM validation");
-    foreach ($query as $row) {
-        if ($row["validatiecode"] == $validationCode) {
-            $exist = true;
-        }
+    $statement = $db->prepare("SELECT validatiecode FROM validation WHERE validatiecode = :code");
+    $statement->execute(array(':code' => $code));
+    $row = $statement->fetch();
+    if (!$row) {
+        return false;
+    } else {
+        return true;
     }
-    return $exist;
+
 }
 
 function hashPass($pass) {
