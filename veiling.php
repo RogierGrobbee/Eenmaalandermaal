@@ -50,7 +50,7 @@ else {
 ?>
     <div class="row">
         <?php echo '<img class="bigpicture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
-        <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
                     <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
@@ -63,14 +63,13 @@ else {
                         echo '"'.$minimalePrijs . '" value="' . $minimalePrijs . '" step="any" required>
                         <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">';
                         ?>
-
                         <button type="submit" class="btn-bied">Bied</button>
                     </form>
                 </div>
 
                 <?php
                 if($biedingen == null){
-                    echo "<div class='bod'>Er zijn nog geen biedingen! Bied snel!</div>";
+                    echo "<div class='highest-bod'>Er zijn nog geen biedingen! Bied snel!</div>";
                 }
                 else {
                     for($i=0; $i<count($biedingen); $i++){
@@ -82,12 +81,12 @@ else {
                         }
 
                         echo "<div class='left'>".$biedingen[$i]->gebruikersnaam."</div>
-                        <div class='right'>".$biedingen[$i]->bodbedrag."</div><br></div>";
+                        <div class='right'>€".$biedingen[$i]->bodbedrag."</div><br></div>";
                     }
                 }
 
-                echo "<div class='bod'><div class='left'>Startprijs</div>
-                        <div class='right'>".$voorwerp->startprijs."</div><br></div>";?>
+                echo "<div class='bod'><div class='left'>dasdasdjasdgjasgdadgasdgjahagdjsaga</div>
+                        <div class='right'>€".$voorwerp->startprijs."</div><br></div>";?>
             </div>
 
             <p><?php echo "Deze voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
@@ -96,7 +95,7 @@ else {
             <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5 extrainfo">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 extrainfo">
             <h4>Betalingswijze- en instructie</h4>
             <p>
                 <?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?>
@@ -114,15 +113,15 @@ else {
                 ?>
         </div>
     </div>
+<div class="row">
 <?php
-echo '<div class="row">';
-foreach ($list as $k => $smallImage) {
-    if ($smallImage != $image) {
+for($i = 1; $i < 4; $i++) {
+    if(!empty($list[$i])){
         echo '<div class="sm-3">
-                <img class="smallpicture" src="./bestanden/'.$smallImage.'" alt="geveilde voorwerp1">
-            </div>';
+            <img class="smallpicture" src="./pics/' . $list[$i] . '" alt="geveilde voorwerp1">
+        </div>';
     }
 }
-echo '</div>';
 ?>
+</div>
 <?php require('partial files\footer.php')?>
