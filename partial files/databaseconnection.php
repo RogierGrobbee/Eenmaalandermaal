@@ -79,7 +79,16 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
-        echoVoorwerp($voorwerp, $image);
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoVoorwerp($voorwerp, $prijs, $image);
     }
 
     if (count($voorwerpArray) < 1){
@@ -215,7 +224,16 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
-        echoVoorwerp($voorwerp, $image);
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoVoorwerp($voorwerp, $prijs, $image);
     }
 
     if (count($voorwerpArray) < 1) {
@@ -275,104 +293,26 @@ function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId){
     }
 }
 
-
-
-function insertNewBod($voorwerpnummer, $bod, $gebruiker){
-    global $db;
-    $query = $db->query("INSERT INTO bod VALUES ('$voorwerpnummer', $bod, '$gebruiker', now())");
-}
-
-/**
- * Returns the most popular voorwerp. This will be used on the banner for the frontpage
- * @param $queryString send a query to echo voorwerpen on the homepage
- */
-function queryHomepageVoorwerpen($queryString)
-{
-    global $db;
-
-    $query = $db->query($queryString);
-
-    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
-        $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
-
-        echoHomepageVoorwerp($voorwerp, $image);
+function calculateIncrease($prijs){
+    switch(true){
+        case $prijs >= 5000:
+            return 50;
+            break;
+        case $prijs >= 1000:
+            return 10;
+            break;
+        case $prijs >= 500:
+            return 5;
+            break;
+        case $prijs >= 50:
+            return 1;
+            break;
+        default:
+            return 0.50;
+            break;
     }
 }
 
-/**
- * Returns the most popular voorwerp. This will be used on the banner for the frontpage
- */
-function featuredVoorwerp()
-{
-    global $db;
-
-    $query = $db->query("SELECT TOP 1 voorwerpnummer,
-                                titel,
-                                beschrijving,
-                                startprijs,
-                                looptijdeindeveiling
-                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
-    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
-        return $voorwerp;
-    }
-}
-
-/**
- * Prints the voorwerp onto the page.
- *
- * @param $voorwerp The voorwerp.
- * @param $image The image of the voorwerp.
- */
-function echoVoorwerp($voorwerp, $image)
-{
-    $beschrijving = $voorwerp->beschrijving;
-
-    $beschrijving = strip_html_tags($beschrijving);
-
-    if (strlen($beschrijving) > 300) {
-        $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
-    }
-
-    echo '  <div class="veilingitem">
-                    <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="pics/' . $image . '" alt="veilingsfoto">
-                        <h4>' . $voorwerp->titel . '</h4>
-                        <p>' . $beschrijving . '</p>
-                        <p class="prijs">€' . $voorwerp->startprijs . '</p>
-                        <div class="veiling-info">
-                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
-                            <button class="veiling-detail">Bied</button>
-                        </div>
-                    </a>
-                </div>';
-}
-
-
-/**
- * Prints a voorwerp on the frontpage
- *
- * @param $voorwerp The voorwerp.
- * @param $image The image of the voorwerp.
- */
-function echoHomepageVoorwerp($voorwerp, $image){
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
-            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-            <img src="pics/'. $image .'"alt="veiling">
-            <h4>'.$voorwerp->titel.'</h4>
-            <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
-            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
-            <button class="veiling-detail btn-homepage">Bied</button></a></div>';
-}
-
-function echoFilterBox(){
-    echo '<select>
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-</select>';
-}
 
 /**
  * Returns an array of biedingen on a voorwerp
@@ -390,6 +330,129 @@ function getVoorwerpBiedingen($voorwerpnummer){
     }
 
     return $biedingen;
+}
+
+
+function insertNewBod($voorwerp, $bod, $gebruiker){
+    global $db;
+    $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+    if($biedingen == null){
+        if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
+            return false;
+        }
+    }
+    else{
+        if($bod < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag) ||
+            $gebruiker == $biedingen[0]->gebruikersnaam){
+            return false;
+        }
+    }
+
+    $query = $db->query("INSERT INTO bod VALUES (".$voorwerp->voorwerpnummer.", ".$bod.", '".$gebruiker."', getdate())");
+    if($query){
+        return true;
+    }
+}
+
+/**
+ * Returns the most popular voorwerp. This will be used on the banner for the frontpage
+ * @param $queryString send a query to echo voorwerpen on the homepage
+ */
+function queryHomepageVoorwerpen($queryString)
+{
+    global $db;
+
+    $query = $db->query($queryString);
+
+    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoHomepageVoorwerp($voorwerp, $prijs, $image);
+    }
+}
+
+/**
+ * Returns the most popular voorwerp. This will be used on the banner for the frontpage
+ */
+function featuredVoorwerp()
+{
+    global $db;
+
+    $query = $db->query("SELECT TOP 4 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+                                v.looptijdeindeveiling FROM voorwerp as v 
+                                FULL OUTER JOIN Bod as b ON v.voorwerpnummer=b.voorwerpnummer 
+                                WHERE v.looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) 
+								GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,v.looptijdeindeveiling
+								ORDER BY count(b.voorwerpnummer) DESC");
+
+    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
+        return $voorwerp;
+    }
+}
+
+/**
+ * Prints the voorwerp onto the page.
+ *
+ * @param $voorwerp The voorwerp.
+ * @param $image The image of the voorwerp.
+ */
+function echoVoorwerp($voorwerp, $prijs, $image)
+{
+    $beschrijving = $voorwerp->beschrijving;
+
+    $beschrijving = strip_html_tags($beschrijving);
+
+    if (strlen($beschrijving) > 300) {
+        $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
+    }
+
+    echo '  <div class="veilingitem">
+                    <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
+                        <img src="pics/' . $image . '" alt="veilingsfoto">
+                        <h4>' . $voorwerp->titel . '</h4>
+                        <p>' . $beschrijving . '</p>
+                        <p class="prijs">€' . $prijs. '</p>
+                        <div class="veiling-info">
+                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
+                            <button class="veiling-detail">Bied</button>
+                        </div>
+                    </a>
+                </div>';
+}
+
+
+/**
+ * Prints a voorwerp on the frontpage
+ *
+ * @param $voorwerp The voorwerp.
+ * @param $image The image of the voorwerp.
+ */
+function echoHomepageVoorwerp($voorwerp, $prijs, $image){
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
+            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+            <img src="pics/'. $image .'"alt="veiling">
+            <h4>'.$voorwerp->titel.'</h4>
+            <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
+            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+            <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function echoFilterBox(){
+    echo '<select>
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>';
 }
 
 function strip_html_tags($str){
@@ -538,6 +601,5 @@ function hashPass($pass) {
     ];
     return password_hash($pass, PASSWORD_BCRYPT, $options)."\n";
 }
-
 
 ?>

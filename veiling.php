@@ -14,15 +14,16 @@ if (isset($_GET['voorwerpnummer'])) {
     exit;
 }
 
-if(isset($_POST['bod'])){
-    if(is_numeric($_POST['bod'])){
-        echo $_POST['bod'];
-    }
-}
-
 require('partial files\databaseconnection.php');
 
 $voorwerp = getVoorwerp($voorwerpnummer);
+
+if(isset($_POST['bod'])){
+    if(is_numeric($_POST['bod'])){
+        insertNewBod($voorwerp, $_POST['bod'], 'Leon');
+    }
+}
+
 $biedingen = getVoorwerpBiedingen($voorwerpnummer);
 
 $inputRubriekId = getVoorwerpRubriek($voorwerpnummer);
@@ -38,24 +39,13 @@ loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
 $list = loadBestanden($voorwerp->voorwerpnummer);
 $image = $list[0];
 
-function calculateIncrease($prijs){
-   switch(true){
-       case $prijs >= 5000:
-           return 50;
-           break;
-       case $prijs >= 1000:
-           return 10;
-           break;
-       case $prijs >= 500:
-           return 5;
-           break;
-       case $prijs >= 50:
-           return 1;
-           break;
-       default:
-           return 0.50;
-       break;
-   }
+if($biedingen == null){
+    $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
+    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
+}
+else {
+    $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
+    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
 }
 ?>
     <div class="row">
@@ -67,19 +57,14 @@ function calculateIncrease($prijs){
                 </div>
 
                 <div class="bieden">
-                    <form action='veiling.php?voorwerpnummer=<?php echo $voorwerp->voorwerpnummer ?>' method='POST'>
-                    <label for="bied-bar">€</label>
-                    <input type="number" class="bied-bar" name="bod" id="bied-bar" min="<?php
-                    if($biedingen == null){
-                        $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
-                        $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
-                    }
-                    else {
-                        $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
-                        $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
-                    }
-                    echo $minimalePrijs . '" value="' . $minimalePrijs . '" step="any" required>
-                    <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">';?><button type="submit" class="btn-bied">Bied</button>
+                    <form action="veiling.php?voorwerpnummer=<?php echo $voorwerp->voorwerpnummer ?>" method="POST">
+                        <label for="bied-bar">€</label>
+                        <input type="number" class="bied-bar" name="bod" id="bied-bar" min=<?php
+                        echo '"'.$minimalePrijs . '" value="' . $minimalePrijs . '" step="any" required>
+                        <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">';
+                        ?>
+
+                        <button type="submit" class="btn-bied">Bied</button>
                     </form>
                 </div>
 
