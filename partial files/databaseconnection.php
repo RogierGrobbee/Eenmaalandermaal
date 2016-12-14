@@ -22,7 +22,9 @@ function getVoorwerpRubriek($voorwerpId)
 function loadBestanden($voorwerpId)
 {
     global $db;
-    $query = $db->query("SELECT * FROM bestand WHERE voorwerpnummer ='" . $voorwerpId . "' ORDER BY filenaam");
+    $query = $db->prepare('execute sp_GetBestandenByVoorwerp @id=?');
+    $query->bindParam(1, $voorwerpId);
+    $query->execute();
     $bestandenList = array();
     while ($bestand = $query->fetch(PDO::FETCH_OBJ)) {
         array_push($bestandenList, $bestand->filenaam);
@@ -115,10 +117,11 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
             $totalItems = $item->amount;
         }
 
-        $voorwerpQuery = $db->prepare("execute sp_GetVoorwerpenInRubrieken @ids=?, @nSkippedRecords=?, @itemPerPage=?");
+        $voorwerpQuery = $db->prepare("execute sp_GetVoorwerpenInRubrieken @ids=?, @nSkippedRecords=?, @itemPerPage=?, @filter=?");
         $voorwerpQuery->bindParam(1, $ids, PDO::PARAM_STR);
         $voorwerpQuery->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
         $voorwerpQuery->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
+        $voorwerpQuery->bindValue(4, 'laagstebod', PDO::PARAM_STR);
 
         queryVoorwerpen($voorwerpQuery, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber);
 
