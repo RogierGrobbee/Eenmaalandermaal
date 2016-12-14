@@ -32,12 +32,11 @@ if (isset($_POST['valideer'])) {
                 <input type="submit" name="valideer" value="Valideer">
             </form>
             <strong>
+                <br>
                 <?php echo $errorString; ?>
             </strong>
         </div>
     </row>
-
-
 
 
 <?php include_once('partial files\footer.php') ?>

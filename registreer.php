@@ -47,7 +47,7 @@ if (isset($_POST['registreer'])) {
         $errorMessage = "Geen geldige postcode.";
     } else if ($_POST['telefoon1'] == $_POST['telefoon2']) {
         $errorMessage = "Dubbel telefoonnummer.";
-    } elseif (!is_numeric($_POST['telefoon1']) || !is_numeric($_POST['telefoon2'])) {
+    } elseif (!is_numeric($_POST['telefoon1'])) {
         $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
     } else {
         $validatieCode = generateRandomString();
@@ -122,7 +122,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Voornaam*</td>
-                        <td><input  value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
+                        <td><input value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
                     </tr>
                     <tr>
                         <td>Achternaam*</td>
@@ -130,7 +130,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Wachtwoord*</td>
-                        <td><input type="password" name="wachtwoord" ></td>
+                        <td><input  type="password" name="wachtwoord" ></td>
                     </tr>
                     <tr>
                         <td>Bevestig wachtwoord*</td>
@@ -153,7 +153,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Adres*</td>
-                        <td><input  value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
+                        <td><input value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
                     </tr>
                     <tr>
                         <td>Plaats*</td>
@@ -161,7 +161,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Postcode*</td>
-                        <td><input placeholder="1234AB" value="<?php if(isset($_POST['postcode'])){ echo $_POST['postcode'];}?>" type="text" name="postcode" ></td>
+                        <td><input  placeholder="1234AB" value="<?php if(isset($_POST['postcode'])){ echo $_POST['postcode'];}?>" type="text" name="postcode" ></td>
                     </tr>
                     <tr>
                         <td>Telefoon*</td>
