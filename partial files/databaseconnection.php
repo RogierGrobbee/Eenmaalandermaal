@@ -47,6 +47,10 @@ function loadRubrieken()
     return $rubriekArray;
 }
 
+/*
+* Returns all voorwerpen relevant to $searchQuery
+* @param $searchQuery the word to search
+*/
 function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
     global $db;
     global $itemsPerPage;
@@ -271,6 +275,17 @@ function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId){
     }
 }
 
+
+
+function insertNewBod($voorwerpnummer, $bod, $gebruiker){
+    global $db;
+    $query = $db->query("INSERT INTO bod VALUES ('$voorwerpnummer', $bod, '$gebruiker', now())");
+}
+
+/**
+ * Returns the most popular voorwerp. This will be used on the banner for the frontpage
+ * @param $queryString send a query to echo voorwerpen on the homepage
+ */
 function queryHomepageVoorwerpen($queryString)
 {
     global $db;
@@ -285,6 +300,9 @@ function queryHomepageVoorwerpen($queryString)
     }
 }
 
+/**
+ * Returns the most popular voorwerp. This will be used on the banner for the frontpage
+ */
 function featuredVoorwerp()
 {
     global $db;
@@ -330,6 +348,13 @@ function echoVoorwerp($voorwerp, $image)
                 </div>';
 }
 
+
+/**
+ * Prints a voorwerp on the frontpage
+ *
+ * @param $voorwerp The voorwerp.
+ * @param $image The image of the voorwerp.
+ */
 function echoHomepageVoorwerp($voorwerp, $image){
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
@@ -349,6 +374,11 @@ function echoFilterBox(){
 </select>';
 }
 
+/**
+ * Returns an array of biedingen on a voorwerp
+ *
+ * @param $voorwerpnummer the number of the voorwerp.
+ */
 function getVoorwerpBiedingen($voorwerpnummer){
     global $db;
 

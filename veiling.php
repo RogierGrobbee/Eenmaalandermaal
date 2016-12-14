@@ -2,15 +2,22 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
+require('partial files\header.php');
 
-if (!empty($_GET['voorwerpnummer'])) {
+if (isset($_GET['voorwerpnummer'])) {
     if (is_numeric($_GET['voorwerpnummer'])) {
         $voorwerpnummer = $_GET['voorwerpnummer'];
     } else {
         $voorwerpnummer = 0;
     }
 } else {
-    $voorwerpnummer = 1;
+    exit;
+}
+
+if(isset($_POST['bod'])){
+    if(is_numeric($_POST['bod'])){
+        echo $_POST['bod'];
+    }
 }
 
 require('partial files\databaseconnection.php');
@@ -21,7 +28,6 @@ $biedingen = getVoorwerpBiedingen($voorwerpnummer);
 $inputRubriekId = getVoorwerpRubriek($voorwerpnummer);
 
 require('partial files\rubrieken.php');
-require('partial files\header.php');
 require('partial files\navigatie.php');
 
 echo "<h1>$voorwerp->titel</h1>";
@@ -60,21 +66,22 @@ function calculateIncrease($prijs){
                     <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
                 </div>
 
-                <form action='' method='POST'>
-                    <div class="bieden">
-                        <label for="bied-bar">€</label>
-                        <input type="text" class="bied-bar" name="bod" id="bied-bar" value="<?php
-                        if($biedingen == null){
-                            $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
-                            echo $minimalePrijs;
-                        }
-                        else {
-                            $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
-                            echo number_format((float)$minimalePrijs, 2, '.', '');
-                        }
-                        ?>" required><button type="submit" class="btn-bied">Bied</button>
-                    </div>
-                </form>
+                <div class="bieden">
+                    <form action='veiling.php?voorwerpnummer=<?php echo $voorwerp->voorwerpnummer ?>' method='POST'>
+                    <label for="bied-bar">€</label>
+                    <input type="number" class="bied-bar" name="bod" id="bied-bar" min="<?php
+                    if($biedingen == null){
+                        $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
+                        $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
+                    }
+                    else {
+                        $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
+                        $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
+                    }
+                    echo $minimalePrijs . '" value="' . $minimalePrijs . '" step="any" required>
+                    <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">';?><button type="submit" class="btn-bied">Bied</button>
+                    </form>
+                </div>
 
                 <?php
                 if($biedingen == null){
@@ -92,13 +99,16 @@ function calculateIncrease($prijs){
                         echo "<div class='left'>".$biedingen[$i]->gebruikersnaam."</div>
                         <div class='right'>".$biedingen[$i]->bodbedrag."</div><br></div>";
                     }
-                }?>
+                }
+
+                echo "<div class='bod'><div class='left'>Startprijs</div>
+                        <div class='right'>".$voorwerp->startprijs."</div><br></div>";?>
             </div>
 
-            <p><?php echo "$voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
+            <p><?php echo "Deze voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
             <h4>Beschrijving</h4>
-            <p><?php echo $voorwerp->beschrijving ?></p>
+            <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5 extrainfo">
