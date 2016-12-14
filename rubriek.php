@@ -53,6 +53,7 @@ else{
         loadSubrubrieken($rubriekArray, $huidigeRubriek);
     }
     ?>
+
     <?php
     loadVeilingItems($inputRubriekId, $page);
     ?>

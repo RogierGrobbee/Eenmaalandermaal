@@ -2,6 +2,12 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
+$page = 1;
+if (isset($_GET['page'])) {
+    if (is_numeric($_GET['page'])) {
+        $page = $_GET['page'];
+    }
+}
 
 require('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
@@ -18,7 +24,7 @@ loadSidebar($rubriekArray, null);
 ?>
 
 <?php
-    loadVeilingItemsSearch($search);
+    loadVeilingItemsSearch($search, $page);
 ?>
 
 <?php require('partial files\footer.php') ?>
