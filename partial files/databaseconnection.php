@@ -209,11 +209,65 @@ function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId){
     }
 }
 
+function calculateIncrease($prijs){
+    switch(true){
+        case $prijs >= 5000:
+            return 50;
+            break;
+        case $prijs >= 1000:
+            return 10;
+            break;
+        case $prijs >= 500:
+            return 5;
+            break;
+        case $prijs >= 50:
+            return 1;
+            break;
+        default:
+            return 0.50;
+            break;
+    }
+}
 
 
-function insertNewBod($voorwerpnummer, $bod, $gebruiker){
+/**
+ * Returns an array of biedingen on a voorwerp
+ *
+ * @param $voorwerpnummer the number of the voorwerp.
+ */
+function getVoorwerpBiedingen($voorwerpnummer){
     global $db;
-    $query = $db->query("INSERT INTO bod VALUES ('$voorwerpnummer', $bod, '$gebruiker', now())");
+
+    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
+    $biedingen = array();
+
+    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
+        array_push($biedingen, $bod);
+    }
+
+    return $biedingen;
+}
+
+
+function insertNewBod($voorwerp, $bod, $gebruiker){
+    global $db;
+    $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+    if($biedingen == null){
+        if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
+            return false;
+        }
+    }
+    else{
+        if($bod < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag) ||
+            $gebruiker == $biedingen[0]->gebruikersnaam){
+            return false;
+        }
+    }
+
+    $query = $db->query("INSERT INTO bod VALUES (".$voorwerp->voorwerpnummer.", ".$bod.", '".$gebruiker."', getdate())");
+    if($query){
+        return true;
+    }
 }
 
 /**
@@ -297,24 +351,6 @@ function echoHomepageVoorwerp($voorwerp, $image){
             <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
             <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
-}
-
-/**
- * Returns an array of biedingen on a voorwerp
- *
- * @param $voorwerpnummer the number of the voorwerp.
- */
-function getVoorwerpBiedingen($voorwerpnummer){
-    global $db;
-
-    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
-    $biedingen = array();
-
-    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
-        array_push($biedingen, $bod);
-    }
-
-    return $biedingen;
 }
 
 function strip_html_tags($str){
@@ -449,6 +485,5 @@ function hashPass($pass) {
     ];
     return password_hash($pass, PASSWORD_BCRYPT, $options)."\n";
 }
-
 
 ?>
