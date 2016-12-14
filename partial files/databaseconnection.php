@@ -595,6 +595,17 @@ function doesValidationCodeexist($code)
 
 }
 
+function getPassword($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT wachtwoord FROM gebruiker WHERE gebruikersnaam= :username ");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['wachtwoord'];
+}
+
+
+
 function hashPass($pass) {
     $options = [
         'cost' => 12,
