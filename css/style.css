@@ -32,6 +32,10 @@ input:invalid{
     box-shadow: none;
 }
 
+form{
+    margin: 0;
+}
+
 .left{
     float:left;
 }
@@ -92,6 +96,12 @@ input:invalid{
     margin: 5px;
     min-height: 410px;
     max-width: 260px;
+}
+
+@media (min-width: 1200px){
+    .homepage-veiling{
+        margin-left: 15px;
+    }
 }
 
 .homepage-veiling:hover {
@@ -211,20 +221,23 @@ input:invalid{
     background-color: #f9f9f9;
     border: solid 1px #c0c0c0;
     text-align: center;
+    word-wrap: break-word;
 }
 
 .highest-bod, .bod{
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 3px 5px 3px 5px;
+    word-wrap: break-word;
 }
 
 .highest-bod{
     font-size: 28px;
+    line-height: 28px;
     color: #4d79ff;
 }
 
 .bod{
-    font-size: 24px;
+    line-height: 22px;
+    font-size: 22px;
     color: #000000;
 }
 
@@ -240,7 +253,7 @@ input:invalid{
 .smallpicture {
     width: 250px;
     float: left;
-    margin-right: 15px;
+    margin-left: 15px;
     margin-bottom: 15px;
 }
 

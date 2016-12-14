@@ -37,6 +37,8 @@ if (isset($_POST['registreer'])) {
         $errorMessage = "Geen geldig emailadres.";
     } else if (doesUsernameAlreadyExist($_POST['gebruikersnaam'])) {
         $errorMessage = "Gebruikersnaam bestaat al.";
+    } else if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
+        $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
     } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
         $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
     } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
@@ -45,6 +47,8 @@ if (isset($_POST['registreer'])) {
         $errorMessage = "Geen geldige postcode.";
     } else if ($_POST['telefoon1'] == $_POST['telefoon2']) {
         $errorMessage = "Dubbel telefoonnummer.";
+    } elseif (!is_numeric($_POST['telefoon1']) || !is_numeric($_POST['telefoon2'])) {
+        $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
     } else {
         $validatieCode = generateRandomString();
         $to      = $_POST['email'];
@@ -109,32 +113,32 @@ if (isset($_POST['registreer'])) {
             <div class="col-sm-6">
                 <table class="registration-table">
                     <tr>
-                        <td>Email</td>
-                        <td><input type="text" name="email" ></td>
+                        <td>Email*</td>
+                        <td><input placeholder="name@example.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
                     </tr>
                     <tr>
-                        <td>Gebruikersnaam</td>
-                        <td><input type="text" name="gebruikersnaam" ></td>
+                        <td>Gebruikersnaam*</td>
+                        <td><input  value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
                     </tr>
                     <tr>
-                        <td>Voornaam</td>
-                        <td><input type="text" name="voornaam" ></td>
+                        <td>Voornaam*</td>
+                        <td><input  value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
                     </tr>
                     <tr>
-                        <td>Achternaam</td>
-                        <td><input type="text" name="achternaam" ></td>
+                        <td>Achternaam*</td>
+                        <td><input  value="<?php if(isset($_POST['achternaam'])){ echo $_POST['achternaam'];}?>" type="text" name="achternaam" ></td>
                     </tr>
                     <tr>
-                        <td>Wachtwoord</td>
+                        <td>Wachtwoord*</td>
                         <td><input type="password" name="wachtwoord" ></td>
                     </tr>
                     <tr>
-                        <td>Wachtwoord 2</td>
+                        <td>Bevestig wachtwoord*</td>
                         <td><input type="password" name="wachtwoord2" ></td>
                     </tr>
                     <tr>
-                        <td>Geboortedatum</td>
-                        <td><input name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
+                        <td>Geboortedatum*</td>
+                        <td><input  value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
                     </tr>
 
                 </table>
@@ -148,24 +152,24 @@ if (isset($_POST['registreer'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td>Adres</td>
-                        <td><input type="text" name="adres" ></td>
+                        <td>Adres*</td>
+                        <td><input  value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
                     </tr>
                     <tr>
-                        <td>Plaats</td>
-                        <td><input type="text" name="plaats" ></td>
+                        <td>Plaats*</td>
+                        <td><input  value="<?php if(isset($_POST['plaats'])){ echo $_POST['plaats'];}?>" type="text" name="plaats" ></td>
                     </tr>
                     <tr>
-                        <td>Postcode</td>
-                        <td><input type="text" name="postcode" ></td>
+                        <td>Postcode*</td>
+                        <td><input placeholder="1234AB" value="<?php if(isset($_POST['postcode'])){ echo $_POST['postcode'];}?>" type="text" name="postcode" ></td>
                     </tr>
                     <tr>
-                        <td>Telefoon 1</td>
-                        <td><input type="text" name="telefoon1"></td>
+                        <td>Telefoon*</td>
+                        <td><input  value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
                     </tr>
                     <tr>
-                        <td>Telefoon 2</td>
-                        <td><input type="text" name="telefoon2" ></td>
+                        <td>Alt. telefoon</td>
+                        <td><input  value="<?php if(isset($_POST['telefoon2'])){ echo $_POST['telefoon2'];}?>" type="text" name="telefoon2" ></td>
                     </tr>
                     <tr>
                         <td>Geheime vraag</td>
@@ -174,8 +178,8 @@ if (isset($_POST['registreer'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td>Antwoord</td>
-                        <td><input type="text" name="antwoord"></td>
+                        <td>Antwoord*</td>
+                        <td><input  value="<?php if(isset($_POST['antwoord'])){ echo $_POST['antwoord'];}?>" type="text" name="antwoord"></td>
                     </tr>
 
                 </table>
@@ -185,9 +189,6 @@ if (isset($_POST['registreer'])) {
         <row>
             <div class="col-sm-12 submit-registrion">
                 <input type="submit" name="registreer" value="Registreren">
-                <form action="index.php">
-                    <input type="submit" value="Annuleren"/>
-                </form>
             </div>
 
         </row>
@@ -196,6 +197,7 @@ if (isset($_POST['registreer'])) {
     <row>
         <div class="col-sm-12">
             <br>
+            <i>* Verplicht</i>
 
         </div>
     </row>

@@ -6,28 +6,38 @@ include_once('partial files\header.php');
 
 <?php include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
+$errorString = "";
+
 
 if (isset($_POST['valideer'])) {
     $code = $_POST['validatiecode'];
-    if (doesValidationCodeexist($code)) {
+    if (calculateExpire($code) == 1 && doesValidationCodeexist($code) == 1) {
+        validateUser($code);
+        $errorString =  "Goedgekeurd, u kunt nu inloggen.";
 
-        echo "Goedgekeurd, u kunt nu inloggen.";
     } else {
-        echo "Validatiecode niet correct.";
+        $errorString =  "Validatiecode niet correct of is verlopen.";
+
     }
 }
 ?>
     <row>
         <div class="col-sm-12">
-            <h3>Vul hier uw validatiecode in:</h3>
+            <h3>E-mailadres bevestigen</h3>
+            <p> Uw e-mailadres moet bevestigd worden voor dat u kan inloggen.<br>
+                Vul hier de naar uw e-mailadres gestuurde validatiecode in:
+            </p>
             <form method="post">
                 Validatiecode: <input type="text" name="validatiecode">
                 <input type="submit" name="valideer" value="Valideer">
             </form>
-            <br>
-            <br>
+            <strong>
+                <?php echo $errorString; ?>
+            </strong>
         </div>
     </row>
+
+
 
 
 <?php include_once('partial files\footer.php') ?>
