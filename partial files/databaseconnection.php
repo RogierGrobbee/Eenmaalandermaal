@@ -78,16 +78,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
-        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
-
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
-        }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
-
-        echoVoorwerp($voorwerp, $prijs, $image);
+        echoVoorwerp($voorwerp, $image);
     }
 
     if (count($voorwerpArray) < 1) {
@@ -227,16 +218,7 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
-        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
-
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
-        }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
-
-        echoVoorwerp($voorwerp, $prijs, $image);
+        echoVoorwerp($voorwerp, $image);
     }
 
     if (count($voorwerpArray) < 1) {
@@ -298,71 +280,6 @@ function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId)
     }
 }
 
-function calculateIncrease($prijs){
-    switch(true){
-        case $prijs >= 5000:
-            return 50;
-            break;
-        case $prijs >= 1000:
-            return 10;
-            break;
-        case $prijs >= 500:
-            return 5;
-            break;
-        case $prijs >= 50:
-            return 1;
-            break;
-        default:
-            return 0.50;
-            break;
-    }
-}
-
-
-/**
- * Returns an array of biedingen on a voorwerp
- *
- * @param $voorwerpnummer the number of the voorwerp.
- */
-function getVoorwerpBiedingen($voorwerpnummer){
-    global $db;
-
-    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
-    $biedingen = array();
-
-    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
-        array_push($biedingen, $bod);
-    }
-
-    return $biedingen;
-}
-
-
-function insertNewBod($voorwerp, $bod, $gebruiker){
-    global $db;
-    $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
-    if($biedingen == null){
-        if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
-            return false;
-        }
-    }
-    else{
-        if($bod < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag) ||
-            $gebruiker == $biedingen[0]->gebruikersnaam){
-            return false;
-        }
-    }
-
-    $query = $db->query("INSERT INTO bod VALUES (".$voorwerp->voorwerpnummer.", ".$bod.", '".$gebruiker."', getdate())");
-    if($query){
-        return true;
-    }
-}
-
-/**
- * Returns the most popular voorwerp. This will be used on the banner for the frontpage
- * @param $queryString send a query to echo voorwerpen on the homepage
- */
 function queryHomepageVoorwerpen($queryString)
 {
     global $db;
@@ -372,33 +289,21 @@ function queryHomepageVoorwerpen($queryString)
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
-        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
 
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
-        }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
-
-        echoHomepageVoorwerp($voorwerp, $prijs, $image);
+        echoHomepageVoorwerp($voorwerp, $image);
     }
 }
 
-/**
- * Returns the most popular voorwerp. This will be used on the banner for the frontpage
- */
 function featuredVoorwerp()
 {
     global $db;
 
-    $query = $db->query("SELECT TOP 4 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
-                                v.looptijdeindeveiling FROM voorwerp as v 
-                                FULL OUTER JOIN Bod as b ON v.voorwerpnummer=b.voorwerpnummer 
-                                WHERE v.looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) 
-								GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,v.looptijdeindeveiling
-								ORDER BY count(b.voorwerpnummer) DESC");
-
+    $query = $db->query("SELECT TOP 1 voorwerpnummer,
+                                titel,
+                                beschrijving,
+                                startprijs,
+                                looptijdeindeveiling
+                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         return $voorwerp;
     }
@@ -410,7 +315,7 @@ function featuredVoorwerp()
  * @param $voorwerp The voorwerp.
  * @param $image The image of the voorwerp.
  */
-function echoVoorwerp($voorwerp, $prijs, $image)
+function echoVoorwerp($voorwerp, $image)
 {
     $beschrijving = $voorwerp->beschrijving;
 
@@ -420,16 +325,12 @@ function echoVoorwerp($voorwerp, $prijs, $image)
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
     }
 
-    if($prijs < 1){
-        $prijs = "0".$prijs;
-    }
-
     echo '  <div class="veilingitem">
                     <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
                         <img src="pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
-                        <p class="prijs">€' . $prijs. '</p>
+                        <p class="prijs">€' . $voorwerp->startprijs . '</p>
                         <div class="veiling-info">
                             <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
                             <button class="veiling-detail">Bied</button>
@@ -438,24 +339,14 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                 </div>';
 }
 
-
-/**
- * Prints a voorwerp on the frontpage
- *
- * @param $voorwerp The voorwerp.
- * @param $image The image of the voorwerp.
- */
-function echoHomepageVoorwerp($voorwerp, $prijs, $image){
-    if($prijs < 1){
-        $prijs = "0".$prijs;
-    }
-
+function echoHomepageVoorwerp($voorwerp, $image)
+{
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
-            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-            <img src="pics/'. $image .'"alt="veiling">
-            <h4>'.$voorwerp->titel.'</h4>
-            <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
-            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+            <a href="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
+            <img src="pics/' . $image . '"alt="veiling">
+            <h4>' . $voorwerp->titel . '</h4>
+            <div class="homepage-veiling-prijstijd">€' . $voorwerp->startprijs . '<br>
+            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span></div>
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
@@ -468,7 +359,44 @@ function echoFilterBox($param, $filter, $isRubriek)
         echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
     }
 
-function strip_html_tags($str){
+    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afglopen</option>';
+
+    echo '<option value="looptijdbeginveilingDESC"'; if ($filter == "looptijdbeginveilingDESC") { echo 'selected'; } echo'>Tijd: nieuwst verschenen</option>';
+
+    echo '<option value="laagstebod"'; if ($filter == "laagstebod") { echo 'selected'; } echo'>Prijs: laagst</option>';
+
+    echo '<option value="hoogstebod"'; if ($filter == "hoogstebod") { echo 'selected'; } echo'>Prijs: hoogst</option>';
+
+    echo '</select>';
+}
+echo '<script>
+function searchFilterSelect(filter, search) {
+  window.location.href = "./zoeken.php?search="+search+"&filter="+filter;
+}
+</script>';
+
+echo '<script>
+function rubriekFilterSelect(filter, rubriek) {
+  window.location.href = "./rubriek.php?rubriek="+rubriek+"&filter="+filter;
+}
+</script>';
+
+function getVoorwerpBiedingen($voorwerpnummer)
+{
+    global $db;
+
+    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
+    $biedingen = array();
+
+    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
+        array_push($biedingen, $bod);
+    }
+
+    return $biedingen;
+}
+
+function strip_html_tags($str)
+{
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
     $str = preg_replace(
         array(// Remove invisible content
@@ -524,40 +452,28 @@ function returnAllCountries()
     echo "</select>";
 }
 
-function calculateExpire($code)
-{
-    global $db;
-    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
-    $statement->execute(array(':validatiecode' => $code));
-    $row = $statement->fetch();
+//function calculateTimePlusFour($code)
+//{
+//    global $db;
+//    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
+//    $statement->execute(array(':validatiecode' => $code));
+//    $row = $statement->fetch();
+//    $newtime = date("Y-m-d H:i:s", strtotime('+3 hours', $row['datumTijd']));
+//        return $newtime;
+//}
 
-    $expire = date("Y-m-d H:i:s", strtotime('+0 hour'));
-    $timestamp1 = strtotime($expire);
-    $timestamp2 = strtotime($row['datumTijd']);
-    $hour = abs($timestamp2 - $timestamp1)/(60*60);
-    if ($hour > 4 ) {
-        return false;
-    } else {
-        return true;
-    }
-
-
-}
-
-function validateUser($code)
-{
-    global $db;
-    $sth = "UPDATE g
-            SET g.gevalideerd = 1
-            FROM gebruiker AS g
-            INNER JOIN validation AS v
-            ON g.gebruikersnaam = v.gebruikersnaam
-            WHERE v.validatiecode  = :validatie";
-    $sthm = $db->prepare($sth);
-    $sthm->bindParam(':validatie', $code);
-    $sthm->execute();
-
-}
+//function validateUser($code)
+//{
+//    global $db;
+//    $sth = "UPDATE g
+//SET g.gevalideerd = 0
+//FROM gebruiker AS g
+//INNER JOIN validation AS v
+//       ON g.gebruikersnaam = v.gebruikersnaam
+//WHERE v.validatiecode  = :id";
+//    $q = $db->prepare($sth);
+//    $q->execute(array(':location'=>$location, ':id'=>$id));
+//}
 
 
 function doesUsernameAlreadyExist($username)
@@ -596,30 +512,18 @@ function generateRandomString($length = 10)
     return $randomString;
 }
 
-function doesValidationCodeexist($code)
+function doesValidationCodeexist($validationCode)
 {
     global $db;
-    $statement = $db->prepare("SELECT validatiecode FROM validation WHERE validatiecode = :code");
-    $statement->execute(array(':code' => $code));
-    $row = $statement->fetch();
-    if (!$row) {
-        return false;
-    } else {
-        return true;
+    $exist = false;
+    $query = $db->query("SELECT validatiecode FROM validation");
+    foreach ($query as $row) {
+        if ($row["validatiecode"] == $validationCode) {
+            $exist = true;
+        }
     }
-
+    return $exist;
 }
-
-function getPassword($username)
-{
-    global $db;
-    $statement = $db->prepare("SELECT wachtwoord FROM gebruiker WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['wachtwoord'];
-}
-
-
 
 function hashPass($pass)
 {
@@ -628,5 +532,6 @@ function hashPass($pass)
     ];
     return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
 }
+
 
 ?>
