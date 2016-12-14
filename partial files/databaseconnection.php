@@ -468,7 +468,44 @@ function echoFilterBox($param, $filter, $isRubriek)
         echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
     }
 
-function strip_html_tags($str){
+    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afglopen</option>';
+
+    echo '<option value="looptijdbeginveilingDESC"'; if ($filter == "looptijdbeginveilingDESC") { echo 'selected'; } echo'>Tijd: nieuwst verschenen</option>';
+
+    echo '<option value="laagstebod"'; if ($filter == "laagstebod") { echo 'selected'; } echo'>Prijs: laagst</option>';
+
+    echo '<option value="hoogstebod"'; if ($filter == "hoogstebod") { echo 'selected'; } echo'>Prijs: hoogst</option>';
+
+    echo '</select>';
+}
+echo '<script>
+function searchFilterSelect(filter, search) {
+  window.location.href = "./zoeken.php?search="+search+"&filter="+filter;
+}
+</script>';
+
+echo '<script>
+function rubriekFilterSelect(filter, rubriek) {
+  window.location.href = "./rubriek.php?rubriek="+rubriek+"&filter="+filter;
+}
+</script>';
+
+function getVoorwerpBiedingen($voorwerpnummer)
+{
+    global $db;
+
+    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
+    $biedingen = array();
+
+    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
+        array_push($biedingen, $bod);
+    }
+
+    return $biedingen;
+}
+
+function strip_html_tags($str)
+{
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
     $str = preg_replace(
         array(// Remove invisible content
