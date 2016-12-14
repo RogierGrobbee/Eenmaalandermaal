@@ -415,6 +415,10 @@ function echoVoorwerp($voorwerp, $prijs, $image)
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
     }
 
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
     echo '  <div class="veilingitem">
                     <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
                         <img src="pics/' . $image . '" alt="veilingsfoto">
@@ -437,6 +441,10 @@ function echoVoorwerp($voorwerp, $prijs, $image)
  * @param $image The image of the voorwerp.
  */
 function echoHomepageVoorwerp($voorwerp, $prijs, $image){
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
             <img src="pics/'. $image .'"alt="veiling">

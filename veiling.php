@@ -60,7 +60,7 @@ else {
                     <form action="veiling.php?voorwerpnummer=<?php echo $voorwerp->voorwerpnummer ?>" method="POST">
                         <label for="bied-bar">€</label>
                         <input type="number" class="bied-bar" name="bod" id="bied-bar" min=<?php
-                        echo '"'.$minimalePrijs . '" value="' . $minimalePrijs . '" step="any" required>
+                        echo '"'.$minimalePrijs . '" max="10000000" value="' . $minimalePrijs . '" step="0.01" required>
                         <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">';
                         ?>
                         <button type="submit" class="btn-bied">Bied</button>
@@ -80,13 +80,27 @@ else {
                             echo "<div class='bod'>";
                         }
 
-                        echo "<div class='left'>".$biedingen[$i]->gebruikersnaam."</div>
-                        <div class='right'>€".$biedingen[$i]->bodbedrag."</div><br></div>";
+                        if($biedingen[$i]->bodbedrag < 1){
+                            $bod = "0" . $biedingen[$i]->bodbedrag;
+                        }
+                        else{
+                            $bod = $biedingen[$i]->bodbedrag;
+                        }
+
+                        echo "<div class='gebruikersnaam'>".$biedingen[$i]->gebruikersnaam."</div>
+                        <div class='bodprijs'>€".$bod."</div><br></div>";
                     }
                 }
 
-                echo "<div class='bod'><div class='left'>dasdasdjasdgjasgdadgasdgjahagdjsaga</div>
-                        <div class='right'>€".$voorwerp->startprijs."</div><br></div>";?>
+                if($voorwerp->startprijs < 1){
+                    $prijs = "0" . $voorwerp->startprijs;
+                }
+                else{
+                    $prijs = $voorwerp->startprijs;
+                }
+
+                echo "<div class='bod'><div class='gebruikersnaam'>Startprijs</div>
+                        <div class='bodprijs'>€".$prijs."</div><br></div>";?>
             </div>
 
             <p><?php echo "Deze voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
@@ -118,7 +132,7 @@ else {
 for($i = 1; $i < 4; $i++) {
     if(!empty($list[$i])){
         echo '<div class="sm-3">
-            <img class="smallpicture" src="./pics/' . $list[$i] . '" alt="geveilde voorwerp1">
+            <img class="smallpicture" src="./pics/' . $list[$i] . '" alt="plaatje voorwerp">
         </div>';
     }
 }
