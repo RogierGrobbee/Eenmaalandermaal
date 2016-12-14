@@ -79,7 +79,16 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
-        echoVoorwerp($voorwerp, $image);
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoVoorwerp($voorwerp, $prijs, $image);
     }
 
     if (count($voorwerpArray) < 1){
@@ -215,7 +224,16 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
 
-        echoVoorwerp($voorwerp, $image);
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoVoorwerp($voorwerp, $prijs, $image);
     }
 
     if (count($voorwerpArray) < 1) {
@@ -349,8 +367,16 @@ function queryHomepageVoorwerpen($queryString)
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         $list = loadbestanden($voorwerp->voorwerpnummer);
         $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
 
-        echoHomepageVoorwerp($voorwerp, $image);
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoHomepageVoorwerp($voorwerp, $prijs, $image);
     }
 }
 
@@ -361,12 +387,13 @@ function featuredVoorwerp()
 {
     global $db;
 
-    $query = $db->query("SELECT TOP 1 voorwerpnummer,
-                                titel,
-                                beschrijving,
-                                startprijs,
-                                looptijdeindeveiling
-                                FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
+    $query = $db->query("SELECT TOP 4 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+                                v.looptijdeindeveiling FROM voorwerp as v 
+                                FULL OUTER JOIN Bod as b ON v.voorwerpnummer=b.voorwerpnummer 
+                                WHERE v.looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) 
+								GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,v.looptijdeindeveiling
+								ORDER BY count(b.voorwerpnummer) DESC");
+
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         return $voorwerp;
     }
@@ -378,7 +405,7 @@ function featuredVoorwerp()
  * @param $voorwerp The voorwerp.
  * @param $image The image of the voorwerp.
  */
-function echoVoorwerp($voorwerp, $image)
+function echoVoorwerp($voorwerp, $prijs, $image)
 {
     $beschrijving = $voorwerp->beschrijving;
 
@@ -393,7 +420,7 @@ function echoVoorwerp($voorwerp, $image)
                         <img src="pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
-                        <p class="prijs">€' . $voorwerp->startprijs . '</p>
+                        <p class="prijs">€' . $prijs. '</p>
                         <div class="veiling-info">
                             <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
                             <button class="veiling-detail">Bied</button>
@@ -409,12 +436,12 @@ function echoVoorwerp($voorwerp, $image)
  * @param $voorwerp The voorwerp.
  * @param $image The image of the voorwerp.
  */
-function echoHomepageVoorwerp($voorwerp, $image){
+function echoHomepageVoorwerp($voorwerp, $prijs, $image){
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
             <img src="pics/'. $image .'"alt="veiling">
             <h4>'.$voorwerp->titel.'</h4>
-            <div class="homepage-veiling-prijstijd">€'. $voorwerp->startprijs .'<br>
+            <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
             <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
@@ -426,24 +453,6 @@ function echoFilterBox(){
   <option value="mercedes">Mercedes</option>
   <option value="audi">Audi</option>
 </select>';
-}
-
-/**
- * Returns an array of biedingen on a voorwerp
- *
- * @param $voorwerpnummer the number of the voorwerp.
- */
-function getVoorwerpBiedingen($voorwerpnummer){
-    global $db;
-
-    $query = $db->query("SELECT * FROM bod WHERE voorwerpnummer=$voorwerpnummer ORDER BY bodbedrag DESC");
-    $biedingen = array();
-
-    while ($bod = $query->fetch(PDO::FETCH_OBJ)) {
-        array_push($biedingen, $bod);
-    }
-
-    return $biedingen;
 }
 
 function strip_html_tags($str){

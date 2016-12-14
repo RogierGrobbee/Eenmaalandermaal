@@ -20,8 +20,7 @@ $voorwerp = getVoorwerp($voorwerpnummer);
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
-        echo $_POST['bod'];
-        insertNewBod($voorwerp, $_POST['bod'], 'Robinkroes211111');
+        insertNewBod($voorwerp, $_POST['bod'], 'Leon');
     }
 }
 
