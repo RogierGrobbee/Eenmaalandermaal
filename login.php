@@ -37,9 +37,8 @@ if (isset($_POST['Login'])) {
         }
 
 
-    $hash = '$2y$12$lW4MSB71rJsHv5WfUN7pSOc8TE/OWO67YdhYZtgR12QYEiqJ0E3Zm';
 
-    if (password_verify('3edRdasad', $hash)) {
+    if (password_verify($_POST['wachtwoord'], '$2y$12$lW4MSB71rJsHv5WfUN7pSOc8TE/OWO67YdhYZtgR12QYEiqJ0E3Zm')) {
         echo 'Password is valid!';
     } else {
         echo 'Invalid password.';
@@ -87,5 +86,14 @@ if (isset($_POST['Login'])) {
             <br><br>
         </div>
     </row>
+
+<?php
+$pass = $_POST['wachtwoord'];
+if (password_verify($pass , '$2y$12$lW4MSB71rJsHv5WfUN7pSOc8TE/OWO67YdhYZtgR12QYEiqJ0E3Zm')) {
+    echo 'Password is valid!';
+} else {
+    echo 'Invalid password.';
+}
+?>
 
 <?php include_once('partial files\footer.php') ?>
