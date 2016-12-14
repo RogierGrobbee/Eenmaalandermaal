@@ -47,17 +47,14 @@ function loadRubrieken()
     return $rubriekArray;
 }
 
-/*
-* Returns all voorwerpen relevant to $searchQuery
-* @param $searchQuery the word to search
-*/
-function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
+function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
+{
     global $db;
     global $itemsPerPage;
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
 
     $countQuery = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search=?");
-    $countQuery->bindValue(1, '%'.$searchQuery.'%', PDO::PARAM_STR);
+    $countQuery->bindValue(1, '%' . $searchQuery . '%', PDO::PARAM_STR);
     $countQuery->execute();
 
     $totalItems = 0;
@@ -66,12 +63,14 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
     }
 
     $statement = $db->prepare("execute sp_SearchVoorwerpenByTitle @search=?, @nSkippedRecords=?, @itemPerPage=?, @filter=?");
-    $statement->bindValue(1, '%'.$searchQuery.'%', PDO::PARAM_STR);
+    $statement->bindValue(1, '%' . $searchQuery . '%', PDO::PARAM_STR);
     $statement->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
     $statement->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
-    $statement->bindValue(4, 'laagstebod', PDO::PARAM_STR);
+    $statement->bindValue(4, $filter, PDO::PARAM_STR);
 
     $statement->execute();
+    echoFilterBox($searchQuery, $filter, false);
+
     $voorwerpArray = array();
     while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {
         array_push($voorwerpArray, $voorwerp);
@@ -91,7 +90,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
         echoVoorwerp($voorwerp, $prijs, $image);
     }
 
-    if (count($voorwerpArray) < 1){
+    if (count($voorwerpArray) < 1) {
         echo "Geen voorwerpen gevonden";
     }
 
@@ -115,7 +114,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
             } else if ($currentPageNumber > ($nPages - 5)) {
                 echoSearchPageNumber(1, $currentPageNumber, $searchQuery);
                 echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-                for ($i = ($nPages - 8); $i < $nPages+1; $i++) {
+                for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
                     echoSearchPageNumber($i, $currentPageNumber, $searchQuery);
                 }
             } else {
@@ -136,10 +135,12 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber){
         if ($currentPageNumber < $nPages) {
             echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchQuery . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
         }
+        echo '</div></div>';
     }
 }
 
-function echoSearchPageNumber($pageNumber, $currentPageNumber, $search){
+function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
+{
     if (($pageNumber) == $currentPageNumber) {
         echo '<b style="margin: 5px">' . $pageNumber . '</b>';
     } else {
@@ -147,7 +148,7 @@ function echoSearchPageNumber($pageNumber, $currentPageNumber, $search){
     }
 }
 
-function loadVeilingItems($rubriekId, $currentPageNumber)
+function loadVeilingItems($rubriekId, $currentPageNumber, $filter)
 {
     global $itemsPerPage;
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
@@ -178,7 +179,7 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
         if ($ids == "") {
             $ids = "0";
         }
-        $ids = $ids.','.$rubriekId;
+        $ids = $ids . ',' . $rubriekId;
 
         //count number of record to determine pages
         global $db;
@@ -195,7 +196,9 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
         $voorwerpQuery->bindParam(1, $ids, PDO::PARAM_STR);
         $voorwerpQuery->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
         $voorwerpQuery->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
-        $voorwerpQuery->bindValue(4, 'laagstebod', PDO::PARAM_STR);
+        $voorwerpQuery->bindValue(4, $filter, PDO::PARAM_STR);
+
+        echoFilterBox($rubriekId, $filter, true);
 
         queryVoorwerpen($voorwerpQuery, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber);
 
@@ -211,9 +214,9 @@ function loadVeilingItems($rubriekId, $currentPageNumber)
  *
  * @param $queryString The SELECT query in a string.
  */
-function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber )
+function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber)
 {
-    echoFilterBox();
+
     global $db;
     $query->execute();
     $voorwerpArray = array();
@@ -260,7 +263,7 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
             } else if ($currentPageNumber > ($nPages - 5)) {
                 echoPageNumber(1, $currentPageNumber, $rubriekId);
                 echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-                for ($i = ($nPages - 8); $i < $nPages+1; $i++) {
+                for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
                     echoPageNumber($i, $currentPageNumber, $rubriekId);
                 }
             } else {
@@ -281,11 +284,13 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
         if ($currentPageNumber < $nPages) {
             echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
         }
+        echo '</div></div>';
     }
-    echo '</div></div>';
+
 }
 
-function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId){
+function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId)
+{
     if (($pageNumber) == $currentPageNumber) {
         echo '<b style="margin: 5px">' . $pageNumber . '</b>';
     } else {
@@ -415,6 +420,10 @@ function echoVoorwerp($voorwerp, $prijs, $image)
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
     }
 
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
     echo '  <div class="veilingitem">
                     <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
                         <img src="pics/' . $image . '" alt="veilingsfoto">
@@ -437,6 +446,10 @@ function echoVoorwerp($voorwerp, $prijs, $image)
  * @param $image The image of the voorwerp.
  */
 function echoHomepageVoorwerp($voorwerp, $prijs, $image){
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
             <img src="pics/'. $image .'"alt="veiling">
@@ -446,14 +459,14 @@ function echoHomepageVoorwerp($voorwerp, $prijs, $image){
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
-function echoFilterBox(){
-    echo '<select>
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-</select>';
-}
+function echoFilterBox($param, $filter, $isRubriek)
+{
+    if ($isRubriek) {
+        echo '<select onchange="rubriekFilterSelect(this.value, ' . $param . ')">';
+    }
+    else {
+        echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
+    }
 
 function strip_html_tags($str){
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
@@ -465,17 +478,18 @@ function strip_html_tags($str){
             '@<noscript[^>]*?.*?</noscript>@siu',
         ),
         "", //replace above with nothing
-        $str );
+        $str);
     $str = replaceWhitespace($str);
     $str = strip_tags($str, '<br>');
     return $str;
 } //function strip_html_tags ENDS
 
 //To replace all types of whitespace with a single space
-function replaceWhitespace($str) {
+function replaceWhitespace($str)
+{
     $result = $str;
     foreach (array(
-                 "  ", " \t",  " \r",  " \n",
+                 "  ", " \t", " \r", " \n",
                  "\t\t", "\t ", "\t\r", "\t\n",
                  "\r\r", "\r ", "\r\t", "\r\n",
                  "\n\n", "\n ", "\n\t", "\n\r",
@@ -561,17 +575,18 @@ function doesUsernameAlreadyExist($username)
 
 function postCodeCheck($postcode)
 {
-    $remove = str_replace(" ","", $postcode);
+    $remove = str_replace(" ", "", $postcode);
     $upper = strtoupper($remove);
 
-    if( preg_match("/^\W*[1-9]{1}[0-9]{3}\W*[a-zA-Z]{2}\W*$/",  $upper)) {
+    if (preg_match("/^\W*[1-9]{1}[0-9]{3}\W*[a-zA-Z]{2}\W*$/", $upper)) {
         return $upper;
     } else {
         return false;
     }
 }
 
-function generateRandomString($length = 10) {
+function generateRandomString($length = 10)
+{
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -606,11 +621,12 @@ function getPassword($username)
 
 
 
-function hashPass($pass) {
+function hashPass($pass)
+{
     $options = [
         'cost' => 12,
     ];
-    return password_hash($pass, PASSWORD_BCRYPT, $options)."\n";
+    return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
 }
 
 ?>

@@ -218,10 +218,26 @@ form{
 
 .boddetail {
     padding: 5px;
+    margin-bottom: 10px;
     background-color: #f9f9f9;
     border: solid 1px #c0c0c0;
     text-align: center;
+    display: inline-block;
     word-wrap: break-word;
+    word-break: break-all;
+    width: 100%;
+}
+
+.gebruikersnaam{
+    float: left;
+    width:70%;
+    text-align: left;
+}
+
+.bodprijs{
+    float: right;
+    text-align: right;
+    width: 30%;
 }
 
 .highest-bod, .bod{
@@ -247,6 +263,7 @@ form{
     height: 80vw;
     max-height: 250px;
     margin: 10px;
+    margin-top: 0px;
     border: #dddddd solid 2px;
 }
 
@@ -258,7 +275,7 @@ form{
 }
 
 .extrainfo {
-    padding: 10px;
+    padding: 15px;
     float: right;
 }
 
@@ -295,7 +312,11 @@ form{
 
 @media (max-width: 768px) {
     .headerbar{
-        height: 140px;
+        height: 120px;
+    }
+
+    .bigpicture{
+        margin-left: 0px;
     }
 }
 
