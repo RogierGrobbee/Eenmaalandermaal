@@ -598,8 +598,8 @@ function doesValidationCodeexist($code)
 function hashPass($pass) {
     $options = [
         'cost' => 12,
+        'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
     ];
     return password_hash($pass, PASSWORD_BCRYPT, $options)."\n";
 }
-
 ?>
