@@ -652,4 +652,12 @@ function hashPass($pass)
     ];
     return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
 }
+
+function veilingEnded($voorwerpId) {
+    global $db;
+    $statement = $db->prepare("SELECT isBeeindigd FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpId));
+    $row = $statement->fetch();
+    return $row['isBeeindigd'];
+}
 ?>

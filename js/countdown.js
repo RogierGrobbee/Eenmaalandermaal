@@ -84,3 +84,17 @@ function refreshVeilingTijd () {
 window.onload = function() {
     refreshVeilingTijd();
 };
+
+
+function endVeiling(voorwerpId) {
+    $.ajax({ url: '/partial files/endVeiling',
+        data: {
+            action: 'endVeiling',
+            voorwerpId: voorwerpId
+        },
+        type: 'POST',
+        success: function(output) {
+            alert("Veiling is beëindingd!!! VERWIJDER DIT!");
+        }
+    });
+}
