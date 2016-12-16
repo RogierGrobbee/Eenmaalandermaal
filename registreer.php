@@ -50,9 +50,12 @@ if (isset($_POST['registreer'])) {
         $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
     } else if (postCodeCheck($_POST['postcode']) == false) {
         $errorMessage = "Geen geldige postcode.";
-    }  elseif (!is_numeric($_POST['telefoon1'])) {
+    }  else if (!is_numeric($_POST['telefoon1'])) {
         $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
-    } else {
+    } else if (!doesSeecretQuestionExist($_POST['antwoord'])){
+        $errorMessage = "Geen geldige vraag.";
+    } else
+     {
         $validatieCode = generateRandomString();
         $to      = $_POST['email'];
         $subject = 'Validatie EenmaalAndermaal';

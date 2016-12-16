@@ -646,6 +646,19 @@ function doesSeecretQuestionExist($number)
     }
 }
 
+function doesCountryExist($country)
+{
+    global $db;
+    $statement = $db->prepare("SELECT NAAM_LAND FROM tblIMAOLand WHERE NAAM_LAND = :country");
+    $statement->execute(array(':country' => $country));
+    $row = $statement->fetch();
+    if (!$row) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function getPassword($username)
 {
     global $db;
