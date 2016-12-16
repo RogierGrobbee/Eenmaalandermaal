@@ -9,6 +9,7 @@ loadSidebar($rubriekArray, null);
 
 $errorMessage = "";
 $successMessage = "";
+
 if (!empty($_POST['wachtwoord'])) {
     $password = $_POST['wachtwoord'];
 
@@ -30,6 +31,8 @@ if (isset($_POST['registreer'])) {
         empty($_POST['telefoon1']) ||
         empty($_POST['antwoord'])
 ) {
+        $date = "$_POST[geboortedatum]";
+        list($y, $m, $d) = explode('-', $date);
 
         $errorMessage = "Niet alles ingevuld.";
     } else
@@ -43,6 +46,8 @@ if (isset($_POST['registreer'])) {
         $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
     } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
         $errorMessage = "Wachtwoorden komen niet overeen.";
+    } else if (!validateDate($_POST['geboortedatum'])) {
+        $errorMessage = "Geen geldige datum.";
     } else if (postCodeCheck($_POST['postcode']) == false) {
         $errorMessage = "Geen geldige postcode.";
     } else if ($_POST['telefoon1'] == $_POST['telefoon2']) {
@@ -138,7 +143,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Geboortedatum*</td>
-                        <td><input  value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
+                        <td><input  placeholder="dd-mm-jjjj" value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
                     </tr>
 
                 </table>

@@ -650,6 +650,13 @@ function hashPass($pass)
         'cost' => 12,
         'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
     ];
-    return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
+    return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
+
+function validateDate($date)
+{
+    $d = DateTime::createFromFormat('d-m-Y', $date);
+    return $d && $d->format('d-m-Y') === $date;
+}
+
 ?>
