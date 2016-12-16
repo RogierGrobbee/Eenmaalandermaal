@@ -13,7 +13,7 @@ if (isset($_POST['valideer'])) {
     $code = $_POST['validatiecode'];
     if (calculateExpire($code) == 1 && doesValidationCodeexist($code) == 1) {
         validateUser($code);
-        $errorString =  "Goedgekeurd, u kunt nu inloggen.";
+        $errorString =  "<div class='alert alert-success'>Goedgekeurd, u kunt nu inloggen.</div>";
 
     } else {
         $errorString =  "<div class='alert alert-danger'>Validatiecode niet correct of is verlopen.</div>";
