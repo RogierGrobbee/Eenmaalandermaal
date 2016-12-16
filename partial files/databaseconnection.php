@@ -579,7 +579,6 @@ function validateUser($code)
     $sthm = $db->prepare($sth);
     $sthm->bindParam(':validatie', $code);
     $sthm->execute();
-
 }
 
 
@@ -632,7 +631,19 @@ function doesValidationCodeexist($code)
     } else {
         return true;
     }
+}
 
+function doesSeecretQuestionExist($number)
+{
+    global $db;
+    $statement = $db->prepare("SELECT vraagnummer FROM vraag WHERE validatiecode = :number");
+    $statement->execute(array(':nummer' => $number));
+    $row = $statement->fetch();
+    if (!$row) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 function getPassword($username)
