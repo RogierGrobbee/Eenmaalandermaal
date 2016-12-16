@@ -47,12 +47,10 @@ if (isset($_POST['registreer'])) {
     } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
         $errorMessage = "Wachtwoorden komen niet overeen.";
     } else if (!validateDate($_POST['geboortedatum'])) {
-        $errorMessage = "Geen geldige datum.";
+        $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
     } else if (postCodeCheck($_POST['postcode']) == false) {
         $errorMessage = "Geen geldige postcode.";
-    } else if ($_POST['telefoon1'] == $_POST['telefoon2']) {
-        $errorMessage = "Dubbel telefoonnummer.";
-    } elseif (!is_numeric($_POST['telefoon1'])) {
+    }  elseif (!is_numeric($_POST['telefoon1'])) {
         $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
     } else {
         $validatieCode = generateRandomString();
@@ -143,7 +141,7 @@ if (isset($_POST['registreer'])) {
                     </tr>
                     <tr>
                         <td>Geboortedatum*</td>
-                        <td><input  placeholder="dd-mm-jjjj" value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
+                        <td><input  placeholder="jjjj-mm-dd" value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
                     </tr>
 
                 </table>
@@ -171,10 +169,6 @@ if (isset($_POST['registreer'])) {
                     <tr>
                         <td>Telefoon*</td>
                         <td><input  value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
-                    </tr>
-                    <tr>
-                        <td>Alt. telefoon</td>
-                        <td><input  value="<?php if(isset($_POST['telefoon2'])){ echo $_POST['telefoon2'];}?>" type="text" name="telefoon2" ></td>
                     </tr>
                     <tr>
                         <td>Geheime vraag</td>
@@ -213,6 +207,9 @@ if (isset($_POST['registreer'])) {
             echo $successMessage;
             ?>
             <br><br>
+
+
+
         </div>
 
     </row>

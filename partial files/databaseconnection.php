@@ -673,8 +673,8 @@ function veilingEnded($voorwerpId) {
 
 function validateDate($date)
 {
-    $d = DateTime::createFromFormat('d-m-Y', $date);
-    return $d && $d->format('d-m-Y') === $date;
+    $d = DateTime::createFromFormat('Y-m-d', $date);
+    return $d && $d->format('Y-m-d') === $date;
 }
 
 ?>
