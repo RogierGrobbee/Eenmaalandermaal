@@ -236,14 +236,19 @@ form{
 
 .gebruikersnaam{
     float: left;
-    width:70%;
+    width: 60%;
     text-align: left;
 }
 
-.bodprijs{
+.bodprijs, .bod-date{
     float: right;
     text-align: right;
-    width: 30%;
+}
+
+.bod-date{
+    margin: 1px 0px 0px 3px;
+    font-size: 12px;
+    line-height: 10px;
 }
 
 .highest-bod, .bod{
@@ -255,6 +260,10 @@ form{
     font-size: 28px;
     line-height: 28px;
     color: #4d79ff;
+}
+
+.highest-bod .bod-date{
+    margin-top: 3px;
 }
 
 .bod{
