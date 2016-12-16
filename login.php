@@ -8,7 +8,7 @@ include_once('partial files\header.php'); ?>
 loadSidebar($rubriekArray, null);
 
 $errorMessage = "";
-$successMessage = "";
+
 if (!empty($_POST['wachtwoord'])) {
     $password = $_POST['wachtwoord'];
 
@@ -21,27 +21,22 @@ if (isset($_POST['Login'])) {
         empty($_POST['gebruikersnaam']) ||
         empty($_POST['wachtwoord'])
     ) {
-        $errorMessage = "Niet alles ingevuld.";
+        $errorMessage = "Niet alles is ingevuld.";
     } else
-        if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
-            $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
-        } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-            $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
-        } else {
-            if(getValidation($_POST['gebruikersnaam'])) {
-                $password = $_POST['wachtwoord'];
-                $username = $_POST['gebruikersnaam'];
-                $hash = getPassword($username);
-                if (password_verify($password, $hash)) {
-                    $_SESSION['user'] = $username;
-                    header('Location: index.php');
-                } else {
-                    $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
-                }
+        if(getValidation($_POST['gebruikersnaam'])) {
+            $password = $_POST['wachtwoord'];
+            $username = $_POST['gebruikersnaam'];
+            $hash = getPassword($username);
+
+            if (password_verify($password, $hash)) {
+                $_SESSION['user'] = $username;
+                header('Location: index.php');
+            } else {
+                $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
             }
-            else{
-                $errorMessage = 'Gebruiker is niet gevalideerd.';
-            }
+        }
+        else{
+            $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
         }
 }
 
@@ -82,7 +77,6 @@ if (isset($_POST['Login'])) {
         <div style="color:red" class="col-sm-12">
             <?php
             echo $errorMessage;
-            echo $successMessage;
             ?>
             <br><br>
         </div>

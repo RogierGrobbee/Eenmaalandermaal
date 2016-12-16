@@ -51,7 +51,7 @@ session_start();
         </div>
         <form action='zoeken.php' method='GET'>
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 search">
-                <input type="text" class="search-bar" name="search" value="<?php
+                <input placeholder="Zoeken naar..." type="text" class="search-bar" name="search" value="<?php
                     if(isset($search)){
                         echo $search;
                     }
