@@ -27,7 +27,7 @@ if (isset($_POST['valideer'])) {
             <p> Uw e-mailadres moet bevestigd worden voor dat u kan inloggen.<br>
                 Vul hier de naar uw e-mailadres gestuurde validatiecode in:
             </p>
-            <form method="post">
+            <form method="post" >
                 Validatiecode: <input type="text" name="validatiecode">
                 <input type="submit" name="valideer" value="Valideer">
             </form>
