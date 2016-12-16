@@ -47,10 +47,10 @@ loadSidebar($rubriekArray, null);
             queryHomepageVoorwerpen("SELECT * FROM ( SELECT v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
                                     v.looptijdeindeveiling, count(v.voorwerpnummer) as 'aantal biedingen', 
                                     ROW_NUMBER() OVER (ORDER BY count(b.voorwerpnummer)  DESC) AS rownumber
-                                    FROM voorwerp v RIGHT JOIN Bod b ON v.voorwerpnummer=b.voorwerpnummer
+                                    FROM voorwerp v INNER JOIN Bod b ON v.voorwerpnummer=b.voorwerpnummer
+									WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
                                     GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
-                                    v.looptijdeindeveiling) AS rows WHERE rows.rownumber BETWEEN 2 AND 4 
-                                    AND looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())");
+                                    v.looptijdeindeveiling) AS rows WHERE rows.rownumber BETWEEN 2 AND 4");
             ?>
         </div>
 

@@ -41,44 +41,38 @@ if (isset($_POST['Login'])) {
 
 ?>
 
+    <div class="row">
     <form method="post">
-        <row>
-            <div class="col-sm-6">
-                <table class="registration-table">
-                    <tr>
-                        <td>Gebruikersnaam</td>
-                        <td><input pattern="[a-zA-Z0-9-]+" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
-                    </tr>
-                    <tr>
-                        <td>Wachtwoord</td>
-                        <td><input type="password" name="wachtwoord" ></td>
-                    </tr>
-                </table>
-            </div>
-        </row>
-        <row>
-            <div class="col-sm-12 submit-registrion">
-                <input type="submit" name="Login" value="Login">
-            </div>
-
-        </row>
+        <div class="col-sm-6">
+            <table class="registration-table">
+                <tr>
+                    <td>Gebruikersnaam</td>
+                    <td><input pattern="[a-zA-Z0-9-]+" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
+                </tr>
+                <tr>
+                    <td>Wachtwoord</td>
+                    <td><input type="password" name="wachtwoord" ></td>
+                </tr>
+            </table>
+        </div>
+            <br><br><br>
+        <div class="col-sm-1 submit-registrion">
+            <button type="submit" name="Login" value="Login">Login</button>
+        </div>
     </form>
-    <br><br>
-    <row>
-        <div class="col-sm-12">
-            <form action="vergeten.php" method="post">
-                    <br>
-                    <input type="submit" name="Wachtwoord Vergeten" value="Wachtwoord Vergeten?">
-            </form>
-        </div>
-    </row>
-    <row>
+        <form action="vergeten.php" method="post">
+            <button type="submit" class="left" name="Wachtwoord Vergeten" value="Wachtwoord Vergeten?">Wachtwoord vergeten?</button>
+        </form>
         <div style="color:red" class="col-sm-12">
+            <br>
             <?php
-            echo $errorMessage;
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger'>";
+                echo $errorMessage;
+                echo "</div>";
+            }
             ?>
-            <br><br>
         </div>
-    </row>
+    </div>
 
 <?php include_once('partial files\footer.php') ?>

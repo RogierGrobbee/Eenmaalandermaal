@@ -335,16 +335,21 @@ form{
     }
 }
 
-@media (max-width: 420px) {
-    .headerbar{
-        height: 100px;
-    }
-}
 
-
-.headerbarContent{
+.headerbar-content{
     background-color: #4d79ff;
     padding-top: 10px;
+}
+
+.user{
+    margin-right: 5px;
+    width: 35px;
+    float: right;
+    border:0;
+}
+
+.user:hover{
+    background-color:#3366ff
 }
 
 .search{
@@ -411,15 +416,4 @@ footer a {
 
 .red {
     color:red;
-}
-
-.user{
-    margin-right: 5px;
-    width: 35px;
-    float: right;
-    border:0;
-}
-
-.user:hover{
-  background-color:#3366ff
 }
