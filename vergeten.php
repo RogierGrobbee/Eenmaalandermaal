@@ -19,22 +19,21 @@ if (!empty($_POST['wachtwoord'])) {
 if (isset($_POST['Vergeten'])) {
     if (
         empty($_POST['gebruikersnaam']) ||
-        empty($_POST['wachtwoord'])
+        empty($_POST['antwoord'])
     ) {
         $errorMessage = "Niet alles ingevuld.";
     } else
         if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
             $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
-        } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-            $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
         } else {
             if(getValidation($_POST['gebruikersnaam'])) {
-                $password = $_POST['wachtwoord'];
+                $secretQuestion = $_POST['geheimeVraag'];
+                $answer = $_POST['antwoord'];
                 $username = $_POST['gebruikersnaam'];
-                $hash = getPassword($username);
+                $hash = getSecretAnswer($username);
                 if (password_verify($password, $hash)) {
-                    $_SESSION['user'] = $username;
-                    header('Location: index.php');
+                    //actie
+                    echo 'test';
                 } else {
                     $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
                 }
@@ -71,7 +70,7 @@ if (isset($_POST['Vergeten'])) {
         </row>
         <row>
             <div class="col-sm-12 submit-registrion">
-                <input type="submit" name="Vergeten" value="Vergeten">
+                <input type="submit" name="Vergeten" value="Wachtwoord aanvragen">
             </div>
 
         </row>
