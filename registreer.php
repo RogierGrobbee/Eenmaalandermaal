@@ -213,6 +213,11 @@ else
                 echo $errorMessage;
                 echo "</div>";
             }
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger'>";
+                echo $errorMessage;
+                echo "</div>";
+            }
             echo $successMessage;
             ?>
 
