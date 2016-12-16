@@ -28,28 +28,18 @@ if (isset($_POST['Login'])) {
         } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
             $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
         } else {
-//            $password = $_POST['wachtwoord'];
-//            $username= $_POST['gebruikersnaam'];
-//            $hash = getPassword($username);
+            $password = $_POST['wachtwoord'];
+            $username= $_POST['gebruikersnaam'];
+            $hash = getPassword($username);
             if (password_verify($password,$hash)) {
+                $_SESSION['login']=true;
+                $_SESSION['user'] = $username;
                 echo 'Login is oke';
                 // header('Location: index.php');
             } else {
                 echo 'Combinatie gebruikersnaam en wachtwoord zijn onjuist';
             }
         }
-
-    $password = $_POST['wachtwoord'];
-    $username= $_POST['gebruikersnaam'];
-    echo '<br>';
-   $hash = getPassword($username);
-   // $hash = '$2y$12$e5l3eO3IIvPXtMW5iZ68vew9jJ/naGw3hIFlsifNi2yYBlbfafMDu';
-    echo $hash + $username;
-    if (password_verify($password,$hash )) {
-        echo 'Password is valid!';
-    } else {
-        echo 'Invalid password.';
-    }
 }
 
 ?>
