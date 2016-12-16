@@ -693,6 +693,14 @@ function getQuestionNumber($username)
     $row = $statement->fetch();
     return $row['vraagnummer'];
 }
+function getEmail($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT email FROM gebruiker WHERE gebruikersnaam= :username");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['email'];
+}
 
 function hashPass($pass)
 {

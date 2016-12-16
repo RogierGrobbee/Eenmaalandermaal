@@ -22,19 +22,30 @@ if (isset($_POST['Vergeten'])) {
             $answer = strtolower($_POST['antwoord']);
             $username = $_POST['gebruikersnaam'];
             $hash = getSecretAnswer($username);
-            if(getQuestionNumber($_POST['gebruikersnaam']) == $secretQuestion){
-                if (getValidation($_POST['gebruikersnaam'])) {
-                    if (password_verify($answer, $hash) && getQuestionNumber($_POST['gebruikersnaam']) == $secretQuestion) {
-                        //actie
-                        echo 'test';
-                    } else {
-                        $message = 'Combinatie gebruikersnaam, geheime vraag en antwoord zijn onjuist.';
-                    }
+            if (getValidation($_POST['gebruikersnaam'])) {
+                if (password_verify($answer, $hash) && getQuestionNumber($username) == $secretQuestion) {
+                    $password = generateRandomString();
+                    $to      = getEmail(gebruikersnaam);
+                    $subject = 'Wachtwoord vergeten EenmaalAndermaal';
+                    $message = 'Uw nieuwe wachtwoord: ' . $password;
+                    $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
+                        'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
+                        'X-Mailer: PHP/' . phpversion();
+
+                    $hashedPassword = hashPass($password);
+
+                    mail($to, $subject, $message, $headers);
+                    $sql = "UPDATE gebruiker SET wachtwoord = :wachtwoord WHERE gebruikersnaam = :gebruikersnaam";
+                    $stmt = $db->prepare($sql);
+                    $stmt->bindValue(':gebruikersnaam', $username, PDO::PARAM_STR);
+                    $stmt->bindValue(':wachtwoord', $hashedPassword, PDO::PARAM_STR);
+                    $stmt->execute();
+
+                    $successMessage = "Uw nieuwe wachtwoord is per e-mail verstuurd.";
                 } else {
-                    $message = 'Gebruiker is niet gevalideerd.';
+                    $message = 'Combinatie gebruikersnaam, geheime vraag en antwoord zijn onjuist.';
                 }
-            }
-            else {
+            } else {
                 $message = 'Gebruiker is niet gevalideerd.';
             }
         }

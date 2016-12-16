@@ -2,6 +2,7 @@
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
+    echo '<script type="text/javascript" src="js/veiling.js"></script>';
 }
 require('partial files\header.php');
 
@@ -21,7 +22,7 @@ $voorwerp = getVoorwerp($voorwerpnummer);
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
-        if(!insertNewBod($voorwerp, $_POST['bod'], 'Leon')){
+        if(!insertNewBod($voorwerp, $_POST['bod'], $_SESSION['user'])){
             $error = "<div class='alert alert-danger'>
                         <strong>Dit bod is niet geldig!</strong>
                       </div>";
@@ -52,6 +53,31 @@ else {
     $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
     $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
 }
+
+function showBieden(){
+    global $minimalePrijs;
+    global $voorwerp;
+
+    if(isset($_SESSION['user'])){
+        echo '<div class="bieden">
+                    <form action="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'" method="post">
+                        <label for="bied-bar">€</label>
+                        <input type="number" class="bied-bar" name="bod" id="bied-bar" min=
+                         "'.$minimalePrijs.'" max="10000000" value="'.$minimalePrijs.'" step="0.01" required>
+                        <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">
+                        <button type="submit" class="btn-bied">Bied</button>
+                    </form>
+                </div>';
+    }
+    else{
+        echo '<div class="bieden">
+            <form action="login.php">
+                <button type="submit">Bied nu mee!</button>
+            </form>
+        </div>';
+    }
+}
+
 ?>
     <div class="row">
         <?php
@@ -66,18 +92,9 @@ else {
                     <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
                 </div>
 
-                <div class="bieden">
-                    <form action="veiling.php?voorwerpnummer=<?php echo $voorwerp->voorwerpnummer ?>" method="POST">
-                        <label for="bied-bar">€</label>
-                        <input type="number" class="bied-bar" name="bod" id="bied-bar" min=<?php
-                        echo '"'.$minimalePrijs . '" max="10000000" value="' . $minimalePrijs . '" step="0.01" required>
-                        <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">';
-                        ?>
-                        <button type="submit" class="btn-bied">Bied</button>
-                    </form>
-                </div>
-
                 <?php
+                showBieden();
+
                 if($biedingen == null){
                     echo "<div class='highest-bod'>Er zijn nog geen biedingen! Bied snel!</div>";
                 }
