@@ -583,6 +583,8 @@ function validateUser($code)
 }
 
 
+
+
 function doesUsernameAlreadyExist($username)
 {
     global $db;
@@ -642,6 +644,14 @@ function getPassword($username)
     return $row['wachtwoord'];
 }
 
+function getValidation($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT gevalideerd FROM gebruiker WHERE gebruikersnaam= :username ");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['gevalideerd'];
+}
 
 
 function hashPass($pass)

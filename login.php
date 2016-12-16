@@ -32,10 +32,8 @@ if (isset($_POST['Login'])) {
             $username= $_POST['gebruikersnaam'];
             $hash = getPassword($username);
             if (password_verify($password,$hash)) {
-                $_SESSION['login']=true;
                 $_SESSION['user'] = $username;
-                echo 'Login is oke';
-                // header('Location: index.php');
+                header('Location: index.php');
             } else {
                 echo 'Combinatie gebruikersnaam en wachtwoord zijn onjuist';
             }
