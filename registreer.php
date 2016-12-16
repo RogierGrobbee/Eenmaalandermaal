@@ -196,7 +196,7 @@ else
 
         <row>
             <div class="col-sm-12 submit-registrion">
-                <input type="submit" name="registreer" value="Registreren">
+                <button type="submit" name="registreer" value="Registreren">Registreren</button>
             </div>
 
         </row>
