@@ -7,16 +7,18 @@ include_once('partial files\header.php'); ?>
 <?php include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
 
-$message = "";
+$errorMessage;
+$successMessage;
+
 if (isset($_POST['Vergeten'])) {
     if (
         empty($_POST['gebruikersnaam']) ||
         empty($_POST['antwoord'])
     ) {
-        $message = "Niet alles ingevuld.";
+        $errorMessage = "Niet alles ingevuld.";
     } else
         if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
-            $message = "Gebruikersnaam mag geen spaties bevatten.";
+            $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
         } else {
             $secretQuestion = $_POST['geheimeVraag'];
             $answer = strtolower($_POST['antwoord']);
@@ -43,7 +45,7 @@ if (isset($_POST['Vergeten'])) {
 
                     $successMessage = "Uw nieuwe wachtwoord is per e-mail verstuurd.";
                 } else {
-                    $message = 'Combinatie gebruikersnaam, geheime vraag en antwoord zijn onjuist.';
+                    $errorMessage = 'Combinatie gebruikersnaam, geheime vraag en antwoord zijn onjuist.';
                 }
             } else {
                 $message = 'Gebruiker is niet gevalideerd.';
@@ -84,12 +86,17 @@ if (isset($_POST['Vergeten'])) {
     </form>
     <br><br>
     <row>
-        <?php
-        if (!empty($message)) {
-            echo "<div class='alert alert-danger'>";
-            echo $message;
-            echo "</div>";
-        }
-        ?>
+        <div style="color:red" class="col-sm-12">
+            <br>
+            <?php
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger'>";
+                echo $errorMessage;
+                echo "</div>";
+            }
+            echo $successMessage;
+            ?>
+        </div>
+
     </row>
 <?php include_once('partial files\footer.php') ?>

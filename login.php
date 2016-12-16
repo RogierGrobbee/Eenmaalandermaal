@@ -74,10 +74,14 @@ if (isset($_POST['Login'])) {
     </row>
     <row>
         <div style="color:red" class="col-sm-12">
+            <br>
             <?php
-            echo $errorMessage;
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger'>";
+                echo $errorMessage;
+                echo "</div>";
+            }
             ?>
-            <br><br>
         </div>
     </row>
 
