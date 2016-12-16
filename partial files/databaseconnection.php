@@ -653,6 +653,22 @@ function getValidation($username)
     return $row['gevalideerd'];
 }
 
+function getSecretAnswer($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT antwoordtekst FROM antwoord WHERE gebruikersnaam= :username ");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['antwoordtekst'];
+}
+function getQuestionNumber($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT vraagnummer FROM antwoord WHERE gebruikersnaam= :username ");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['vraagnummer'];
+}
 
 function hashPass($pass)
 {

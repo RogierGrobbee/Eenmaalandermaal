@@ -7,39 +7,35 @@ include_once('partial files\header.php'); ?>
 <?php include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
 
-$errorMessage = "";
-$successMessage = "";
-if (!empty($_POST['wachtwoord'])) {
-    $password = $_POST['wachtwoord'];
-
-    $uppercase = preg_match('@[A-Z]@', $password);
-    $lowercase = preg_match('@[a-z]@', $password);
-    $number = preg_match('@[0-9]@', $password);
-}
+$message = "";
 if (isset($_POST['Vergeten'])) {
     if (
         empty($_POST['gebruikersnaam']) ||
         empty($_POST['antwoord'])
     ) {
-        $errorMessage = "Niet alles ingevuld.";
+        $message = "Niet alles ingevuld.";
     } else
         if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
-            $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
+            $message = "Gebruikersnaam mag geen spaties bevatten.";
         } else {
-            if(getValidation($_POST['gebruikersnaam'])) {
-                $secretQuestion = $_POST['geheimeVraag'];
-                $answer = $_POST['antwoord'];
-                $username = $_POST['gebruikersnaam'];
-                $hash = getSecretAnswer($username);
-                if (password_verify($password, $hash)) {
-                    //actie
-                    echo 'test';
+            $secretQuestion = $_POST['geheimeVraag'];
+            $answer = strtolower($_POST['antwoord']);
+            $username = $_POST['gebruikersnaam'];
+            $hash = getSecretAnswer($username);
+            if(getQuestionNumber($_POST['gebruikersnaam']) == $secretQuestion){
+                if (getValidation($_POST['gebruikersnaam'])) {
+                    if (password_verify($answer, $hash) && getQuestionNumber($_POST['gebruikersnaam']) == $secretQuestion) {
+                        //actie
+                        echo 'test';
+                    } else {
+                        $message = 'Combinatie gebruikersnaam, geheime vraag en antwoord zijn onjuist.';
+                    }
                 } else {
-                    $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
+                    $message = 'Gebruiker is niet gevalideerd.';
                 }
             }
-            else{
-                $errorMessage = 'Gebruiker is niet gevalideerd.';
+            else {
+                $message = 'Gebruiker is niet gevalideerd.';
             }
         }
 }
@@ -80,7 +76,6 @@ if (isset($_POST['Vergeten'])) {
         <div style="color:red" class="col-sm-12">
             <?php
             echo $errorMessage;
-            echo $successMessage;
             ?>
             <br><br>
         </div>
