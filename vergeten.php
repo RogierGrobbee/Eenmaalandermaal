@@ -2,7 +2,7 @@
 $rubriekArray = loadRubrieken();
 include_once('partial files\header.php'); ?>
 
-    <h1>Log In</h1>
+    <h1>Wachtwoord vergeten</h1>
 
 <?php include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
@@ -16,25 +16,24 @@ if (!empty($_POST['wachtwoord'])) {
     $lowercase = preg_match('@[a-z]@', $password);
     $number = preg_match('@[0-9]@', $password);
 }
-if (isset($_POST['Login'])) {
+if (isset($_POST['Vergeten'])) {
     if (
         empty($_POST['gebruikersnaam']) ||
-        empty($_POST['wachtwoord'])
+        empty($_POST['antwoord'])
     ) {
         $errorMessage = "Niet alles ingevuld.";
     } else
         if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
             $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
-        } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-            $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
         } else {
             if(getValidation($_POST['gebruikersnaam'])) {
-                $password = $_POST['wachtwoord'];
+                $secretQuestion = $_POST['geheimeVraag'];
+                $answer = $_POST['antwoord'];
                 $username = $_POST['gebruikersnaam'];
-                $hash = getPassword($username);
+                $hash = getSecretAnswer($username);
                 if (password_verify($password, $hash)) {
-                    $_SESSION['user'] = $username;
-                    header('Location: index.php');
+                    //actie
+                    echo 'test';
                 } else {
                     $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
                 }
@@ -47,6 +46,7 @@ if (isset($_POST['Login'])) {
 
 ?>
 
+
     <form method="post">
         <row>
             <div class="col-sm-6">
@@ -56,28 +56,26 @@ if (isset($_POST['Login'])) {
                         <td><input pattern="[a-zA-Z0-9-]+" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
                     </tr>
                     <tr>
-                        <td>Wachtwoord</td>
-                        <td><input type="password" name="wachtwoord" ></td>
+                        <td>Geheime vraag</td>
+                        <td>
+                            <?php echo returnGeheimeVragen(); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Antwoord</td>
+                        <td><input  value="<?php if(isset($_POST['antwoord'])){ echo $_POST['antwoord'];}?>" type="text" name="antwoord"></td>
                     </tr>
                 </table>
             </div>
         </row>
         <row>
             <div class="col-sm-12 submit-registrion">
-                <input type="submit" name="Login" value="Login">
+                <input type="submit" name="Vergeten" value="Wachtwoord aanvragen">
             </div>
 
         </row>
     </form>
     <br><br>
-    <row>
-        <div class="col-sm-12">
-            <form action="vergeten.php" method="post">
-                    <br>
-                    <input type="submit" name="Wachtwoord Vergeten" value="Wachtwoord Vergeten?">
-            </form>
-        </div>
-    </row>
     <row>
         <div style="color:red" class="col-sm-12">
             <?php
