@@ -542,7 +542,11 @@ function returnAllCountries()
     $query = $db->query("SELECT landnaam FROM land");
     echo "<select name='country'>";
     foreach ($query as $row) {
-        echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
+        if ($row['landnaam'] == 'Nederland') {
+            echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
+        } else {
+            echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
+        }
     }
     echo "</select>";
 }

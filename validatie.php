@@ -16,7 +16,7 @@ if (isset($_POST['valideer'])) {
         $errorString =  "Goedgekeurd, u kunt nu inloggen.";
 
     } else {
-        $errorString =  "Validatiecode niet correct of is verlopen.";
+        $errorString =  "<div class='alert alert-danger'>Validatiecode niet correct of is verlopen.</div>";
 
     }
 }
