@@ -676,7 +676,7 @@ function hashPass($pass)
         'cost' => 12,
         'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
     ];
-    return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
+    return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
 
 function veilingEnded($voorwerpId) {
@@ -686,4 +686,11 @@ function veilingEnded($voorwerpId) {
     $row = $statement->fetch();
     return $row['isBeeindigd'];
 }
+
+function validateDate($date)
+{
+    $d = DateTime::createFromFormat('Y-m-d', $date);
+    return $d && $d->format('Y-m-d') === $date;
+}
+
 ?>
