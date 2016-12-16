@@ -20,7 +20,11 @@ $voorwerp = getVoorwerp($voorwerpnummer);
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
-        insertNewBod($voorwerp, $_POST['bod'], 'Leon');
+        if(!insertNewBod($voorwerp, $_POST['bod'], 'Leon')){
+            $error = "<div class='alert alert-danger'>
+                        <strong>Dit bod is niet geldig!</strong>
+                      </div>";
+        }
     }
 }
 
@@ -49,8 +53,13 @@ else {
 }
 ?>
     <div class="row">
+        <?php
+            if(isset($error)){
+                echo $error;
+            }
+        ?>
         <?php echo '<img class="bigpicture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
                     <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
@@ -109,7 +118,7 @@ else {
             <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>
         </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 extrainfo">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5 extrainfo">
             <h4>Betalingswijze- en instructie</h4>
             <p>
                 <?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?>
