@@ -6,6 +6,7 @@ function loadJSScripts() {
 
 require('partial files\databaseconnection.php');
 require('partial files\header.php');
+
 ?>
 
 <h1>Meer dan 2000 veilingen! Bied nu!</h1>

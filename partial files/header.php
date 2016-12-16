@@ -3,6 +3,11 @@ session_start();
     if(isset($_GET['search'])){
         $search = $_GET['search'];
     }
+    if(isset($_POST['logout'])){
+        session_destroy();
+        echo "test";
+        header('Location: #');
+    }
 ?>
 
 <html lang="en">
@@ -22,6 +27,28 @@ session_start();
         <a href="index.php">
             <img class="col-xs-12 col-sm-8 col-md-6 col-lg-5" src="images/logo.png" alt="Logo EenmaalAndermaal">
         </a>
+        <div class="col-xs-12 col-sm-4 col-md-6 col-lg-7 ">
+            <?php if(isset($_SESSION['user'])){
+                echo '
+                <form action="index.php" method="post">
+                     <input type="image" class="user img-circle" src="images/IconLogOut.png" alt="Loguit">
+                     <input name="logout" type="hidden">
+                 </form>   
+                <a href="profiel.php">
+                    <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">
+                </a>';
+           }
+           else{
+                echo 
+                '<a href="registreer.php">
+                    <img class="user img-circle"  src="images/IconRegistreren.png" alt="Registreren">
+                </a>
+                <a href="login.php">
+                    <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">
+                </a>';
+            }?>
+        
+        </div>
         <form action='zoeken.php' method='GET'>
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 search">
                 <input type="text" class="search-bar" name="search" value="<?php
