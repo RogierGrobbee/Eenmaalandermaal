@@ -15,6 +15,12 @@ button{
     color: #ffffff;
 }
 
+input[type=submit]{
+    background-color: #ff8c1a !important;
+    border: none!important;;
+    color: #ffffff!important;;
+}
+
 button:hover{
     background-color: #e67300;
 }

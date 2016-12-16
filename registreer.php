@@ -110,6 +110,15 @@ else
          $stmt->bindValue(':antwoord', hashPass($antwoord), PDO::PARAM_STR);
          $stmt->execute();
 
+
+         $sql4 = "INSERT INTO gebruikerstelefoon (volgnr, gebruikersnaam, telefoon) VALUES 
+                (:nummer, :gebruikersnaam, :tel)";
+         $stmt = $db->prepare($sql4);
+         $stmt->bindValue(':nummer', 0, PDO::PARAM_STR);
+         $stmt->bindValue(':gebruikersnaam', $_POST['gebruikersnaam'], PDO::PARAM_STR);
+         $stmt->bindValue(':tel', $_POST['telefoon1'], PDO::PARAM_STR);
+         $stmt->execute();
+
         header('Location: validatie.php');
     }
 }
@@ -126,11 +135,11 @@ else
                 <table class="registration-table">
                     <tr>
                         <td>Email</td>
-                        <td><input placeholder="name@example.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
+                        <td><input maxlength="255" placeholder="name@example.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
                     </tr>
                     <tr>
                         <td>Gebruikersnaam</td>
-                        <td><input  value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
+                        <td><input maxlength="35" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
                     </tr>
                     <tr>
                         <td>Voornaam</td>
@@ -142,11 +151,11 @@ else
                     </tr>
                     <tr>
                         <td>Wachtwoord</td>
-                        <td><input  type="password" name="wachtwoord" ></td>
+                        <td><input maxlength="100" type="password" name="wachtwoord" ></td>
                     </tr>
                     <tr>
                         <td>Bevestig wachtwoord</td>
-                        <td><input type="password" name="wachtwoord2" ></td>
+                        <td><input maxlength="100" type="password" name="wachtwoord2" ></td>
                     </tr>
                     <tr>
                         <td>Geboortedatum</td>
@@ -165,11 +174,11 @@ else
                     </tr>
                     <tr>
                         <td>Adres</td>
-                        <td><input value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
+                        <td><input maxlength="53" value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
                     </tr>
                     <tr>
                         <td>Plaats</td>
-                        <td><input  value="<?php if(isset($_POST['plaats'])){ echo $_POST['plaats'];}?>" type="text" name="plaats" ></td>
+                        <td><input maxlength="100" value="<?php if(isset($_POST['plaats'])){ echo $_POST['plaats'];}?>" type="text" name="plaats" ></td>
                     </tr>
                     <tr>
                         <td>Postcode</td>
@@ -177,7 +186,7 @@ else
                     </tr>
                     <tr>
                         <td>Telefoon</td>
-                        <td><input  value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
+                        <td><input maxlength="15" value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
                     </tr>
                     <tr>
                         <td>Geheime vraag</td>
@@ -187,7 +196,7 @@ else
                     </tr>
                     <tr>
                         <td>Antwoord</td>
-                        <td><input  value="<?php if(isset($_POST['antwoord'])){ echo $_POST['antwoord'];}?>" type="text" name="antwoord"></td>
+                        <td><input maxlength="100" value="<?php if(isset($_POST['antwoord'])){ echo $_POST['antwoord'];}?>" type="text" name="antwoord"></td>
                     </tr>
 
                 </table>
@@ -195,8 +204,8 @@ else
         </row>
 
         <row>
-            <div class="col-sm-12 submit-registrion">
-                <button type="submit" name="registreer" value="Registreren">Registreren</button>
+            <div class="col-sm-12 submit-registrion orangeButton">
+                <input  type="submit" name="registreer" value="Registreren">
             </div>
 
         </row>
