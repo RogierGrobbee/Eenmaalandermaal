@@ -8,7 +8,6 @@ include_once('partial files\header.php'); ?>
 loadSidebar($rubriekArray, null);
 
 $errorMessage = "";
-
 if (!empty($_POST['wachtwoord'])) {
     $password = $_POST['wachtwoord'];
 
