@@ -373,6 +373,7 @@ footer a {
 /* Registration page */
 .registration-table {
     width: 100%;
+    margin-bottom: 10px;
 }
 
 .registration-table td {
