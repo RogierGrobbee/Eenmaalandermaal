@@ -2,6 +2,15 @@
  * Created by Jamiel on 30-11-2016.
  */
 
+/*
+* This file gives the DOM objects with the class name of 'time' the difference between
+* the current time and the given time.
+*
+* The Javascript expects the DOM object to be in this format:
+* <tag data-tijd="[Time to count down to]" data-nummer="[voorwerpnunmmer]" class="tijd"></tag>
+* The used tag needs to have a InnerHTML attribute. (Currently used tag is the SPAN tag).
+*/
+
 /**
  * This function makes a new date for every browser (including IE) to parse to a Date.
  * @param dateStr The date returned from mysql timestamp/datetime field.
@@ -53,7 +62,7 @@ function showDifference(timeElement) {
         if (timeElement.innerHTML != 'Beëindigd!') {
             timeElement.innerHTML = 'Beëindigd!';
 
-            endVeiling(timeElement.getAttribute('data-nummer'));
+            endAuction(timeElement.getAttribute('data-nummer'));
         }
 
         return;
@@ -90,16 +99,17 @@ window.onload = function() {
 };
 
 
-function endVeiling(voorwerpId) {
+/**
+ * Sends a AJAX request to end the auction.
+ * @param voorwerpId The ID of the auction to end.
+ */
+function endAuction(voorwerpId) {
     $.ajax({
         type: 'POST',
-        url: "partial files/AJAXRequestHandler/AJAXRequestHandler.php",
+        url: "AJAXRequestHandler/AJAXRequestHandler.php",
         data: ({
-            action: 'endVeiling',
+            action: 'endAuction',
             voorwerpnummer: voorwerpId
-        }),
-        success: function (output) {
-            console.log(output);
-        }
+        })
     });
 }

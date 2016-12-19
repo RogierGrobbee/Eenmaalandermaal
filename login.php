@@ -51,6 +51,9 @@ if (isset($_POST['Login'])) {
             }
             ?>
     <form method="post">
+        <div class="col-xs-12 registration-link">Om mee te kunnen doen aan de veilingen moet u inloggen. Als u nog geen account heeft,
+            <a href="registreer.php">druk dan hier om een account te registreren.</a> </div>
+
         <div class="col-sm-6 col-xs-8">
             <table class="registration-table">
                 <tr>
@@ -63,8 +66,7 @@ if (isset($_POST['Login'])) {
                 </tr>
             </table>
         </div>
-            <br><br><br>
-        <div class="col-sm-1 col-xs-2 submit-registrion">
+        <div class="col-sm-3 col-xs-3 submit-registration">
             <button type="submit" name="Login" value="Login">Login</button>
         </div>
     </form>

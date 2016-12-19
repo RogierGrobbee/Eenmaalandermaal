@@ -394,10 +394,18 @@ footer a {
     min-width: 100px;
 }
 
-.submit-registrion input {
+.submit-registration input {
     margin-top: 0.5em;
     margin-right: 0.4em;
     float:left;
+}
+
+.registration-link a{
+    color: #4d79ff;
+}
+
+.registration-link a:hover{
+    color: #1a53ff;
 }
 
 .red {
@@ -532,7 +540,7 @@ ul.topnav li a:hover {}
 ul.topnav li.icon {display: none;}
 
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     ul.topnav li {
 
         width:84%;
@@ -551,7 +559,7 @@ ul.topnav li.icon {display: none;}
 }
 
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     ul.topnav.responsive {position: relative;}
     ul.topnav.responsive li.icon {
         position: absolute;
