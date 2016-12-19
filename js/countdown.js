@@ -110,9 +110,6 @@ function endAuction(voorwerpId) {
         data: ({
             action: 'endAuction',
             voorwerpnummer: voorwerpId
-        }),
-        success: function (output) {
-            console.log(output);
-        }
+        })
     });
 }
