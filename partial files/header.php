@@ -35,11 +35,11 @@ session_start();
                      <input name="logout" type="hidden">
                  </form>   
                 <a href="profiel.php">
-                    <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">
-                </a>';
+                    <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">';
+
                 echo "<h4 class='welkom-message'>";
                 echo $_SESSION['user'];
-                echo "</h4>";
+                echo "</h4></a>";
            }
            else{
                 echo 
@@ -53,7 +53,7 @@ session_start();
         
         </div>
         <form action='zoeken.php' method='GET'>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 search">
+            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 search">
                 <input placeholder="Zoeken naar..." type="text" class="search-bar" name="search" value="<?php
                     if(isset($search)){
                         echo $search;
