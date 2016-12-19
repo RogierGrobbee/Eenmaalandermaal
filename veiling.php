@@ -51,7 +51,7 @@ if($biedingen == null){
 }
 else {
     $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
-    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
+    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
 }
 
 function showBieden(){
@@ -115,7 +115,10 @@ function showBieden(){
                         }
 
                         echo "<div class='gebruikersnaam'>".$biedingen[$i]->gebruikersnaam."</div>
-                        <div class='bodprijs'>€".$bod."</div><br></div>";
+                        <div class='bod-date'><span>". str_replace(" ", "<br>",
+                                date("d/m/y H:i:s", strtotime($biedingen[$i]->bodtijdstip))) ."</span></div>
+                        <div class='bodprijs'>€".$bod." </div>
+                        <br></div>";
                     }
                 }
 
@@ -127,6 +130,8 @@ function showBieden(){
                 }
 
                 echo "<div class='bod'><div class='gebruikersnaam'>Startprijs</div>
+                        <div class='bod-date'><span>". str_replace(" ", "<br>",
+                        date("d/m/y H:i:s", strtotime($voorwerp->looptijdbeginveiling))) ."</span></div>
                         <div class='bodprijs'>€".$prijs."</div><br></div>";?>
             </div>
 

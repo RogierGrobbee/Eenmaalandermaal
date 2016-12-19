@@ -5,7 +5,6 @@ session_start();
     }
     if(isset($_POST['logout'])){
         session_destroy();
-        echo "test";
         header('Location: #');
     }
 ?>
@@ -29,6 +28,7 @@ session_start();
         </a>
         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-7 ">
             <?php if(isset($_SESSION['user'])){
+
                 echo '
                 <form action="index.php" method="post">
                      <input type="image" class="user img-circle" src="images/IconLogOut.png" alt="Loguit">
@@ -37,6 +37,9 @@ session_start();
                 <a href="profiel.php">
                     <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">
                 </a>';
+                echo "<h4 class='welkom-message'>Welkom ";
+                echo $_SESSION['user'];
+                echo "</h4>";
            }
            else{
                 echo 

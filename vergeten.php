@@ -27,7 +27,7 @@ if (isset($_POST['Vergeten'])) {
             if (getValidation($_POST['gebruikersnaam'])) {
                 if (password_verify($answer, $hash) && getQuestionNumber($username) == $secretQuestion) {
                     $password = generateRandomString();
-                    $to      = getEmail($gebruikersnaam);
+                    $to      = getEmail($username);
                     $subject = 'Wachtwoord vergeten EenmaalAndermaal';
                     $message = 'Uw nieuwe wachtwoord: ' . $password;
                     $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
@@ -54,8 +54,6 @@ if (isset($_POST['Vergeten'])) {
 }
 
 ?>
-
-
     <form method="post">
         <row>
             <div class="col-sm-6">
@@ -94,7 +92,11 @@ if (isset($_POST['Vergeten'])) {
                 echo $errorMessage;
                 echo "</div>";
             }
-            echo $successMessage;
+            elseif (!empty($successMessage)) {
+                echo "<div class='alert alert-success'>";
+                echo $successMessage;
+                echo "</div>";
+            }
             ?>
         </div>
 
