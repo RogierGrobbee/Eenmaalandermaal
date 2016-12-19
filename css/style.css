@@ -533,9 +533,10 @@ ul.topnav li a {
     width: 100%;
 }
 
-
-
-ul.topnav li a:hover {}
+ul.topnav li a.rubriekList:hover {
+    background: white;
+    cursor: pointer !important;
+}
 
 
 ul.topnav li.icon {display: none;}

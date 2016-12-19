@@ -3,7 +3,7 @@ function loadSidebar($rubriekArray, $selectedRubriek)
 {
     echo '<div class="list-group col-sm-3">';
     echo "<ul class='topnav' id='myTopnav''>";
-    echo "<li><strong><a class=list-group-item href='#'>Rubrieken</a></strong></li>";
+    echo "<li><strong><a class='list-group-item rubriekList' href='#'>Rubrieken</a></strong></li>";
     foreach ($rubriekArray as $k => $rubriek) {
         if ($rubriek->superrubriek == null) {
             $listItemClass = "list-group-item";
