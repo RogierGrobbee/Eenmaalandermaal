@@ -37,7 +37,7 @@ session_start();
                 <a href="profiel.php">
                     <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">
                 </a>';
-                echo "<h4 class='welkom-message'>Welkom ";
+                echo "<h4 class='welkom-message'>";
                 echo $_SESSION['user'];
                 echo "</h4>";
            }
