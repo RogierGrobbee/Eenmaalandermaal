@@ -43,7 +43,7 @@ if (isset($_POST['registreer'])) {
     } else if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
         $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
     } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-        $errorMessage = "Wachtwoord moet minimaal 8 character lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
+        $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
     } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
         $errorMessage = "Wachtwoorden komen niet overeen.";
     } else if (!validateDate($_POST['geboortedatum'])) {
@@ -222,14 +222,10 @@ else
                 echo $errorMessage;
                 echo "</div>";
             }
-            echo $successMessage;
             ?>
 
         </div>
 
-    </row>
-
-
-
+    
 
 <?php include_once('partial files\footer.php') ?>
