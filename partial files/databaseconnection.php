@@ -742,12 +742,40 @@ function hashPass($pass)
     return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
 
-function veilingEnded($voorwerpId) {
+function veilingEnded($voorwerpnummer) {
     global $db;
-    $statement = $db->prepare("SELECT isBeeindigd FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpId));
+    $statement = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
     $row = $statement->fetch();
-    return $row['isBeeindigd'];
+    return $row['isVoltooid'];
+}
+
+function endVeilingByVoorwerpnummer($voorwerpnummer) {
+    global $db;
+    $statement = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
+}
+
+function getVerkoperByVoorwerpnummer($voorwerpnummer) {
+    global $db;
+    $statement = $db->prepare("SELECT email FROM gebruiker
+                                WHERE gebruikersnaam in(
+                                    SELECT verkoper FROM voorwerp where voorwerpnummer = :voorwerpnummer
+                                )");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $row = $statement->fetch(PDO::FETCH_OBJ);
+    return $row;
+}
+
+function getHighestBidderByVoorwerpnummer($voorwerpnummer) {
+    global $db;
+    $statement = $db->prepare("SELECT email from gebruiker WHERE gebruikersnaam in(
+                                    SELECT TOP 1 gebruikersnaam FROM bod where voorwerpnummer = :voorwerpnummer
+                                    ORDER BY gebruikersnaam ASC
+                                )");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $row = $statement->fetch(PDO::FETCH_OBJ);
+    return $row;
 }
 
 function cantVisitLoggedIn() {
