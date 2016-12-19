@@ -462,6 +462,10 @@ footer a {
     font-size: 15pt;
 }
 
+.welkom-message:hover{
+    color:#f2f2f2;
+}
+
 
 /*Collapseble menu */
 /* Remove margins and padding from the list, and add a black background color */
