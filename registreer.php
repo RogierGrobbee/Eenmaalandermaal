@@ -46,18 +46,14 @@ if (isset($_POST['registreer'])) {
         $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
     } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
         $errorMessage = "Wachtwoorden komen niet overeen.";
-    } else if (!validateDate($_POST['geboortedatum'])) {
+
+   } else if (!validateDate($_POST['geboortedatum'])) { ///////////////////////////////////////////
         $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
     } else if (postCodeCheck($_POST['postcode']) == false) {
         $errorMessage = "Geen geldige postcode.";
     }  else if (!is_numeric($_POST['telefoon1'])) {
         $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
   }
-// else if (!doesSeecretQuestionExist($_POST['antwoord'])){
-//        $errorMessage = "Geen geldige vraag.";
-//    } else if (!doesCountryExist($_POST['country'])) {
-//        $errorMessage = "Geen geldig land.";
-//    }
 else
      {
         $validatieCode = generateRandomString();
@@ -75,7 +71,7 @@ else
         $password = hashPass($_POST['wachtwoord']);
 
         global $db;
-        $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES 
+        $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
                 (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':username', $_POST['gebruikersnaam'], PDO::PARAM_STR);
@@ -93,7 +89,7 @@ else
         $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
         $stmt->execute();
 
-        $sql2 = "INSERT INTO validation (gebruikersnaam, validatiecode) VALUES 
+        $sql2 = "INSERT INTO validation (gebruikersnaam, validatiecode) VALUES
                 (:gebruiker, :validate)";
         $stmt = $db->prepare($sql2);
         $stmt->bindValue(':gebruiker', $_POST['gebruikersnaam'], PDO::PARAM_STR);
@@ -102,7 +98,7 @@ else
 
 
          $antwoord = $_POST['antwoord'];
-         $sql3 = "INSERT INTO antwoord (vraagnummer, gebruikersnaam, antwoordtekst) VALUES 
+         $sql3 = "INSERT INTO antwoord (vraagnummer, gebruikersnaam, antwoordtekst) VALUES
                 (:nummer, :gebruikersnaam, :antwoord)";
          $stmt = $db->prepare($sql3);
          $stmt->bindValue(':nummer', $_POST['geheimeVraag'], PDO::PARAM_STR);
@@ -111,7 +107,7 @@ else
          $stmt->execute();
 
 
-         $sql4 = "INSERT INTO gebruikerstelefoon (volgnr, gebruikersnaam, telefoon) VALUES 
+         $sql4 = "INSERT INTO gebruikerstelefoon (volgnr, gebruikersnaam, telefoon) VALUES
                 (:nummer, :gebruikersnaam, :tel)";
          $stmt = $db->prepare($sql4);
          $stmt->bindValue(':nummer', 0, PDO::PARAM_STR);
@@ -226,6 +222,6 @@ else
 
         </div>
 
-    
+
 
 <?php include_once('partial files\footer.php') ?>
