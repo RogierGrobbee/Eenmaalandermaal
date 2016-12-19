@@ -13,8 +13,10 @@ function endVeiling($voorwerpId) {
         $verkoper = getVerkoperByVoorwerpnummer($voorwerpId);
         $highestBidder = getHighestBidderByVoorwerpnummer($voorwerpId);
 
-        mailVeilingEndedToGebruiker($verkoper, $voorwerpId);
-        mailVeilingEndedToGebruiker($highestBidder, $voorwerpId);
+        if (mailVeilingEndedToGebruiker($verkoper, $voorwerpId)
+            && mailVeilingEndedToGebruiker($highestBidder, $voorwerpId)) {
+            endVeilingByVoorwerpnummer($voorwerpId);
+        }
     }
 }
 
@@ -24,7 +26,7 @@ function mailVeilingEndedToGebruiker($gebruiker, $voorwerpnummer) {
         'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
         'X-Mailer: PHP/' . phpversion();
 
-    mail($email,
+    return mail($email,
         'EenmaalAndermaal: Veilingnummer: ' . $voorwerpnummer . ' Beëindigd!',
     "De veiling met het veilingnummer: " . $voorwerpnummer . ' is beëindigd!', $headers);
 }
