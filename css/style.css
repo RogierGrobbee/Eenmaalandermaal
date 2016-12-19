@@ -427,7 +427,8 @@ footer a {
     color:red;
 }
 .welkom-message{
-    float: right;
-    margin-top: 10px;
-    margin-right: 200px;
+    margin-left: 290px;
+    margin-top: 5px;
+    color: white;
+    font-size: 20pt;
 }
