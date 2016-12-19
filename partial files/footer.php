@@ -10,5 +10,6 @@
             loadJSScripts();
         }
         ?>
+        <script type="text/javascript" src="js/filterSelect.js"></script>
     </body>
 </html>

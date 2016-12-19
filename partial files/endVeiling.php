@@ -8,20 +8,31 @@
 
 include_once('databaseconnection.php');
 
+
 function isLegalPostData($postData) {
     return isset ($postData) && !empty($postData);
 }
 
-if ((isLegalPostData($_POST['action']) && $action == 'endVeiling')
-    && isLegalPostData($_POST['voorwerpId'])) {
-    eindVeiling($_POST['voorwerpId']);
-}
-
-
 function endVeiling($voorwerpId) {
-    if (veilingEnded($voorwerpId)) {
-        echo 'Veiling is al beëindigd';
+    if (!veilingEnded($voorwerpId)) {
+        endVeilingByVoorwerpId($voorwerpId);
     }
 }
+
+//$voorwerpnummer = $_POST['voorwerpId'];
+
+echo 'Length $_GET: ' . count($_GET) . ' ';
+echo 'Length $_POST: ' . count($_POST) . ' ';
+echo 'Length $_REQUEST: ' . count($_REQUEST) . ' ';
+
+//echo $voorwerpnummer;
+
+/*if (isLegalPostData($_POST['voorwerp'])) {
+    endVeiling($_POST['voorwerp']);
+}/*
+
+/*if (isLegalPostData($_GET['voorwerpnummer'])) {
+    endVeiling($_GET['voorwerpnummer']);
+}*/
 
 ?>

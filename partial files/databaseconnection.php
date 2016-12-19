@@ -432,7 +432,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs. '</p>
                         <div class="veiling-info">
-                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
+                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd" data-nummer="' . $voorwerp->voorwerpnummer . '"></span>
                             <button class="veiling-detail">Bied</button>
                         </div>
                     </a>
@@ -478,17 +478,6 @@ function echoFilterBox($param, $filter, $isRubriek)
 
     echo '</select>';
 }
-echo '<script>
-function searchFilterSelect(filter, search) {
-  window.location.href = "./zoeken.php?search="+search+"&filter="+filter;
-}
-</script>';
-
-echo '<script>
-function rubriekFilterSelect(filter, rubriek) {
-  window.location.href = "./rubriek.php?rubriek="+rubriek+"&filter="+filter;
-}
-</script>';
 
 function strip_html_tags($str)
 {
@@ -717,10 +706,16 @@ function hashPass($pass)
 
 function veilingEnded($voorwerpId) {
     global $db;
-    $statement = $db->prepare("SELECT isBeeindigd FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
+    $statement = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
     $statement->execute(array(':voorwerpnummer' => $voorwerpId));
     $row = $statement->fetch();
-    return $row['isBeeindigd'];
+    return $row['isVoltooid'];
+}
+
+function endVeilingByVoorwerpId($voorwerpId) {
+    global $db;
+    $statement = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpId));
 }
 
 function validateDate($date)

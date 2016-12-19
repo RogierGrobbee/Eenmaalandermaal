@@ -50,8 +50,12 @@ function showDifference(timeElement) {
     var seconds = Math.floor((distance % _minute) / _second);
 
     if (distance < 0) {
+        if (timeElement.innerHTML != 'Beëindigd!') {
+            timeElement.innerHTML = 'Beëindigd!';
 
-        timeElement.innerHTML = 'Beëindigd!';
+            endVeiling(timeElement.getAttribute('data-nummer'));
+        }
+
         return;
     }
 
@@ -87,14 +91,14 @@ window.onload = function() {
 
 
 function endVeiling(voorwerpId) {
-    $.ajax({ url: '/partial files/endVeiling',
-        data: {
-            action: 'endVeiling',
-            voorwerpId: voorwerpId
-        },
+    $.ajax({
         type: 'POST',
-        success: function(output) {
-            alert("Veiling is beëindingd!!! VERWIJDER DIT!");
+        url: "partial files/endVeiling.php",
+        data: ({
+            voorwerp: voorwerpId
+        }),
+        success: function (output) {
+            console.log(output);
         }
     });
 }
