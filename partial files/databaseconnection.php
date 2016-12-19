@@ -751,8 +751,8 @@ function veilingEnded($voorwerpId) {
 }
 
 function cantVisitLoggedIn() {
-    if (!isset($_SESSION['user'])) {
-        header('index.php');
+    if (!empty($_SESSION['user'])) {
+        header('Location: index.php');
     }
 }
 ?>

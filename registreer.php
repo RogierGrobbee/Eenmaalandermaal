@@ -1,6 +1,8 @@
 <?php include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-include_once('partial files\header.php'); ?>
+include_once('partial files\header.php');
+cantVisitLoggedIn();
+?>
 
     <h1>Registreer</h1>
 
