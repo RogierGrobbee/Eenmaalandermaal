@@ -24,7 +24,15 @@ if($inputRubriekId != 0 && $huidigeRubriek != null) {
         }
 
         $aantal--;
+
+
+
+
     }
+
+
     echo "</div>";
 }
 ?>
+
+
