@@ -50,6 +50,11 @@ form{
     float: right;
 }
 
+.error{
+    margin-left: 15px;
+    margin-top: 0px;
+}
+
 /*Voorpagina*/
 .homepage-featured-img {
     width: 100%;
