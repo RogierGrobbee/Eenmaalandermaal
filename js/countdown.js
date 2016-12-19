@@ -53,7 +53,14 @@ function showDifference(timeElement) {
     var now = new Date();
     var distance = end - now;
 
-    var days = Math.floor(distance / _day);
+
+
+    var days = Math.ceil(distance / _day);
+
+    if (days == 1) {
+        days = Math.floor(distance / _day);
+    }
+
     var hours = Math.floor((distance % _day) / _hour);
     var minutes = Math.floor((distance % _hour) / _minute);
     var seconds = Math.floor((distance % _minute) / _second);
