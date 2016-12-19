@@ -93,9 +93,10 @@ window.onload = function() {
 function endVeiling(voorwerpId) {
     $.ajax({
         type: 'POST',
-        url: "partial files/endVeiling.php",
+        url: "partial files/AJAXRequestHandler/AJAXRequestHandler.php",
         data: ({
-            voorwerp: voorwerpId
+            action: 'endVeiling',
+            voorwerpnummer: voorwerpId
         }),
         success: function (output) {
             console.log(output);

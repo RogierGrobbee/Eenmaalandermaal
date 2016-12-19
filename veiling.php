@@ -90,7 +90,8 @@ function showBieden(){
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
-                    <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>" class="tijd"></span>
+                    <span data-tijd="<?php echo $voorwerp->looptijdeindeveiling ?>"
+                          data-nummer="<?= $voorwerp->voorwerpnummer ?>" class="tijd"></span>
                 </div>
 
                 <?php
