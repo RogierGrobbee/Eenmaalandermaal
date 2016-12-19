@@ -50,6 +50,11 @@ form{
     float: right;
 }
 
+.error{
+    margin-left: 15px;
+    margin-top: 0px;
+}
+
 /*Voorpagina*/
 .homepage-featured-img {
     width: 100%;
@@ -236,16 +241,16 @@ form{
 
 .gebruikersnaam{
     float: left;
-    width: 60%;
+    width: 67%;
     text-align: left;
 }
 
-.bodprijs, .bod-date{
-    float: right;
-    text-align: right;
+.bodprijs{
+    float: left;
 }
 
 .bod-date{
+    float: right;
     margin: 1px 0px 0px 3px;
     font-size: 12px;
     line-height: 10px;
@@ -257,12 +262,9 @@ form{
 }
 
 .highest-bod{
-    font-size: 28px;
-    line-height: 28px;
+    font-size: 22px;
+    line-height: 22px;
     color: #4d79ff;
-}
-
-.highest-bod .bod-date{
     margin-top: 3px;
 }
 
@@ -325,25 +327,6 @@ form{
     height: 90px;
     position: relative;
 }
-
-@media(max-width: 992px){
-    .bigpicture{
-        margin: 0 auto;
-        display: block;
-        margin-bottom: 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    .headerbar{
-        height: 120px;
-    }
-
-    .alert{
-        margin-left: 0px;
-    }
-}
-
 
 .headerbar-content{
     background-color: #4d79ff;
@@ -425,4 +408,114 @@ footer a {
 
 .red {
     color:red;
+}
+
+@media(max-width: 1200px){
+    .bigpicture{
+        margin: 0 auto;
+        display: block;
+        margin-bottom: 15px;
+
+        width: 80vw;
+        max-width: 400px;
+        height: 80vw;
+        max-height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .headerbar{
+        height: 120px;
+    }
+
+    .alert{
+        margin-left: 0px;
+    }
+
+    .gebruikersnaam{
+        width: 100%;
+        padding-top: 3px;
+    }
+
+    .bod-date, .bodprijs{
+        margin: 0;
+        border-bottom: solid 1px #c0c0c0;
+        padding-bottom: 3px;
+    }
+
+    .bod-date{
+        width: 30%;
+        line-height: 11px;
+        text-align: right;
+    }
+
+    .bodprijs {
+        width: 70%;
+        text-align: left;
+    }
+}
+
+.welkom-message{
+    margin-left: 270px;
+    margin-top: 5px;
+    color: white;
+    font-size: 15pt;
+}
+
+
+/*Collapseble menu */
+/* Remove margins and padding from the list, and add a black background color */
+ul.topnav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+/* Float the list items side by side */
+ul.topnav li {float: left;}
+
+/* Style the links inside the list items */
+ul.topnav li a {
+    display: inline-block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of links on hover */
+ul.topnav li a:hover {background-color: #555;}
+
+/* Hide the list item that contains the link that should open and close the topnav on small screens */
+ul.topnav li.icon {display: none;}
+
+/* When the screen is less than 680 pixels wide, hide all list items, except for the first one ("Home"). Show the list item that contains the link to open and close the topnav (li.icon) */
+@media screen and (max-width:680px) {
+    ul.topnav li:not(:first-child) {display: none;}
+    ul.topnav li.icon {
+        float: right;
+        display: inline-block;
+    }
+}
+
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens */
+@media screen and (max-width:680px) {
+    ul.topnav.responsive {position: relative;}
+    ul.topnav.responsive li.icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    ul.topnav.responsive li {
+        float: none;
+        display: inline;
+    }
+    ul.topnav.responsive li a {
+        display: block;
+        text-align: left;
+    }
 }

@@ -41,9 +41,17 @@ if (isset($_POST['Login'])) {
 
 ?>
 
-    <div class="row">
+    <div class="row" style="margin-top: -22.5px;">
+            <br>
+            <?php
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger error'>";
+                echo $errorMessage;
+                echo "</div>";
+            }
+            ?>
     <form method="post">
-        <div class="col-sm-6">
+        <div class="col-sm-6 col-xs-8">
             <table class="registration-table">
                 <tr>
                     <td>Gebruikersnaam</td>
@@ -56,23 +64,13 @@ if (isset($_POST['Login'])) {
             </table>
         </div>
             <br><br><br>
-        <div class="col-sm-1 submit-registrion">
+        <div class="col-sm-1 col-xs-2 submit-registrion">
             <button type="submit" name="Login" value="Login">Login</button>
         </div>
     </form>
         <form action="vergeten.php" method="post">
             <button type="submit" class="left" name="Wachtwoord Vergeten" value="Wachtwoord Vergeten?">Wachtwoord vergeten?</button>
         </form>
-        <div style="color:red" class="col-sm-12">
-            <br>
-            <?php
-            if (!empty($errorMessage)) {
-                echo "<div class='alert alert-danger'>";
-                echo $errorMessage;
-                echo "</div>";
-            }
-            ?>
-        </div>
     </div>
 
 <?php include_once('partial files\footer.php') ?>

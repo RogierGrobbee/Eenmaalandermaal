@@ -531,11 +531,7 @@ function returnAllCountries()
     $query = $db->query("SELECT landnaam FROM land");
     echo "<select name='country'>";
     foreach ($query as $row) {
-        if ($row['landnaam'] == 'Nederland') {
-            echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
-        } else {
-            echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
-        }
+        echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
     }
     echo "</select>";
 }
@@ -572,10 +568,32 @@ function validateUser($code)
     $sthm = $db->prepare($sth);
     $sthm->bindParam(':validatie', $code);
     $sthm->execute();
+
 }
 
+function getUserByUsername($username){
+    global $db;
+    $userQuery = $db->prepare('SELECT * FROM gebruiker where gebruikersnaam=?');
+    $userQuery->bindParam(1, $username);
+    $userQuery->execute();
+    return $userQuery->fetch(PDO::FETCH_OBJ);
+}
 
+function getPhoneNumbers($username){
+    global $db;
+    $bodQuery = $db->prepare('select * from gebruikerstelefoon where gebruikersnaam =? order by volgnr');
+    $bodQuery->bindParam(1, $username);
+    $bodQuery->execute();
+    return $bodQuery->fetchAll(PDO::FETCH_OBJ);
+}
 
+function getBiedingenByUsername($username){
+    global $db;
+    $bodQuery = $db->prepare('SELECT v.voorwerpnummer, v.titel, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
+    $bodQuery->bindParam(1, $username);
+    $bodQuery->execute();
+    return $bodQuery->fetchAll(PDO::FETCH_OBJ);
+}
 
 function doesUsernameAlreadyExist($username)
 {
@@ -624,32 +642,7 @@ function doesValidationCodeexist($code)
     } else {
         return true;
     }
-}
 
-function doesSeecretQuestionExist($number)
-{
-    global $db;
-    $statement = $db->prepare("SELECT vraagnummer FROM vraag WHERE validatiecode = :number");
-    $statement->execute(array(':nummer' => $number));
-    $row = $statement->fetch();
-    if (!$row) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-function doesCountryExist($country)
-{
-    global $db;
-    $statement = $db->prepare("SELECT NAAM_LAND FROM tblIMAOLand WHERE NAAM_LAND = :country");
-    $statement->execute(array(':country' => $country));
-    $row = $statement->fetch();
-    if (!$row) {
-        return false;
-    } else {
-        return true;
-    }
 }
 
 function getPassword($username)
@@ -670,30 +663,6 @@ function getValidation($username)
     return $row['gevalideerd'];
 }
 
-function getSecretAnswer($username)
-{
-    global $db;
-    $statement = $db->prepare("SELECT antwoordtekst FROM antwoord WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['antwoordtekst'];
-}
-function getQuestionNumber($username)
-{
-    global $db;
-    $statement = $db->prepare("SELECT vraagnummer FROM antwoord WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['vraagnummer'];
-}
-function getEmail($username)
-{
-    global $db;
-    $statement = $db->prepare("SELECT email FROM gebruiker WHERE gebruikersnaam= :username");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['email'];
-}
 
 function hashPass($pass)
 {
@@ -701,7 +670,7 @@ function hashPass($pass)
         'cost' => 12,
         'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
     ];
-    return password_hash($pass, PASSWORD_BCRYPT, $options);
+    return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
 }
 
 function veilingEnded($voorwerpId) {
@@ -717,11 +686,4 @@ function endVeilingByVoorwerpId($voorwerpId) {
     $statement = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
     $statement->execute(array(':voorwerpnummer' => $voorwerpId));
 }
-
-function validateDate($date)
-{
-    $d = DateTime::createFromFormat('Y-m-d', $date);
-    return $d && $d->format('Y-m-d') === $date;
-}
-
 ?>
