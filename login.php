@@ -54,7 +54,7 @@ if (isset($_POST['Login'])) {
             ?>
     <form method="post">
         <div class="col-xs-12 registration-link">Om mee te kunnen doen aan de veilingen moet u inloggen. Als u nog geen account heeft,
-            <a href="registreer.php">druk dan hier om een account te registreren.</a> </div>
+            <a href="registreer.php">klik dan hier om een account te registreren.</a> </div>
 
         <div class="col-xs-12">
             <table class="registration-table" style="width: 60%;">
