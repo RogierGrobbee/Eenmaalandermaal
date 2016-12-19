@@ -1,6 +1,8 @@
 <?php include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-include_once('partial files\header.php'); ?>
+include_once('partial files\header.php');
+cantVisitLoggedIn();
+?>
 
     <h1>Log In</h1>
 
@@ -51,8 +53,11 @@ if (isset($_POST['Login'])) {
             }
             ?>
     <form method="post">
-        <div class="col-sm-6 col-xs-8">
-            <table class="registration-table">
+        <div class="col-xs-12 registration-link">Om mee te kunnen doen aan de veilingen moet u inloggen. Als u nog geen account heeft,
+            <a href="registreer.php">klik dan hier om een account te registreren.</a> </div>
+
+        <div class="col-xs-12">
+            <table class="registration-table" style="width: 60%;">
                 <tr>
                     <td>Gebruikersnaam</td>
                     <td><input pattern="[a-zA-Z0-9-]+" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
@@ -63,8 +68,7 @@ if (isset($_POST['Login'])) {
                 </tr>
             </table>
         </div>
-            <br><br><br>
-        <div class="col-sm-1 col-xs-2 submit-registrion">
+        <div class="col-xs-3 col-sm-1 submit-registration">
             <button type="submit" name="Login" value="Login">Login</button>
         </div>
     </form>

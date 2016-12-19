@@ -24,6 +24,12 @@ function endAuction($voorwerpId) {
     }
 }
 
+/**
+ * Mails a gebruiker to notify that the given auction has ended.
+ * @param $gebruiker The gebruiker to send the mail to. Expects the email attribute.
+ * @param $voorwerpnummer The ID of the ended auction.
+ * @return bool True if the mail has been send successfully.
+ */
 function mailAuctionEndedToGebruiker($gebruiker, $voorwerpnummer) {
     $email = $gebruiker->email;
     $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .

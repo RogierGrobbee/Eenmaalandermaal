@@ -373,6 +373,7 @@ footer a {
 /* Registration page */
 .registration-table {
     width: 100%;
+    margin-bottom: 10px;
 }
 
 .registration-table td {
@@ -394,10 +395,18 @@ footer a {
     min-width: 100px;
 }
 
-.submit-registrion input {
+.submit-registration input {
     margin-top: 0.5em;
     margin-right: 0.4em;
     float:left;
+}
+
+.registration-link a{
+    color: #4d79ff;
+}
+
+.registration-link a:hover{
+    color: #1a53ff;
 }
 
 .red {
@@ -501,7 +510,6 @@ footer a {
 
 
 /*Collapseble menu */
-
 ul.topnav {
     list-style-type: none;
     margin: 0;
@@ -525,15 +533,16 @@ ul.topnav li a {
     width: 100%;
 }
 
-
-
-ul.topnav li a:hover {}
+ul.topnav li a.rubriekList:hover {
+    background: white;
+    cursor: pointer !important;
+}
 
 
 ul.topnav li.icon {display: none;}
 
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     ul.topnav li {
 
         width:84%;
@@ -552,7 +561,7 @@ ul.topnav li.icon {display: none;}
 }
 
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     ul.topnav.responsive {position: relative;}
     ul.topnav.responsive li.icon {
         position: absolute;

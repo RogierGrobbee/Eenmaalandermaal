@@ -1,6 +1,8 @@
 <?php include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-include_once('partial files\header.php'); ?>
+include_once('partial files\header.php');
+cantVisitLoggedIn();
+?>
 
     <h1>Registreer</h1>
 
@@ -47,7 +49,7 @@ if (isset($_POST['registreer'])) {
     } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
         $errorMessage = "Wachtwoorden komen niet overeen.";
 
-   } else if (!validateDate($_POST['geboortedatum'])) { ///////////////////////////////////////////
+   } else if (!validateDate($_POST['geboortedatum'])) {
         $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
     } else if (postCodeCheck($_POST['postcode']) == false) {
         $errorMessage = "Geen geldige postcode.";
