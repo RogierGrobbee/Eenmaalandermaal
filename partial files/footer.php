@@ -11,6 +11,6 @@
         }
         ?>
         <script type="text/javascript" src="js/filterSelect.js"></script>
-        <script type="text/javascript" src="js/navbar.js"></script>
+        <script type="text/javascript" src="../js/navbar.js"></script>
     </body>
 </html>
