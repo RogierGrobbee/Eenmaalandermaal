@@ -431,6 +431,10 @@ footer a {
     .gebruikersnaam{
         width: 70%;
     }
+
+    .headerbar{
+        height: 173px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -446,10 +450,6 @@ footer a {
         max-width: 400px;
         height: 80vw;
         max-height: 350px;
-    }
-
-    .headerbar{
-        height: 120px;
     }
 
     .alert{
@@ -479,6 +479,13 @@ footer a {
         text-align: left;
     }
 }
+
+@media (max-width: 400px){
+    .headerbar{
+        height: 120px;
+    }
+}
+
 
 .welkom-message{
     float:right;
@@ -510,11 +517,12 @@ ul.topnav li {
 
 ul.topnav li a {
     display: inline-block;
-    text-align: center;
+    text-align: left;
     padding: 14px 16px;
     text-decoration: none;
     transition: 0.3s;
     font-size: 17px;
+    width: 100%;
 }
 
 
