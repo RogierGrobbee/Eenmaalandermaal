@@ -471,7 +471,9 @@ function echoHomepageVoorwerp($voorwerp, $prijs, $image){
             <img src="pics/'. $image .'"alt="veiling">
             <h4>'.$voorwerp->titel.'</h4>
             <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
-            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+                <span data-tijd="'. $voorwerp->looptijdeindeveiling .
+                    '" data-nummer= "' . $voorwerp->voorwerpnummer . '" class="tijd"></span>
+             </div>
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
