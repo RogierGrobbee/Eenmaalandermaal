@@ -33,7 +33,7 @@ loadSidebar($rubriekArray, null);
         echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
         <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
 
-        echo '<div class="col-lg-4 col-md-5 col-sm-7 col-xs-11 homepage-featured-detail">
+        echo '<div class="col-lg-4 col-md-5 col-sm-7 homepage-featured-detail">
             <h2>'. $voorwerp->titel .'</h2>
             <div class="homepage-featured-prijs">€'. $prijs .'<br>
                 <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span>
