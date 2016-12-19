@@ -17,8 +17,10 @@ function endAuction($voorwerpId) {
         $verkoper = getVerkoperByVoorwerpnummer($voorwerpId);
         $highestBidder = getHighestBidderByVoorwerpnummer($voorwerpId);
 
-        if (mailAuctionEndedToGebruiker($verkoper, $voorwerpId)
-            && mailAuctionEndedToGebruiker($highestBidder, $voorwerpId)) {
+        $isSendToVerkoper = mailAuctionEndedToGebruiker($verkoper, $voorwerpId);
+        $isSendToHighestBidder = mailAuctionEndedToGebruiker($highestBidder, $voorwerpId);
+
+        if ($isSendToVerkoper && $isSendToHighestBidder) {
             endVeilingByVoorwerpnummer($voorwerpId);
         }
     }
