@@ -48,7 +48,7 @@ if (isset($_POST['Vergeten'])) {
                     $errorMessage = 'Combinatie gebruikersnaam, geheime vraag en antwoord zijn onjuist.';
                 }
             } else {
-                $message = 'Gebruiker is niet gevalideerd.';
+                $errorMessage = 'Gebruiker is niet gevalideerd.';
             }
         }
 }
