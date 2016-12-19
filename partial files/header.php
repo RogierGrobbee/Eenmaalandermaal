@@ -35,11 +35,11 @@ session_start();
                      <input name="logout" type="hidden">
                  </form>   
                 <a href="profiel.php">
-                    <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">
-                </a>';
+                    <img class="user img-circle" src="images/IconGebruiker.png" alt="Gebruiker">';
+
                 echo "<h4 class='welkom-message'>";
                 echo $_SESSION['user'];
-                echo "</h4>";
+                echo "</h4></a>";
            }
            else{
                 echo 
