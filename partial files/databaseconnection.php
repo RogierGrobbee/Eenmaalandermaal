@@ -542,7 +542,11 @@ function returnAllCountries()
     $query = $db->query("SELECT landnaam FROM land");
     echo "<select name='country'>";
     foreach ($query as $row) {
-        echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option >";
+        if ($row['landnaam'] == 'Nederland') {
+            echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+        } else {
+            echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+        }
     }
     echo "</select>";
 }
@@ -720,7 +724,7 @@ function hashPass($pass)
         'cost' => 12,
         'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
     ];
-    return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
+    return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
 
 function veilingEnded($voorwerpId) {
@@ -729,5 +733,11 @@ function veilingEnded($voorwerpId) {
     $statement->execute(array(':voorwerpnummer' => $voorwerpId));
     $row = $statement->fetch();
     return $row['isBeeindigd'];
+}
+
+function cantVisitLoggedIn() {
+    if (!isset($_SESSION['user'])) {
+        header('index.php');
+    }
 }
 ?>
