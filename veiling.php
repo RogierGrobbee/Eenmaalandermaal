@@ -22,7 +22,7 @@ $voorwerp = getVoorwerp($voorwerpnummer);
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
-        $bod =insertNewBod($voorwerp, $_POST['bod'], $_SESSION['user']);
+        $bod = insertNewBod($voorwerp, $_POST['bod'], $_SESSION['user']);
         if(!$bod->bodSuccesful){
             $error = "<div class='alert alert-danger error'>
                         <strong>$bod->message</strong>
