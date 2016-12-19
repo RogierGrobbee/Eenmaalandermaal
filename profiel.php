@@ -9,7 +9,7 @@ loadSidebar($rubriekArray, null);
 if (isset($_SESSION["user"])) {
     $username = $_SESSION["user"];
 }
-$username = 'jasper';
+//$username = 'jasper';
 $user = getUserByUsername($username);
 $phoneNumbers = getPhoneNumbers($username);
 
@@ -69,7 +69,7 @@ function echoPhoneNumbers($phoneNumbers){
                     <input maxlength="15" value="<?php if(isset($_POST['telefoon'])){ echo $_POST['telefoon'];}?>" type="text" name="telefoon" >
         </div>
         <div class="col-sm-1 col-xs-2 submit-registrion">
-            <button type="submit" name="Toevoegen" value="toevoegen">Nummer toeveogen</button>
+            <button type="submit" name="Toevoegen" value="toevoegen">Nummer toevoegen</button>
         </div>
     <br>
     </form>
