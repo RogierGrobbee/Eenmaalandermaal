@@ -36,7 +36,8 @@ loadSidebar($rubriekArray, null);
         echo '<div class="col-lg-4 col-md-5 col-sm-7 homepage-featured-detail">
             <h2>'. $voorwerp->titel .'</h2>
             <div class="homepage-featured-prijs">€'. $prijs .'<br>
-                <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span>
+                <span data-tijd="'. $voorwerp->looptijdeindeveiling .'"
+                 data-nummer= "' . $voorwerp->voorwerpnummer . '" class="tijd"></span>
             </div>
             <button class="veiling-detail btn-homepage">Bied</button></div></a>' ?>
 
