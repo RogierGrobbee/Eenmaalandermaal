@@ -426,3 +426,8 @@ footer a {
 .red {
     color:red;
 }
+.welkom-message{
+    float: right;
+    margin-top: 10px;
+    margin-right: 200px;
+}
