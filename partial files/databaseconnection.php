@@ -347,19 +347,19 @@ function insertNewBod($voorwerp, $bod, $gebruiker){
     if($biedingen == null){
         if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
             $return->bodSuccesful = false;
-            $return->message = "Je moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
+            $return->message = "U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
             return $return;
         }
     }
     else{
         if($bod < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag)){
             $return->bodSuccesful = false;
-            $return->message = "Je moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
+            $return->message = "U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
             return $return;
         }
         else if($gebruiker == $biedingen[0]->gebruikersnaam){
             $return->bodSuccesful = false;
-            $return->message = "Je mag niet op jezelf bieden!";
+            $return->message = "U heeft al het hoogste bod!";
             return $return;
         }
     }
