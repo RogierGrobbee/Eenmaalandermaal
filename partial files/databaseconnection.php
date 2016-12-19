@@ -340,39 +340,24 @@ function getVoorwerpBiedingen($voorwerpnummer){
 
 function insertNewBod($voorwerp, $bod, $gebruiker){
     global $db;
-
-    $return= new stdClass();
-
     $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
     if($biedingen == null){
         if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
-            $return->bodSuccesful = false;
-            $return->message = "U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
-            return $return;
+            return false;
         }
     }
     else{
-        if($bod < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag)){
-            $return->bodSuccesful = false;
-            $return->message = "U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
-            return $return;
-        }
-        else if($gebruiker == $biedingen[0]->gebruikersnaam){
-            $return->bodSuccesful = false;
-            $return->message = "U heeft al het hoogste bod!";
-            return $return;
+        if($bod < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag) ||
+            $gebruiker == $biedingen[0]->gebruikersnaam){
+            return false;
         }
     }
 
     $query = $db->query("INSERT INTO bod VALUES (".$voorwerp->voorwerpnummer.", ".$bod.", '".$gebruiker."', getdate())");
     if($query){
-        $return->bodSuccesful = true;
-        return $return;
+        return true;
     }
-
-    $return->bodSuccesful = false;
-    $return->message = "Er kan niet hoger geboden worden dan 100.000!";
-    return $return;
+    return false;
 }
 
 /**
@@ -447,7 +432,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs. '</p>
                         <div class="veiling-info">
-                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd" data-nummer="' . $voorwerp->voorwerpnummer . '"></span>
+                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
                             <button class="veiling-detail">Bied</button>
                         </div>
                     </a>
@@ -466,14 +451,12 @@ function echoHomepageVoorwerp($voorwerp, $prijs, $image){
         $prijs = "0".$prijs;
     }
 
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 homepage-veiling">
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
             <img src="pics/'. $image .'"alt="veiling">
             <h4>'.$voorwerp->titel.'</h4>
             <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
-                <span data-tijd="'. $voorwerp->looptijdeindeveiling .
-                    '" data-nummer= "' . $voorwerp->voorwerpnummer . '" class="tijd"></span>
-             </div>
+            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
@@ -485,7 +468,7 @@ function echoFilterBox($param, $filter, $isRubriek)
         echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
     }
 
-    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afgelopen</option>';
+    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afglopen</option>';
 
     echo '<option value="looptijdbeginveilingDESC"'; if ($filter == "looptijdbeginveilingDESC") { echo 'selected'; } echo'>Tijd: nieuwst verschenen</option>';
 
@@ -495,6 +478,17 @@ function echoFilterBox($param, $filter, $isRubriek)
 
     echo '</select>';
 }
+echo '<script>
+function searchFilterSelect(filter, search) {
+  window.location.href = "./zoeken.php?search="+search+"&filter="+filter;
+}
+</script>';
+
+echo '<script>
+function rubriekFilterSelect(filter, rubriek) {
+  window.location.href = "./rubriek.php?rubriek="+rubriek+"&filter="+filter;
+}
+</script>';
 
 function strip_html_tags($str)
 {
@@ -598,10 +592,19 @@ function getUserByUsername($username){
 
 function getPhoneNumbers($username){
     global $db;
-    $bodQuery = $db->prepare('select * from gebruikerstelefoon where gebruikersnaam =? order by volgnr');
-    $bodQuery->bindParam(1, $username);
-    $bodQuery->execute();
-    return $bodQuery->fetchAll(PDO::FETCH_OBJ);
+    $phoneQuery = $db->prepare('select * from gebruikerstelefoon where gebruikersnaam =? order by volgnr');
+    $phoneQuery->bindParam(1, $username);
+    $phoneQuery->execute();
+    return $phoneQuery->fetchAll(PDO::FETCH_OBJ);
+}
+
+function addPhoneNumber($volgnr, $username, $phonenumber){
+    global $db;
+    $phoneQuery = $db->prepare('insert into gebruikerstelefoon (volgnr,gebruikersnaam,telefoon) values(?,?,?)');
+    $phoneQuery->bindParam(1, $volgnr);
+    $phoneQuery->bindParam(2, $username);
+    $phoneQuery->bindParam(3, $phonenumber);
+    $phoneQuery->execute();
 }
 
 function getBiedingenByUsername($username){
@@ -686,6 +689,30 @@ function getValidation($username)
     return $row['gevalideerd'];
 }
 
+function getSecretAnswer($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT antwoordtekst FROM antwoord WHERE gebruikersnaam= :username ");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['antwoordtekst'];
+}
+function getQuestionNumber($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT vraagnummer FROM antwoord WHERE gebruikersnaam= :username ");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['vraagnummer'];
+}
+function getEmail($username)
+{
+    global $db;
+    $statement = $db->prepare("SELECT email FROM gebruiker WHERE gebruikersnaam= :username");
+    $statement->execute(array(':username' => $username));
+    $row = $statement->fetch();
+    return $row['email'];
+}
 
 function hashPass($pass)
 {
@@ -696,39 +723,11 @@ function hashPass($pass)
     return password_hash($pass, PASSWORD_BCRYPT, $options) . "\n";
 }
 
-function veilingEnded($voorwerpnummer) {
+function veilingEnded($voorwerpId) {
     global $db;
-    $statement = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $statement = $db->prepare("SELECT isBeeindigd FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
+    $statement->execute(array(':voorwerpnummer' => $voorwerpId));
     $row = $statement->fetch();
-    return $row['isVoltooid'];
-}
-
-function endVeilingByVoorwerpnummer($voorwerpnummer) {
-    global $db;
-    $statement = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
-}
-
-function getVerkoperByVoorwerpnummer($voorwerpnummer) {
-    global $db;
-    $statement = $db->prepare("SELECT email FROM gebruiker
-                                WHERE gebruikersnaam in(
-                                    SELECT verkoper FROM voorwerp where voorwerpnummer = :voorwerpnummer
-                                )");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    $row = $statement->fetch(PDO::FETCH_OBJ);
-    return $row;
-}
-
-function getHighestBidderByVoorwerpnummer($voorwerpnummer) {
-    global $db;
-    $statement = $db->prepare("SELECT email from gebruiker WHERE gebruikersnaam in(
-                                    SELECT TOP 1 gebruikersnaam FROM bod where voorwerpnummer = :voorwerpnummer
-                                    ORDER BY gebruikersnaam ASC
-                                )");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    $row = $statement->fetch(PDO::FETCH_OBJ);
-    return $row;
+    return $row['isBeeindigd'];
 }
 ?>

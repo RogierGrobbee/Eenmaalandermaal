@@ -9,9 +9,11 @@ loadSidebar($rubriekArray, null);
 if (isset($_SESSION["user"])) {
     $username = $_SESSION["user"];
 }
-
+$username = 'jasper';
 $user = getUserByUsername($username);
 $phoneNumbers = getPhoneNumbers($username);
+
+
 ?>
     <div class="col-sm-13">
         <h3>Overzicht</h3>
@@ -40,10 +42,38 @@ include_once('partial files\footer.php');
 
 function echoPhoneNumbers($phoneNumbers){
     echo '<br><br>';
+    global $username;
+
+    echo 'Telefoonnummers:';
     foreach ($phoneNumbers as $k => $bod) {
-        echo 'Telefoonnummers:<br>';
-        echo $bod->telefoon;
+        echo '<br>'.$bod->telefoon;
     }
+
+    if(isset($_POST['telefoon'])){
+        if (is_numeric( $_POST['telefoon'])) {
+            $temp = $phoneNumbers[count($phoneNumbers ) - 1];
+            $hoogsteVolgnr = $temp->volgnr;
+            $hoogsteVolgnr++;
+
+            addPhoneNumber($hoogsteVolgnr, $username, $_POST['telefoon']);
+            echo '<br>'.$_POST['telefoon'];
+        }
+    }
+
+
+   ?>
+<form method="post">
+    <br>
+        <div class="col-sm-6 col-xs-8">
+
+                    <input maxlength="15" value="<?php if(isset($_POST['telefoon'])){ echo $_POST['telefoon'];}?>" type="text" name="telefoon" >
+        </div>
+        <div class="col-sm-1 col-xs-2 submit-registrion">
+            <button type="submit" name="Toevoegen" value="toevoegen">Nummer toeveogen</button>
+        </div>
+    <br>
+    </form>
+<?php
 }
 
 function echoBiedingen($username)
