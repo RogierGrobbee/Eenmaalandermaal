@@ -139,6 +139,10 @@ form{
     margin: inherit;
     margin-bottom: 5px;
     position: relative;
+    text-align: center;
+    display: inline-block;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .veilingitem img {

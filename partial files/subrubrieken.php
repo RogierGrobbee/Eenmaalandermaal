@@ -13,7 +13,7 @@ function loadSubrubrieken($rubriekArray, $selectedRubriek)
         foreach ($rubriekArray as $k => $rubriek) {
             if ($rubriek->superrubriek == $selectedRubriek->rubrieknummer && $rubriek->superrubriek != null) {
                 echo '<div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-                    <a href=rubriek.php?rubriek=' . $rubriek->rubrieknummer . '#>' . $rubriek->rubrieknaam . '</a>
+                    <a href="rubriek.php?rubriek=' . $rubriek->rubrieknummer . '#">' . $rubriek->rubrieknaam . '</a>
                 </div>';
             }
         }
