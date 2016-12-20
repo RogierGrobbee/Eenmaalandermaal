@@ -441,7 +441,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
     }
 
     echo '  <div class="veilingitem">
-                    <a href="./veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
+                    <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
                         <img src="pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
