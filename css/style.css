@@ -530,7 +530,7 @@ ul.topnav li {
 ul.topnav li a {
     display: inline-block;
     text-align: left;
-    padding: 14px 16px;
+    padding: 6px 16px;
     text-decoration: none;
     transition: 0.3s;
     font-size: 17px;
