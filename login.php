@@ -14,6 +14,8 @@ if (isset($_POST['Login'])) {
         empty($_POST['wachtwoord'])
     ) {
         $errorMessage = "Niet alles is ingevuld.";
+    }else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
+            $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
     } else
         if(getValidation($_POST['gebruikersnaam'])) {
             $password = $_POST['wachtwoord'];
