@@ -15,27 +15,36 @@ $user = getUserByUsername($username);
 
 ?>
 <row>
-<form method="post">
-<div class="col-sm-6">
-    <table class="registration-table">
-        <tr>
-            <td>Banknummer: </td>
-            <td><input maxlength="255"  value="<?php if(isset($_POST['banknummer'])){ echo $_POST['banknummer'];}?>" type="text" name="banknummer" ></td>
-        </tr>
-        <tr>
-            <td>Creditcardnummer: </td>
-            <td><input maxlength="255" value="<?php if(isset($_POST['creditcardnummer'])){ echo $_POST['email'];}?>" type="text" name="creditcardnummer" ></td>
-        </tr>
 
-    </table>
+    <?php echo $_SESSION["user"];?>
+
+    Vul uw bank of creditcardnummer in. Het is verplicht om één van de twee in te vullen.
+    <br><br>
+    <form method="post">
+        <div class="col-sm-6">
+            <table class="registration-table">
+                <tr>
+                    <td>Banknummer:</td>
+                    <td><input maxlength="255" value="<?php if (isset($_POST['banknummer'])) {
+                            echo $_POST['banknummer'];
+                        } ?>" type="text" name="banknummer"></td>
+                </tr>
+                <tr>
+                    <td>Creditcardnummer:</td>
+                    <td><input maxlength="255" value="<?php if (isset($_POST['creditcardnummer'])) {
+                            echo $_POST['email'];
+                        } ?>" type="text" name="creditcardnummer"></td>
+                </tr>
+
+            </table>
 </row>
-    <row>
-        <div class="col-sm-12">
-            <input  type="submit" name="registreer" value="Registreren">
-        </div>
-
-    </row>
-    </form>
+<row>
+    <div class="float-right">
+        <input type="submit" name="registratieverkoop" value="Meld mij aan als verkoper">
+    </div>
+    <br><br>
+</row>
+</form>
 
 
 

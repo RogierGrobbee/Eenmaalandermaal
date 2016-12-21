@@ -3,6 +3,7 @@ $db = new PDO ("sqlsrv:Server=mssql.iproject.icasites.nl;Database=iproject2;Conn
     "iproject2", "ekEu7bpJ");
 $itemsPerPage = 10;
 
+// Replacement: getVoorwerpById($voorwerpnummer)
 function getVoorwerp($voorwerpId)
 {
     global $db;
@@ -11,6 +12,7 @@ function getVoorwerp($voorwerpId)
     return $voorwerp;
 }
 
+// Replacement: getVoorwerpRubByVnr($voorwerpnummer)
 function getVoorwerpRubriek($voorwerpId)
 {
     global $db;
@@ -19,6 +21,7 @@ function getVoorwerpRubriek($voorwerpId)
     return $voorwerpinrubriek->rubriekoplaagsteniveau;
 }
 
+// Replacement: loadBestandenByVoorwerpnummer($voorwerpnummer)
 function loadBestanden($voorwerpId)
 {
     global $db;
@@ -34,19 +37,23 @@ function loadBestanden($voorwerpId)
     return $bestandenList;
 }
 
+// Replacement: loadRubrieken()
 function loadRubrieken()
 {
     global $db;
     $query = $db->query('SELECT * FROM rubriek ORDER BY volgnr, rubrieknaam');
     $rubriekArray = array();
     $huidigeRubriek = null;
-//lijst wordt gevult met alle rubrieken
+
     while ($rubriek = $query->fetch(PDO::FETCH_OBJ)) {
         array_push($rubriekArray, $rubriek);
     }
     return $rubriekArray;
 }
 
+// This function needs to be in the pages it is used in.
+// All the database interactions in this functions are split up.
+// Look at the voorwerp.phpfor more information.
 function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
 {
     global $db;
@@ -139,6 +146,8 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
     }
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
 {
     if (($pageNumber) == $currentPageNumber) {
@@ -148,6 +157,12 @@ function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
     }
 }
 
+// This function needs to be in the pages it is used in.
+// All the database interactions in this functions are split up.
+// Made functions:
+// - countVoorwerpenTitlesBySearchTerm
+// - searchVoorwerpenByTitle
+// - echoPagination
 function loadVeilingItems($rubriekId, $currentPageNumber, $filter)
 {
     global $itemsPerPage;
@@ -209,6 +224,8 @@ function loadVeilingItems($rubriekId, $currentPageNumber, $filter)
 
 }
 
+// This function needs to be in the pages it is used in.
+// All the database interactions in this functions are split up.
 /**
  * Gets all the voorwerpen and prints the voorwerpen on the screen.
  *
@@ -285,6 +302,8 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
 
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId)
 {
     if (($pageNumber) == $currentPageNumber) {
@@ -333,7 +352,7 @@ function getVoorwerpBiedingen($voorwerpnummer){
     return $biedingen;
 }
 
-
+// Replacement: insertBod($voorwerp, $amount, $gebruiker)
 function insertNewBod($voorwerp, $bod, $gebruiker){
     global $db;
 
@@ -376,6 +395,9 @@ function insertNewBod($voorwerp, $bod, $gebruiker){
     return $return;
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+// When this function is defined in the page it needs to get all voorwerpen through the model.
 /**
  * Returns the most popular voorwerp. This will be used on the banner for the frontpage
  * @param $queryString send a query to echo voorwerpen on the homepage
@@ -385,6 +407,7 @@ function queryHomepageVoorwerpen($queryString)
     global $db;
 
     $query = $db->query($queryString);
+    $count = 0;
 
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         $list = loadbestanden($voorwerp->voorwerpnummer);
@@ -398,10 +421,16 @@ function queryHomepageVoorwerpen($queryString)
             $prijs = $biedingen[0]->bodbedrag;
         }
 
+        $count++;
         echoHomepageVoorwerp($voorwerp, $prijs, $image);
+    }
+
+    if($count == 0){
+        echo "<div class='error'>U heeft nog niet geboden op een veiling.</div>";
     }
 }
 
+// Replacement: getFeaturedVoorwerp()
 /**
  * Returns the most popular voorwerp. This will be used on the banner for the frontpage
  */
@@ -409,7 +438,7 @@ function featuredVoorwerp()
 {
     global $db;
 
-    $query = $db->query("SELECT TOP 4 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+    $query = $db->query("SELECT TOP 1 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
                                 v.looptijdeindeveiling FROM voorwerp as v 
                                 FULL OUTER JOIN Bod as b ON v.voorwerpnummer=b.voorwerpnummer 
                                 WHERE v.looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) 
@@ -421,6 +450,8 @@ function featuredVoorwerp()
     }
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 /**
  * Prints the voorwerp onto the page.
  *
@@ -456,6 +487,8 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 }
 
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 /**
  * Prints a voorwerp on the frontpage
  *
@@ -476,6 +509,8 @@ function echoHomepageVoorwerp($voorwerp, $prijs, $image){
             <button class="veiling-detail btn-homepage">Bied</button></a></div>';
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function echoFilterBox($param, $filter, $isRubriek)
 {
     if ($isRubriek) {
@@ -492,20 +527,13 @@ function echoFilterBox($param, $filter, $isRubriek)
 
     echo '<option value="hoogstebod"'; if ($filter == "hoogstebod") { echo 'selected'; } echo'>Prijs: hoogst</option>';
 
+    echo '<option value="mostpopular"'; if ($filter == "mostpopular") { echo 'selected'; } echo'>Populairste veilingen</option>';
+
     echo '</select>';
 }
-echo '<script>
-function searchFilterSelect(filter, search) {
-  window.location.href = "./zoeken.php?search="+search+"&filter="+filter;
-}
-</script>';
 
-echo '<script>
-function rubriekFilterSelect(filter, rubriek) {
-  window.location.href = "./rubriek.php?rubriek="+rubriek+"&filter="+filter;
-}
-</script>';
-
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function strip_html_tags($str)
 {
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
@@ -523,6 +551,8 @@ function strip_html_tags($str)
     return $str;
 } //function strip_html_tags ENDS
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 //To replace all types of whitespace with a single space
 function replaceWhitespace($str)
 {
@@ -538,6 +568,9 @@ function replaceWhitespace($str)
     return $str !== $result ? replaceWhitespace($result) : $result;
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+// The database interactions are saved in one of the models.
 function returnGeheimeVragen()
 {
     global $db;
@@ -551,7 +584,9 @@ function returnGeheimeVragen()
     echo "</select>";
 }
 
-
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+// The database interactions are saved in one of the models.
 function returnAllCountries()
 {
     global $db;
@@ -567,6 +602,9 @@ function returnAllCountries()
     echo "</select>";
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+// The database interactions are saved in one of the models.
 function calculateExpire($code)
 {
     global $db;
@@ -587,6 +625,7 @@ function calculateExpire($code)
 
 }
 
+// Replacement: validateUser($code)
 function validateUser($code)
 {
     global $db;
@@ -599,9 +638,9 @@ function validateUser($code)
     $sthm = $db->prepare($sth);
     $sthm->bindParam(':validatie', $code);
     $sthm->execute();
-
 }
 
+// Replacement: getUserByUsername($username)
 function getUserByUsername($username){
     global $db;
     $userQuery = $db->prepare('SELECT * FROM gebruiker where gebruikersnaam=?');
@@ -610,6 +649,7 @@ function getUserByUsername($username){
     return $userQuery->fetch(PDO::FETCH_OBJ);
 }
 
+// Replacement: getPhoneNumbers($username)
 function getPhoneNumbers($username){
     global $db;
     $phoneQuery = $db->prepare('select * from gebruikerstelefoon where gebruikersnaam =? order by volgnr');
@@ -618,6 +658,7 @@ function getPhoneNumbers($username){
     return $phoneQuery->fetchAll(PDO::FETCH_OBJ);
 }
 
+// Replacement: insertPhoneNumber($volgnr, $username, $phonenumber)
 function addPhoneNumber($volgnr, $username, $phonenumber){
     global $db;
     $phoneQuery = $db->prepare('insert into gebruikerstelefoon (volgnr,gebruikersnaam,telefoon) values(?,?,?)');
@@ -627,6 +668,7 @@ function addPhoneNumber($volgnr, $username, $phonenumber){
     $phoneQuery->execute();
 }
 
+// Replacement: getBiedingenByUsername($username)
 function getBiedingenByUsername($username){
     global $db;
     $bodQuery = $db->prepare('SELECT v.voorwerpnummer, v.titel, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
@@ -635,6 +677,7 @@ function getBiedingenByUsername($username){
     return $bodQuery->fetchAll(PDO::FETCH_OBJ);
 }
 
+// Replacement: doesUsernameExist($username)
 function doesUsernameAlreadyExist($username)
 {
     global $db;
@@ -648,6 +691,8 @@ function doesUsernameAlreadyExist($username)
     return $exist;
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function postCodeCheck($postcode)
 {
     $remove = str_replace(" ", "", $postcode);
@@ -660,12 +705,16 @@ function postCodeCheck($postcode)
     }
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function validateDate($date)
 {
     $d = DateTime::createFromFormat('Y-m-d', $date);
     return $d && $d->format('Y-m-d') === $date;
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function generateRandomString($length = 10)
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -677,6 +726,7 @@ function generateRandomString($length = 10)
     return $randomString;
 }
 
+// Replacement: doesValidationCodeExist($code)
 function doesValidationCodeexist($code)
 {
     global $db;
@@ -691,6 +741,7 @@ function doesValidationCodeexist($code)
 
 }
 
+// Replacement: getPassword($username)
 function getPassword($username)
 {
     global $db;
@@ -700,6 +751,7 @@ function getPassword($username)
     return $row['wachtwoord'];
 }
 
+// Replacement: getValidation($username)
 function getValidation($username)
 {
     global $db;
@@ -709,6 +761,7 @@ function getValidation($username)
     return $row['gevalideerd'];
 }
 
+// Replacement: getSecretAnswer($username)
 function getSecretAnswer($username)
 {
     global $db;
@@ -717,6 +770,8 @@ function getSecretAnswer($username)
     $row = $statement->fetch();
     return $row['antwoordtekst'];
 }
+
+// Replacement: getQuestionNumber($username)
 function getQuestionNumber($username)
 {
     global $db;
@@ -725,6 +780,8 @@ function getQuestionNumber($username)
     $row = $statement->fetch();
     return $row['vraagnummer'];
 }
+
+// Replacement: getEmail($username)
 function getEmail($username)
 {
     global $db;
@@ -734,6 +791,7 @@ function getEmail($username)
     return $row['email'];
 }
 
+// Replacement: hashPass($pass)
 function hashPass($pass)
 {
     $options = [
@@ -743,6 +801,7 @@ function hashPass($pass)
     return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
 
+// Replacement: veilingEnded($voorwerpnummer)
 function veilingEnded($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
@@ -751,12 +810,14 @@ function veilingEnded($voorwerpnummer) {
     return $row['isVoltooid'];
 }
 
+// Replacement: endVeilingByVnr($voorwerpnummer)
 function endVeilingByVoorwerpnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
     $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
 }
 
+// Replacement: getVerkoperByVnr($voorwerpnummer)
 function getVerkoperByVoorwerpnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT email FROM gebruiker
@@ -768,6 +829,7 @@ function getVerkoperByVoorwerpnummer($voorwerpnummer) {
     return $row;
 }
 
+// Replacement: getTopBidderByVnr($voorwerpnummer)
 function getHighestBidderByVoorwerpnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT email from gebruiker WHERE gebruikersnaam in(
@@ -779,6 +841,8 @@ function getHighestBidderByVoorwerpnummer($voorwerpnummer) {
     return $row;
 }
 
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
 function cantVisitLoggedIn() {
     if (!empty($_SESSION['user'])) {
         header('Location: index.php');
