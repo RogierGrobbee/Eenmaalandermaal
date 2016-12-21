@@ -223,7 +223,7 @@ else
             ?>
 
         </div>
-
+    </row>
 
 
 <?php include_once('partial files\footer.php') ?>
