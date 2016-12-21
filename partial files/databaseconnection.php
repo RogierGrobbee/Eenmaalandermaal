@@ -53,7 +53,7 @@ function loadRubrieken()
 
 // This function needs to be in the pages it is used in.
 // All the database interactions in this functions are split up.
-// Look at the voorwerp.phpfor more information.
+// Look at the voorwerp.php for more information.
 function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
 {
     global $db;
