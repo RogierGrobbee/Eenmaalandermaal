@@ -9,7 +9,7 @@
 namespace refactor;
 
 // Replaces: loadBestanden($voorwerpId)
-function loadBestandenByVoorwerpnummer($voorwerpnummer)
+function loadBestandenByVnr($voorwerpnummer)
 {
     global $db;
     $query = $db->prepare('execute sp_GetBestandenByVoorwerp @id = :voorwerpnummer');

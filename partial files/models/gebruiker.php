@@ -11,9 +11,8 @@ namespace refactor;
 // Replaces: getUserByUsername($username)
 function getUserByUsername($username) {
     global $db;
-    $query = $db->prepare('SELECT * FROM gebruiker where gebruikersnaam=?');
-    $query->bindParam(1, $username);
-    $query->execute();
+    $query = $db->prepare('SELECT * FROM gebruiker where gebruikersnaam= :gebruikersnaam');
+    $query->execute(array(':gebruikersnaam' => $username));
     return $query->fetch(PDO::FETCH_OBJ);
 }
 
@@ -26,67 +25,47 @@ function validateUser($code) {
             INNER JOIN validation AS v
             ON g.gebruikersnaam = v.gebruikersnaam
             WHERE v.validatiecode  = :validatie");
-    $query->execute(array(':validatie' => $code));
+    return $query->execute(array(':validatie' => $code));
 }
 
 // Replaces: addPhoneNumber($volgnr, $username, $phonenumber)
 function addPhoneNumber($volgnr, $username, $phonenumber) {
     global $db;
-    $phoneQuery = $db->prepare('insert into gebruikerstelefoon (volgnr,gebruikersnaam,telefoon) values(?,?,?)');
-    $phoneQuery->bindParam(1, $volgnr);
-    $phoneQuery->bindParam(2, $username);
-    $phoneQuery->bindParam(3, $phonenumber);
-    $phoneQuery->execute();
+    $query = $db->prepare('insert into gebruikerstelefoon (volgnr,gebruikersnaam,telefoon)
+                                  values(:volgnr,:gebruikersnaam,:telefoon)');
+    return $query->execute(array(
+            ':volgnr' => $volgnr,
+            ':gebruikersnaam' => $username,
+            ':telefoon' => $phonenumber
+        ));
 }
 
 // Replaces: doesUsernameAlreadyExist($username)
-function doesUsernameExist($username)
-{
+function doesUsernameExist($username) {
     global $db;
-    $exist = false;
-    $query = $db->query("SELECT gebruikersnaam FROM gebruiker");
-    foreach ($query as $row) {
-        if ($row["gebruikersnaam"] == $username) {
-            $exist = true;
-        }
-    }
-    return $exist;
+
+    $query = $db->prepare("SELECT gebruikersnaam FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam");
+    $query->execute(array(':gebruikersnaam' => $username));
+
+    return !is_null($query->fetch(PDO::FETCH_OBJ)) ? true : false;
 }
 
 // Replaces: getPassword($username)
 function getPassword($username) {
     global $db;
-    $statement = $db->prepare("SELECT wachtwoord FROM gebruiker WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['wachtwoord'];
+    $query = $db->prepare("SELECT wachtwoord FROM gebruiker WHERE gebruikersnaam= :username ");
+    $query->execute(array(':username' => $username));
+
+    return ($query->fetch(PDO::FETCH_OBJ))->wachtwoord;
 }
 
 // Replaces: getValidation($username)
 function getValidation($username) {
     global $db;
-    $statement = $db->prepare("SELECT gevalideerd FROM gebruiker WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['gevalideerd'];
-}
+    $query = $db->prepare("SELECT gevalideerd FROM gebruiker WHERE gebruikersnaam= :username ");
+    $query->execute(array(':username' => $username));
 
-// Replaces: getSecretAnswer($username)
-function getSecretAnswer($username) {
-    global $db;
-    $statement = $db->prepare("SELECT antwoordtekst FROM antwoord WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['antwoordtekst'];
-}
-
-// Replaces: getQuestionNumber($username)
-function getQuestionNumber($username) {
-    global $db;
-    $statement = $db->prepare("SELECT vraagnummer FROM antwoord WHERE gebruikersnaam= :username ");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
-    return $row['vraagnummer'];
+    return ($query->fetch(PDO::FETCH_OBJ))->gevalideerd;
 }
 
 // Replaces: getEmail($username)

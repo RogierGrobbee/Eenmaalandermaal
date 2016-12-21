@@ -18,41 +18,15 @@ function getBiedingenByVnr($voorwerpnummer){
     return $query->fetchAll(PDO::FETCH_OBJ);
 }
 
+// Replaces: insertNewBod($voorwerp, $amount, $gebruiker)
 function insertBod($voorwerp, $amount, $gebruiker) {
     global $db;
 
-    $return= new stdClass(
-        $bodSuccesful = false
-    );
+    $query = $db->prepare("INSERT INTO bod VALUES (:voorwerpnummer, :amount , :gebruiker , getdate())");
 
-    $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
-    if($biedingen == null){
-        if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
-            $return->bodSuccesful = false;
-            $return->message = "U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
-            return $return;
-        }
-    }
-    else{
-        if($amount < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag)){
-            $return->bodSuccesful = false;
-            $return->message = "U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!";
-            return $return;
-        }
-        else if($gebruiker == $biedingen[0]->gebruikersnaam){
-            $return->bodSuccesful = false;
-            $return->message = "U heeft al het hoogste bod!";
-            return $return;
-        }
-    }
-
-    $query = $db->query("INSERT INTO bod VALUES (".$voorwerp->voorwerpnummer.", ".$amount.", '".$gebruiker."', getdate())");
-    if($query){
-        $return->bodSuccesful = true;
-        return $return;
-    }
-
-    $return->bodSuccesful = false;
-    $return->message = "Er kan niet hoger geboden worden dan 100.000!";
-    return $return;
+    return $query->execute(array(
+        ':voorwerpnummer' => $voorwerp->voorwerpnummer,
+        ':amount' => $amount,
+        ':gebruiker' => $gebruiker
+    ));
 }

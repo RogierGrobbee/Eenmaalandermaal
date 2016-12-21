@@ -11,21 +11,17 @@ namespace refactor;
 // Replaces: part of the calculateExpire($code) function
 function getDTByValCode($code) {
     global $db;
-    $statement = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
-    $statement->execute(array(':validatiecode' => $code));
-    return $statement->fetch();
+    $query = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
+    $query->execute(array(':validatiecode' => $code));
+    return $query->fetch(PDO::FETCH_OBJ);
 }
 
 // Replaces: doesValidationCodeExist($code)
 function doesValidationCodeExist($code) {
     global $db;
-    $statement = $db->prepare("SELECT validatiecode FROM validation WHERE validatiecode = :code");
-    $statement->execute(array(':code' => $code));
-    $row = $statement->fetch();
-    if (!$row) {
-        return false;
-    } else {
-        return true;
-    }
+    $query = $db->prepare("SELECT validatiecode FROM validation WHERE validatiecode = :code");
+    $query->execute(array(':code' => $code));
+
+    return !is_null($query->fetch(PDO::FETCH_OBJ)) ? true : false;
 
 }

@@ -21,7 +21,7 @@ function getVoorwerpRubriek($voorwerpId)
     return $voorwerpinrubriek->rubriekoplaagsteniveau;
 }
 
-// Replacement: loadBestandenByVoorwerpnummer($voorwerpnummer)
+// Replacement: loadBestandenByVnr($voorwerpnummer)
 function loadBestanden($voorwerpId)
 {
     global $db;
@@ -668,7 +668,7 @@ function addPhoneNumber($volgnr, $username, $phonenumber){
     $phoneQuery->execute();
 }
 
-// Replacement: getBiedingenByUsername($username)
+// Replacement: getBiedingenByUsrName($username)
 function getBiedingenByUsername($username){
     global $db;
     $bodQuery = $db->prepare('SELECT v.voorwerpnummer, v.titel, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
@@ -741,7 +741,7 @@ function doesValidationCodeexist($code)
 
 }
 
-// Replacement: getPassword($username)
+// Replacement: getUserByUsername($username)
 function getPassword($username)
 {
     global $db;
@@ -751,7 +751,7 @@ function getPassword($username)
     return $row['wachtwoord'];
 }
 
-// Replacement: getValidation($username)
+// Replacement: getUserByUsername($username)
 function getValidation($username)
 {
     global $db;
@@ -761,7 +761,7 @@ function getValidation($username)
     return $row['gevalideerd'];
 }
 
-// Replacement: getSecretAnswer($username)
+// Replacement: getAntwoordByUsrName($username)
 function getSecretAnswer($username)
 {
     global $db;
@@ -771,7 +771,7 @@ function getSecretAnswer($username)
     return $row['antwoordtekst'];
 }
 
-// Replacement: getQuestionNumber($username)
+// Replacement: getAntwoordByUsrName($username)
 function getQuestionNumber($username)
 {
     global $db;

@@ -14,6 +14,6 @@ function getVoorwerpRubByVnr($voorwerpnummer)
     global $db;
     $query = $db->prepare("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer = :voorwerpnummer");
     $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    $voorwerpinrubriek = $query->fetch(PDO::FETCH_OBJ);
-    return $voorwerpinrubriek->rubriekoplaagsteniveau;
+
+    return ($query->fetch(PDO::FETCH_OBJ))->rubriekoplaagsteniveau;
 }
