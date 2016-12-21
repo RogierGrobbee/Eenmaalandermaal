@@ -35,6 +35,54 @@ include_once('partial files\header.php');
 
 
 
+$errorMessage = "";
+$successMessage = "";
+if (isset($_POST['toevoegen'])) {
+    if (empty($_POST['titel']) ||
+        empty($_POST['beschrijving']) ||
+        empty($_POST['startprijs']) ||
+        empty($_POST['plaatsnaam'])
+    ) {
+        $errorMessage = "Niet alles ingevuld.";
+    }
+    else if(!is_numeric($_POST['startprijs'])){
+        $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+    }
+    else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])){
+        $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
+    }
+    else if(!empty($_POST['verzendkosten'])){
+        if(!is_numeric($_POST['verzendkosten'])) {
+                $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+        }
+    }
+    else
+        {
+            $description = htmlspecialchars($_POST['beschrijving']);
+            $title = htmlspecialchars($_POST['titel']);
+            $city = htmlspecialchars($_POST['plaatsnaam']);
+            $user = $_SESSION['user'];
+
+            global $db;
+            $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
+                (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':username', $_POST['gebruikersnaam'], PDO::PARAM_STR);
+            $stmt->bindValue(':firstname', $_POST['voornaam'], PDO::PARAM_STR);
+            $stmt->bindValue(':lastname', $_POST['achternaam'], PDO::PARAM_STR);
+            $stmt->bindValue(':adres', $_POST['adres'], PDO::PARAM_STR);
+            $stmt->bindValue(':postcode', $_POST['postcode'], PDO::PARAM_STR);
+            $stmt->bindValue(':plaatsnaam', $_POST['plaats'], PDO::PARAM_STR);
+            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);                 //////////////////
+            $stmt->bindValue(':geboortedatum', $_POST['geboortedatum'], PDO::PARAM_STR);
+            $stmt->bindValue(':email', $_POST['email'], PDO::PARAM_STR);
+            $stmt->bindValue(':wachtwoord', $password, PDO::PARAM_STR);
+            $stmt->bindValue(':verkoper', 0, PDO::PARAM_INT);
+            $stmt->bindValue(':vraag', $_POST['geheimeVraag'], PDO::PARAM_INT);                 //////////////////
+            $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+}
 
 
 
@@ -61,7 +109,7 @@ loadSidebar($rubriekArray, null);
                     <tr>
                         <td>Beschrijving</td>
                         <td>
-                            <textarea class="form-control" maxlength="8000" rows="5" id="beschrijving"></textarea>
+                            <textarea class="form-control" maxlength="8000" rows="5" name="beschrijving"><?php if(isset($_POST['beschrijving'])){ echo $_POST['beschrijving'];}?></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -95,16 +143,16 @@ loadSidebar($rubriekArray, null);
                         </td>
                     </tr>
                     <tr>
-                        <td>verzendkosten</td>
-                        <td><input class="form-control" maxlength="5" value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
+                        <td>Verzendkosten</td>
+                        <td><input class="form-control" maxlength="5" value="<?php if(isset($_POST['verzendkosten'])){ echo $_POST['verzendkosten'];}?>" type="text" name="adres" ></td>
                     </tr>
                     <tr>
                         <td>Verzendinstructies</td>
-                        <td><input class="form-control" maxlength="255" value="<?php if(isset($_POST['plaats'])){ echo $_POST['plaats'];}?>" type="text" name="plaats" ></td>
+                        <td><input class="form-control" maxlength="255" value="<?php if(isset($_POST['verzendinstructies'])){ echo $_POST['verzendinstructies'];}?>" type="text" name="plaats" ></td>
                     </tr>
                     <tr>
                         <td>Afbeelding</td>
-                        <td><input class="form-control" maxlength="15" value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
+                        <td><input class="form-control" maxlength="15" value="<?php if(isset($_POST['afbeelding'])){ echo $_POST['afbeelding'];}?>" type="text" name="telefoon1"></td>
                     </tr>
                 </table>
             </div>

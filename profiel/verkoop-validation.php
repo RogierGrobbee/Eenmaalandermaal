@@ -15,36 +15,121 @@ $user = getUserByUsername($username);
 
 ?>
 <row>
+    <?php
 
-    <?php echo $_SESSION["user"];?>
+    function isUserSeller($user)
+    {
+        global $db;
+        $statement = $db->prepare("SELECT verkoper FROM gebruiker WHERE gebruikersnaam = :username ");
+        $statement->execute(array(':username' => $user));
+        $row = $statement->fetch();
+       return $row['verkoper'];
+    }
 
-    Vul uw bank of creditcardnummer in. Het is verplicht om één van de twee in te vullen.
+
+    function doesSellerAlreadyExist($username)
+    {
+        global $db;
+        $exist = false;
+        $query = $db->query("SELECT gebruikersnaam FROM verkoper");
+        foreach ($query as $row) {
+            if ($row["gebruikersnaam"] == $username) {
+                $exist = true;
+            }
+        }
+        return $exist;
+    }
+
+    function doesSellerValidationCodeexist($code)
+    {
+        global $db;
+        $statement = $db->prepare("SELECT validatiecode FROM verkoper WHERE validatiecode = :code");
+        $statement->execute(array(':code' => $code));
+        $row = $statement->fetch();
+        if (!$row) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+
+
+
+
+
+    $messageString = "";
+
+    if (isset($_POST['registratieverkoop'])) {
+        if (empty($_POST['banknummer']) &&
+            empty($_POST['creditcardnummer'])
+        ) {
+            $messageString = "<div class='alert alert-danger error'>IBAN <strong>of</strong> creditcardnummer moet ingevuld zijn.</div>";
+        } elseif (doesSellerAlreadyExist($_SESSION['user'])) {
+            $messageString = "<div class='alert alert-danger error'>Gebruikersnaam heeft al een validatiecode aangevraagd.</div>";
+        } else {
+            if (empty($_POST['banknummer'])) {
+                $controleoptie = 'Creditcard';
+            } else {
+                $controleoptie = 'Bank';
+            }
+            $validatieCode = generateRandomString();
+
+            global $db;
+            $sql = "INSERT INTO verkoper (gebruikersnaam, bankrekening, creditcard, controleoptie, validatiecode) VALUES
+                (:gebruiker, :bankrekening, :creditcard, :controleoptie, :validatiecode)";
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':gebruiker', $_SESSION['user'], PDO::PARAM_STR);
+            $stmt->bindValue(':bankrekening', $_POST['banknummer'], PDO::PARAM_STR);
+            $stmt->bindValue(':creditcard', $_POST['creditcardnummer'], PDO::PARAM_STR);
+            $stmt->bindValue(':controleoptie', $controleoptie, PDO::PARAM_STR);
+            $stmt->bindValue(':validatiecode', $validatieCode, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $messageString = "<div class='alert alert-success error'>Succes. 
+                                U ontvangt via de post een validatiecode.
+                                Deze dient u binnen een week vanaf nu te valideren.
+                                
+                                </div>";
+        }
+    }
+
+    ?>
+
+    <h3>Vul uw bank of creditcardnummer in.</h3>
+    Het is verplicht om één van de twee in te vullen.
+    Bij het invullen van een IBAN-nummer én een creditcardnummer zal het IBAN-nummer ter verificatie worden gebruikt.
     <br><br>
-    <form method="post">
-        <div class="col-sm-6">
-            <table class="registration-table">
-                <tr>
-                    <td>Banknummer:</td>
-                    <td><input maxlength="255" value="<?php if (isset($_POST['banknummer'])) {
-                            echo $_POST['banknummer'];
-                        } ?>" type="text" name="banknummer"></td>
-                </tr>
-                <tr>
-                    <td>Creditcardnummer:</td>
-                    <td><input maxlength="255" value="<?php if (isset($_POST['creditcardnummer'])) {
-                            echo $_POST['email'];
-                        } ?>" type="text" name="creditcardnummer"></td>
-                </tr>
 
-            </table>
-</row>
-<row>
-    <div class="float-right">
-        <input type="submit" name="registratieverkoop" value="Meld mij aan als verkoper">
+    <form method="POST" class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2" >IBAN:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control"  name="banknummer" >
+            </div>
+        </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" >Creditcardnummer:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control"  name="creditcardnummer" >
+        </div>
     </div>
+
+
+<row>
+    <div >
+        <input  type="submit" name="registratieverkoop" value="Vraag validatiecode aan">
+    </div>
+    </form>
     <br><br>
+    <?php if (empty($messageString)) {
+
+    } else { ?>
+
+            <?php echo $messageString; ?>
+    <?php } ?>
 </row>
-</form>
 
 
 
