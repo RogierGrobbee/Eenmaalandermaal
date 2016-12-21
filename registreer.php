@@ -117,7 +117,7 @@ else
          $stmt->bindValue(':tel', $_POST['telefoon1'], PDO::PARAM_STR);
          $stmt->execute();
 
-        header('Location: validatie.php');
+        header('location: validatie.php');
     }
 }
 
