@@ -31,19 +31,18 @@ function countVrwrpenBySTerm ($searchTerm) {
 function getVrwrpenByTitle ($searchTerm, $nSkippedRecords, $itemsPerPage, $filter) {
     global $db;
 
-    $statement = $db->prepare("execute sp_SearchVoorwerpenByTitle @search = :searchTerm,
+    $query = $db->prepare("execute sp_SearchVoorwerpenByTitle @search = :searchTerm,
                                                                   @nSkippedRecords = :nSkippedRecords,
                                                                   @itemPerPage = :itemPerPage,
                                                                   @filter = :filter");
 
-    $params = array(
+    $query->execute(array(
         ':searchTerm' => '%' . $searchTerm . '%',
         ':nSkippedRecords' => $nSkippedRecords,
         ':itemPerPage' => $itemsPerPage,
-        ':filter' => $filter,
-    );
+        ':filter' => $filter));
 
-    return $statement->execute($params);
+    return $query->fetchAll(PDO::FETCH_OBJ);
 }
 
 //TODO: These functions need to be executed in the search page.
@@ -102,146 +101,26 @@ function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
 
 function countVoorwerpenInRubs($idArray) {
     global $db;
-    $countQuery = $db->prepare("execute sp_CountVoorwerpenInRubrieken @ids = :ids");
-    $countQuery->execute(array(':ids' => $idArray));
+    $query = $db->prepare("execute sp_CountVoorwerpenInRubrieken @ids = :ids");
+    $query->execute(array(':ids' => $idArray));
 
-    return $countQuery->fetch(PDO::FETCH_OBJ);
+    return $query->fetch(PDO::FETCH_OBJ);
 }
 
 function getVoorwerpenInRub($idArray, $nSkippedRecords, $itemsPerPage, $filter) {
     global $db;
 
-    $voorwerpQuery = $db->prepare("execute sp_GetVoorwerpenInRubrieken @ids = :ids,
+    $query = $db->prepare("execute sp_GetVoorwerpenInRubrieken @ids = :ids,
                                                                        @nSkippedRecords = :nSkippedRecords,
                                                                        @itemPerPage = :itemPerPage,
                                                                        @filter = :filter");
 
-    $voorwerpQuery->execute(array(':ids' => $idArray,
+    $query->execute(array(':ids' => $idArray,
         ':nSkippedRecords' => $nSkippedRecords,
         ':itemPerPage' => $itemsPerPage,
         ':filter' => $filter));
 
-    return $voorwerpQuery->fetchAll();
-}
-
-// Replaces: loadVeilingItems($rubriekId, $currentPageNumber, $filter)
-function loadVeilingItems($rubriekId, $currentPageNumber, $filter) {
-    global $itemsPerPage;
-    $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
-    if (is_numeric($rubriekId)) {
-
-        $rubriekenArray = loadRubrieken();
-        $subRubriekenArray = array();
-        $subsubRubriekenArray = array();
-        $subsubsubRubriekenArray = array();
-        foreach ($rubriekenArray as $k => $rubriek) {
-            if ($rubriek->superrubriek == $rubriekId) {
-                array_push($subRubriekenArray, $rubriek->rubrieknummer);
-            }
-        }
-        foreach ($rubriekenArray as $k => $rubriek) {
-            if (in_array($rubriek->superrubriek, $subRubriekenArray)) {
-                array_push($subsubRubriekenArray, $rubriek->rubrieknummer);
-            }
-        }
-        foreach ($rubriekenArray as $k => $rubriek) {
-            if (in_array($rubriek->superrubriek, $subsubRubriekenArray)) {
-                array_push($subsubsubRubriekenArray, $rubriek->rubrieknummer);
-            }
-        }
-
-        $temp = array_merge($subRubriekenArray, $subsubRubriekenArray, $subsubsubRubriekenArray);
-        $ids = implode(',', $temp);
-        if ($ids == "") {
-            $ids = "0";
-        }
-        $ids = $ids . ',' . $rubriekId;
-
-        $totalItems = CountVoorwerpenInRubs($ids);
-
-        $voorwerpen = getVoorwerpenInRub();
-
-        //queryVoorwerpen($voorwerpQuery, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber);
-
-
-    } else {
-        echo 'Geen rubriek geselecteerd';
-    }
-
-}
-
-// Replaces: queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber)
-function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $currentPageNumber) {
-    global $db;
-    $query->execute();
-    $voorwerpArray = array();
-    while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
-
-        array_push($voorwerpArray, $voorwerp);
-
-        $list = loadbestanden($voorwerp->voorwerpnummer);
-        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
-
-        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
-
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
-        }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
-
-        echoVoorwerp($voorwerp, $prijs, $image);
-    }
-
-    if (count($voorwerpArray) < 1) {
-        echo "Geen voorwerpen gevonden";
-    }
-
-    //Pagina nummers VVVV
-
-    if ($totalItems > $itemsPerPage) {
-        $nPages = ceil($totalItems / $itemsPerPage);
-        echo '<div class="row">
-            <div class="col-sm-12">
-            ';
-        if ($currentPageNumber > 1) {
-            echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber - 1) . "'\">Previous</button>");
-        }
-        if ($nPages > 9) {
-            if ($currentPageNumber < 6) {
-                for ($i = 1; $i < 10; $i++) {
-                    echoPageNumber($i, $currentPageNumber, $rubriekId);
-                }
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-                echoPageNumber($nPages, $currentPageNumber, $rubriekId);
-            } else if ($currentPageNumber > ($nPages - 5)) {
-                echoPageNumber(1, $currentPageNumber, $rubriekId);
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-                for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
-                    echoPageNumber($i, $currentPageNumber, $rubriekId);
-                }
-            } else {
-                echoPageNumber(1, $currentPageNumber, $rubriekId);
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-                for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
-                    echoPageNumber($i, $currentPageNumber, $rubriekId);
-                }
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-                echoPageNumber($nPages, $currentPageNumber, $rubriekId);
-            }
-
-        } else {
-            for ($i = 1; $i < $nPages + 1; $i++) {
-                echoPageNumber($i, $currentPageNumber, $rubriekId);
-            }
-        }
-        if ($currentPageNumber < $nPages) {
-            echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
-        }
-        echo '</div></div>';
-    }
-
+    return $query->fetchAll(PDO::FETCH_OBJ);
 }
 
 //Replaces: featuredVoorwerp()
@@ -260,26 +139,25 @@ function getFeaturedVoorwerp()
 }
 
 //Replaces: getBiedingenByUsername($username)
-function getBiedingenByUsername($username) {
+function getBiedingenByUsrName($username) {
     global $db;
-    $bodQuery = $db->prepare('SELECT v.voorwerpnummer, v.titel, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
-    $bodQuery->bindParam(1, $username);
-    $bodQuery->execute();
-    return $bodQuery->fetchAll(PDO::FETCH_OBJ);
+    $query = $db->prepare('SELECT v.voorwerpnummer, v.titel, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
+    $query->bindParam(1, $username);
+    $query->execute();
+    return $query->fetchAll(PDO::FETCH_OBJ);
 }
 
 //Replaces: veilingEnded($voorwerpnummer)
 function veilingEnded($voorwerpnummer) {
     global $db;
-    $statement = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    $row = $statement->fetch();
-    return $row['isVoltooid'];
+    $query = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
+    $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    return ($query->fetch(PDO::FETCH_OBJ))->isVoltooid;
 }
 
 //Replaces: endVeilingByVoorwerpnummer($voorwerpnummer)
 function endVeilingByVnr($voorwerpnummer) {
     global $db;
-    $statement = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $query = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
+    return $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
 }
