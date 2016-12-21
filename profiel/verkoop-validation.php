@@ -27,30 +27,71 @@ $user = getUserByUsername($username);
     }
 
 
+    function doesSellerAlreadyExist($username)
+    {
+        global $db;
+        $exist = false;
+        $query = $db->query("SELECT gebruikersnaam FROM verkoper");
+        foreach ($query as $row) {
+            if ($row["gebruikersnaam"] == $username) {
+                $exist = true;
+            }
+        }
+        return $exist;
+    }
 
-    $errorString = "";
+    function doesSellerValidationCodeexist($code)
+    {
+        global $db;
+        $statement = $db->prepare("SELECT validatiecode FROM verkoper WHERE validatiecode = :code");
+        $statement->execute(array(':code' => $code));
+        $row = $statement->fetch();
+        if (!$row) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+
+
+
+
+
+    $messageString = "";
 
     if (isset($_POST['registratieverkoop'])) {
         if (empty($_POST['banknummer']) &&
             empty($_POST['creditcardnummer'])
         ) {
-            $errorString = "IBAN <strong>of</strong> creditcardnummer moet ingevuld zijn.";
+            $messageString = "<div class='alert alert-danger error'>IBAN <strong>of</strong> creditcardnummer moet ingevuld zijn.</div>";
+        } elseif (doesSellerAlreadyExist($_SESSION['user'])) {
+            $messageString = "<div class='alert alert-danger error'>Gebruikersnaam heeft al een validatiecode aangevraagd.</div>";
         } else {
             if (empty($_POST['banknummer'])) {
                 $controleoptie = 'Creditcard';
             } else {
                 $controleoptie = 'Bank';
             }
+            $validatieCode = generateRandomString();
 
             global $db;
-            $sql = "INSERT INTO verkoper (gebruikersnaam, bankrekening, creditcard, controleoptie) VALUES
-                (:gebruiker, :bankrekening, :creditcard, :controleoptie)";
+            $sql = "INSERT INTO verkoper (gebruikersnaam, bankrekening, creditcard, controleoptie, validatiecode) VALUES
+                (:gebruiker, :bankrekening, :creditcard, :controleoptie, :validatiecode)";
             $stmt = $db->prepare($sql);
             $stmt->bindValue(':gebruiker', $_SESSION['user'], PDO::PARAM_STR);
             $stmt->bindValue(':bankrekening', $_POST['banknummer'], PDO::PARAM_STR);
             $stmt->bindValue(':creditcard', $_POST['creditcardnummer'], PDO::PARAM_STR);
             $stmt->bindValue(':controleoptie', $controleoptie, PDO::PARAM_STR);
+            $stmt->bindValue(':validatiecode', $validatieCode, PDO::PARAM_STR);
             $stmt->execute();
+
+            $messageString = "<div class='alert alert-success error'>Succes. 
+                                U ontvangt via de post een validatiecode.
+                                Deze dient u binnen een week vanaf nu te valideren.
+                                
+                                </div>";
         }
     }
 
@@ -78,16 +119,15 @@ $user = getUserByUsername($username);
 
 <row>
     <div >
-        <input  type="submit" name="registratieverkoop" value="Meld mij aan als verkoper">
+        <input  type="submit" name="registratieverkoop" value="Vraag validatiecode aan">
     </div>
     </form>
     <br><br>
-    <?php if (empty($errorString)) {
+    <?php if (empty($messageString)) {
 
     } else { ?>
-        <div class="alert alert-danger error">
-            <?php echo $errorString; ?>
-        </div>
+
+            <?php echo $messageString; ?>
     <?php } ?>
 </row>
 

@@ -111,9 +111,7 @@ if (isset($_POST['registreer'])) {
 
             header('Location: validatie.php');
         }
-        header('location: validatie.php');
     }
-}
 
 $rubriekArray = loadRubrieken();
 include_once('partial files\header.php');
@@ -140,15 +138,15 @@ loadSidebar($rubriekArray, null);
                     </tr>
                     <tr>
                         <td>Gebruikersnaam</td>
-                        <td><input maxlength="35" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
+                        <td><input  maxlength="35" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
                     </tr>
                     <tr>
                         <td>Voornaam</td>
-                        <td><input value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
+                        <td><input  value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
                     </tr>
                     <tr>
                         <td>Achternaam</td>
-                        <td><input  value="<?php if(isset($_POST['achternaam'])){ echo $_POST['achternaam'];}?>" type="text" name="achternaam" ></td>
+                        <td><input   value="<?php if(isset($_POST['achternaam'])){ echo $_POST['achternaam'];}?>" type="text" name="achternaam" ></td>
                     </tr>
                     <tr>
                         <td>Wachtwoord</td>
