@@ -37,10 +37,6 @@ include_once('partial files\header.php');
 
 $errorMessage = "";
 $successMessage = "";
-if (!empty($_POST['wachtwoord'])) {
-    $startprice = $_POST['startprijs'];
-    $number = preg_match('@[0-9]@', $startprice);
-}
 if (isset($_POST['toevoegen'])) {
     if (empty($_POST['titel']) ||
         empty($_POST['beschrijving']) ||
@@ -48,13 +44,19 @@ if (isset($_POST['toevoegen'])) {
         empty($_POST['plaatsnaam'])
     ) {
         $errorMessage = "Niet alles ingevuld.";
-    } else
-        if(empty($_POST['titel']) ||
-            empty($_POST['beschrijving']) ||
-            empty($_POST['startprijs']) ||
-            empty($_POST['plaatsnaam']));
-
-        else
+    }
+    else if(!is_numeric($_POST['startprijs'])){
+        $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+    }
+    else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])){
+        $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
+    }
+    else if(!empty($_POST['verzendkosten'])){
+        if(!is_numeric($_POST['verzendkosten'])) {
+                $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+        }
+    }
+    else
         {
             $description = htmlspecialchars($_POST['beschrijving']);
             $title = htmlspecialchars($_POST['titel']);

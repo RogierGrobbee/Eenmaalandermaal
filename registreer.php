@@ -47,6 +47,8 @@ if (isset($_POST['registreer'])) {
             $errorMessage = "Geen geldige postcode.";
         }  else if (!is_numeric($_POST['telefoon1'])) {
             $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
+        }  else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaats"])){
+            $errorMessage = "Plaats mag alleen letters bevatten.";
         }
         else
         {
