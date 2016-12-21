@@ -53,46 +53,47 @@ if (isset($_POST['toevoegen'])) {
     }
     else if(!empty($_POST['verzendkosten'])){
         if(!is_numeric($_POST['verzendkosten'])) {
-                $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+                $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
         }
     }
     else
         {
-            $description = htmlspecialchars($_POST['beschrijving']);
-            $title = htmlspecialchars($_POST['titel']);
-            $city = htmlspecialchars($_POST['plaatsnaam']);
-            $user = $_SESSION['user'];
+            $titel = htmlspecialchars($_POST['titel']);
+            $beschrijving = htmlspecialchars($_POST['beschrijving']);
+            $plaatsnaam = htmlspecialchars($_POST['plaatsnaam']);
+            $verzendinstructies;
+            $betalingsinstructie;
+            if(!empty($_POST['betalingsinstructie'])){
+                $betalingsinstructie = htmlspecialchars($_POST['betalingsinstructie']);
+            }
+            elseif (!empty($_POST['verzendinstructies'])){
+                $verzendinstructies = htmlspecialchars($_POST['verzendinstructies']);
+            }
 
             global $db;
-            $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
-                (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
+            $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
+                (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)";
             $stmt = $db->prepare($sql);
-            $stmt->bindValue(':username', $_POST['gebruikersnaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':firstname', $_POST['voornaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':lastname', $_POST['achternaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':adres', $_POST['adres'], PDO::PARAM_STR);
-            $stmt->bindValue(':postcode', $_POST['postcode'], PDO::PARAM_STR);
-            $stmt->bindValue(':plaatsnaam', $_POST['plaats'], PDO::PARAM_STR);
-            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);                 //////////////////
-            $stmt->bindValue(':geboortedatum', $_POST['geboortedatum'], PDO::PARAM_STR);
-            $stmt->bindValue(':email', $_POST['email'], PDO::PARAM_STR);
-            $stmt->bindValue(':wachtwoord', $password, PDO::PARAM_STR);
-            $stmt->bindValue(':verkoper', 0, PDO::PARAM_INT);
-            $stmt->bindValue(':vraag', $_POST['geheimeVraag'], PDO::PARAM_INT);                 //////////////////
-            $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
+            $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
+            $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
+            $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
+            $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
+            $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
+            $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
+            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
+            $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
+            $stmt->bindValue(':verzendkosten',  $_POST['verzendkosten'], PDO::PARAM_STR);
+            $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
+            $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
             $stmt->execute();
         }
+    $successMessage="Veiling is toegevoegd";
+
 }
-
-
-
-
-
 
 ?>
 
     <h1>Veiling Toevoegen</h1>
-
 <?php include_once('partial files\sidebar.php');
 loadSidebar($rubriekArray, null);
 ?>
@@ -144,16 +145,16 @@ loadSidebar($rubriekArray, null);
                     </tr>
                     <tr>
                         <td>Verzendkosten</td>
-                        <td><input class="form-control" maxlength="5" value="<?php if(isset($_POST['verzendkosten'])){ echo $_POST['verzendkosten'];}?>" type="text" name="adres" ></td>
+                        <td><input class="form-control" maxlength="5" value="<?php if(isset($_POST['verzendkosten'])){ echo $_POST['verzendkosten'];}?>" type="text" name="verzendkosten" ></td>
                     </tr>
                     <tr>
                         <td>Verzendinstructies</td>
-                        <td><input class="form-control" maxlength="255" value="<?php if(isset($_POST['verzendinstructies'])){ echo $_POST['verzendinstructies'];}?>" type="text" name="plaats" ></td>
+                        <td><input class="form-control" maxlength="255" value="<?php if(isset($_POST['verzendinstructies'])){ echo $_POST['verzendinstructies'];}?>" type="text" name="verzendinstructies" ></td>
                     </tr>
-                    <tr>
-                        <td>Afbeelding</td>
-                        <td><input class="form-control" maxlength="15" value="<?php if(isset($_POST['afbeelding'])){ echo $_POST['afbeelding'];}?>" type="text" name="telefoon1"></td>
-                    </tr>
+<!--                    <tr>-->
+<!--                        <td>Afbeelding</td>-->
+<!--                        <td><input class="form-control" maxlength="15" value="--><?php //if(isset($_POST['afbeelding'])){ echo $_POST['afbeelding'];}?><!--" type="text" name="telefoon1"></td>-->
+<!--                    </tr>-->
                 </table>
             </div>
         </row>
@@ -167,21 +168,16 @@ loadSidebar($rubriekArray, null);
     </form>
     <br><br>
 
-    <row>
-        <div style="color:red" class="col-sm-12">
-            <br>
-
-            <?php
-            if (!empty($errorMessage)) {
-                echo "<div class='alert alert-danger'>";
-                echo $errorMessage;
-                echo "</div>";
-            }
-            ?>
-
-        </div>
-    </row>
-
+    <div class="row" style="margin-top: -22.5px;">
+    <br>
+    <?php
+    if (!empty($errorMessage)) {
+        echo "<div class='alert alert-danger error'>$errorMessage</div>";
+    }
+    else if(!empty($successMessage)){
+        echo "<div class='alert alert-success error'>$successMessage</div>";
+    }
+    ?>
 
 
 <?php include_once('partial files\footer.php') ?>
