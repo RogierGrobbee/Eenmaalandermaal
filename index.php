@@ -7,11 +7,14 @@ function loadJSScripts() {
 require('partial files\databaseconnection.php');
 require('partial files\header.php');
 
-?>
+if(isset($_SESSION['user'])){
+    echo "<h1>Welkom ". $_SESSION['user'] ."!</h1>";
+}
+else {
+    echo "<h1>Meer dan 2000 veilingen! Bied nu!</h1>";
+}
 
-<h1>Meer dan 2000 veilingen! Bied nu!</h1>
 
-<?php
 //sidebar maken op basis van rubrieken
 require('partial files\sidebar.php');
 $rubriekArray = loadRubrieken();
@@ -40,6 +43,18 @@ loadSidebar($rubriekArray, null);
                  data-nummer= "' . $voorwerp->voorwerpnummer . '" class="tijd"></span>
             </div>
             <button class="veiling-detail btn-homepage">Bied</button></div></a>' ?>
+
+        <?php
+            if(isset($_SESSION['user'])){
+                echo "<h1>Uw meest recente geboden veilingen</h1>
+                    <div class='row'>";
+
+                queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp v INNER JOIN bod b ON b.voorwerpnummer=v.voorwerpnummer
+                                        WHERE b.gebruikersnaam = '". $_SESSION['user']. "' ORDER BY b.bodtijdstip DESC");
+
+                echo "</div>";
+            }
+        ?>
 
 
         <h1>Meest populaire veilingen</h1>

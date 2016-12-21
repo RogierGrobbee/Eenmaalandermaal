@@ -1,15 +1,6 @@
 <?php include_once('partial files\databaseconnection.php');
-$rubriekArray = loadRubrieken();
-include_once('partial files\header.php');
-cantVisitLoggedIn();
-?>
-
-    <h1>Log In</h1>
-
-<?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
-
 $errorMessage;
+
 if (!empty($_POST['wachtwoord'])) {
     $password = $_POST['wachtwoord'];
 
@@ -30,6 +21,7 @@ if (isset($_POST['Login'])) {
             $hash = getPassword($username);
 
             if (password_verify($password, $hash)) {
+                session_start();
                 $_SESSION['user'] = $username;
                 header('Location: index.php');
             } else {
@@ -41,15 +33,26 @@ if (isset($_POST['Login'])) {
         }
 }
 
+$rubriekArray = loadRubrieken();
+include_once('partial files\header.php');
+cantVisitLoggedIn();
+?>
+
+    <h1>Log In</h1>
+
+<?php include_once('partial files\sidebar.php');
+loadSidebar($rubriekArray, null);
 ?>
 
     <div class="row" style="margin-top: -22.5px;">
             <br>
             <?php
             if (!empty($errorMessage)) {
-                echo "<div class='alert alert-danger error'>";
-                echo $errorMessage;
-                echo "</div>";
+                echo "<div class='alert alert-danger error'>$errorMessage</div>";
+            }
+            else if(isset($_SESSION['message'])){
+                echo "<div class='alert alert-success error'>".$_SESSION['message']."</div>";
+                unset($_SESSION['message']);
             }
             ?>
     <form method="post">

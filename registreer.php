@@ -1,5 +1,4 @@
 <?php include_once('partial files\databaseconnection.php');
-$rubriekArray = loadRubrieken();
 
 $errorMessage = "";
 $successMessage = "";
@@ -114,7 +113,7 @@ if (isset($_POST['registreer'])) {
         }
 }
 
-
+$rubriekArray = loadRubrieken();
 include_once('partial files\header.php');
 cantVisitLoggedIn();
 ?>
