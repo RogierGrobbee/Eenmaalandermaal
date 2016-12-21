@@ -385,6 +385,7 @@ function queryHomepageVoorwerpen($queryString)
     global $db;
 
     $query = $db->query($queryString);
+    $count = 0;
 
     while ($voorwerp = $query->fetch(PDO::FETCH_OBJ)) {
         $list = loadbestanden($voorwerp->voorwerpnummer);
@@ -398,7 +399,12 @@ function queryHomepageVoorwerpen($queryString)
             $prijs = $biedingen[0]->bodbedrag;
         }
 
+        $count++;
         echoHomepageVoorwerp($voorwerp, $prijs, $image);
+    }
+
+    if($count == 0){
+        echo "<div class='error'>U heeft nog niet geboden op een veiling.</div>";
     }
 }
 
@@ -409,7 +415,7 @@ function featuredVoorwerp()
 {
     global $db;
 
-    $query = $db->query("SELECT TOP 4 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+    $query = $db->query("SELECT TOP 1 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
                                 v.looptijdeindeveiling FROM voorwerp as v 
                                 FULL OUTER JOIN Bod as b ON v.voorwerpnummer=b.voorwerpnummer 
                                 WHERE v.looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) 
@@ -491,6 +497,8 @@ function echoFilterBox($param, $filter, $isRubriek)
     echo '<option value="laagstebod"'; if ($filter == "laagstebod") { echo 'selected'; } echo'>Prijs: laagst</option>';
 
     echo '<option value="hoogstebod"'; if ($filter == "hoogstebod") { echo 'selected'; } echo'>Prijs: hoogst</option>';
+
+    echo '<option value="mostpopular"'; if ($filter == "mostpopular") { echo 'selected'; } echo'>Populairste veilingen</option>';
 
     echo '</select>';
 }

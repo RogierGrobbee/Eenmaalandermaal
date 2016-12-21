@@ -1,11 +1,5 @@
 <?php include_once('partial files\databaseconnection.php');
-$rubriekArray = loadRubrieken();
-include_once('partial files\header.php');
-?>
-    <h1>Registreer</h1>
 
-<?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
 $errorString = "";
 
 
@@ -13,13 +7,23 @@ if (isset($_POST['valideer'])) {
     $code = $_POST['validatiecode'];
     if (calculateExpire($code) == 1 && doesValidationCodeexist($code) == 1) {
         validateUser($code);
-        $errorString =  "<div class='alert alert-success'>Goedgekeurd, u kunt nu inloggen.</div>";
+        session_start();
+        $_SESSION['message'] = "Goedgekeurd, u kunt nu inloggen.";
+        header('Location: login.php');
 
     } else {
         $errorString =  "<div class='alert alert-danger'>Validatiecode niet correct of is verlopen.</div>";
 
     }
 }
+
+$rubriekArray = loadRubrieken();
+include_once('partial files\header.php');
+?>
+    <h1>Registreer</h1>
+
+<?php include_once('partial files\sidebar.php');
+loadSidebar($rubriekArray, null);
 ?>
     <row>
         <div class="col-sm-12">

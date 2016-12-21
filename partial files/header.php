@@ -1,13 +1,13 @@
 <?php
 session_start();
-    if(isset($_GET['search'])){
-        $search = $_GET['search'];
-    }
-    if(isset($_POST['logout'])){
-        session_destroy();
-        header('Location: #');
-    }
-?>
+if(isset($_GET['search'])){
+    $search = $_GET['search'];
+}
+if(isset($_POST['logout'])){
+    session_destroy();
+    header('Location: #');
+}
+    ?>
 
 <html lang="en">
 <head>
