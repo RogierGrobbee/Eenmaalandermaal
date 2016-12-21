@@ -247,9 +247,6 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
 
     if ($totalItems > $itemsPerPage) {
         $nPages = ceil($totalItems / $itemsPerPage);
-        echo '<div class="row">
-            <div class="col-sm-12">
-            ';
         if ($currentPageNumber > 1) {
             echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber - 1) . "'\">Previous</button>");
         }
@@ -284,7 +281,6 @@ function queryVoorwerpen($query, $rubriekId, $itemsPerPage, $totalItems, $curren
         if ($currentPageNumber < $nPages) {
             echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
         }
-        echo '</div></div>';
     }
 
 }
@@ -360,6 +356,11 @@ function insertNewBod($voorwerp, $bod, $gebruiker){
         else if($gebruiker == $biedingen[0]->gebruikersnaam){
             $return->bodSuccesful = false;
             $return->message = "U heeft al het hoogste bod!";
+            return $return;
+        }
+        else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
+            $return->bodSuccesful = false;
+            $return->message = "De veiling is al afgelopen!";
             return $return;
         }
     }

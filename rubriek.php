@@ -51,13 +51,13 @@ else{
     loadSidebar($rubriekArray, $huidigeRubriek);
 }
 ?>
-
     <?php
     if (!is_null($huidigeRubriek)) {
         include 'partial files\subrubrieken.php';
         loadSubrubrieken($rubriekArray, $huidigeRubriek);
     }
     ?>
+
     <?php
     loadVeilingItems($inputRubriekId, $page, $filter);
     ?>

@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set("Europe/Amsterdam");
+
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
@@ -57,18 +59,27 @@ else {
 
 function showBieden(){
     global $minimalePrijs;
+    global $biedingen;
     global $voorwerp;
 
-    if(isset($_SESSION['user'])){
-        echo '<div class="bieden">
-                    <form action="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'" method="post">
+    if(isset($_SESSION['user']) && date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('d/m/y H:i:s')){
+        if($biedingen[0]->gebruikersnaam != $_SESSION['user']) {
+            echo '<div class="bieden">
+                    <form action="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" method="post">
                         <label for="bied-bar">€</label>
                         <input type="number" class="bied-bar" name="bod" id="bied-bar" min=
-                         "'.$minimalePrijs.'" max="10000000" value="'.$minimalePrijs.'" step="0.01" required>
-                        <input type="hidden" name="voorwerpnummer" value="'.$voorwerp->voorwerpnummer.'">
+                         "' . $minimalePrijs . '" max="100000" value="' . $minimalePrijs . '" step="0.01" required>
+                        <input type="hidden" name="voorwerpnummer" value="' . $voorwerp->voorwerpnummer . '">
                         <button type="submit" class="btn-bied">Bied</button>
                     </form>
                 </div>';
+        }
+        else{
+            echo "<div class='highest-bod'>U heeft al het hoogste bod!</div>";
+        }
+    }
+    else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
+
     }
     else{
         echo '<div class="bieden">
