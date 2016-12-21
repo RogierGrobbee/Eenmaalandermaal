@@ -50,8 +50,23 @@ if (isset($_POST['valideer'])) {
     } else if (!calculateSellerExpire($_POST['validatiecode'])) {
         $messageString = "<div class='alert alert-danger error'>Code is verlopen.</div>";
     } else {
+        validateSeller($_POST['validatiecode']);
         $messageString = "<div class='alert alert-success error'>U bent nu verkoper.</div>";
     }
+}
+
+function validateSeller($code)
+{
+    global $db;
+    $sth = "UPDATE g
+            SET g.verkoper = 1
+            FROM gebruiker AS g
+            INNER JOIN verkoper AS v
+            ON g.gebruikersnaam = v.gebruikersnaam
+            WHERE v.validatiecode  = :validatie";
+    $sthm = $db->prepare($sth);
+    $sthm->bindParam(':validatie', $code);
+    $sthm->execute();
 }
 
 ?>
