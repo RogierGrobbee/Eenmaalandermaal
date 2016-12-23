@@ -45,10 +45,10 @@ if ($huidigeRubriek != null) {
 //sidebar maken op basis van rubrieken
 require('partial files\sidebar.php');
 if(isset($navigatieArray)) {
-    loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
+    loadRubriekenSidebar($navigatieArray[count($navigatieArray) - 1]);
 }
 else{
-    loadSidebar($rubriekArray, $huidigeRubriek);
+    loadRubriekenSidebar($huidigeRubriek);
 }
 ?>
     <?php

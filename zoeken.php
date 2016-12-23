@@ -6,6 +6,7 @@ function loadJSScripts() {
 require_once('partial files/models/voorwerp.php');
 require_once('partial files/models/bestand.php');
 require_once('partial files/models/bod.php');
+require_once('partial files/models/miscellaneous.php');
 
 function __echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
 {
@@ -89,7 +90,6 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
 
 //TODO: These functions need to be executed in the search page.
     $totalItems = countVrwrpenBySTerm ($searchQuery, $searchCount);
-    $totalItems = $totalItems->amount;
 
     $voorwerpen = getVrwrpenSearch($searchQuery, $searchCount, $nSkippedRecords, $itemsPerPage, $filter);
 
@@ -102,7 +102,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
         foreach($voorwerpen as $voorwerp) {
             $image = loadBestandenByVnr($voorwerp->voorwerpnummer);
 
-            $biedingen = getBiedingenByVnr($voorwerp->voorwerpnummer);
+            $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
 
             if($biedingen == null){
                 $prijs = $voorwerp->startprijs;
@@ -156,26 +156,6 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                 </div>';
 }
 
-
-// This function needs to be in the pages where this function is used.
-// This function will not be in one of the models.
-function strip_html_tags($str)
-{
-    $str = preg_replace('/(<|>)\1{2}/is', '', $str);
-    $str = preg_replace(
-        array(// Remove invisible content
-            '@<head[^>]*?>.*?</head>@siu',
-            '@<style[^>]*?>.*?</style>@siu',
-            '@<script[^>]*?.*?</script>@siu',
-            '@<noscript[^>]*?.*?</noscript>@siu',
-        ),
-        "", //replace above with nothing
-        $str);
-    $str = replaceWhitespace($str);
-    $str = strip_tags($str, '<br>');
-    return $str;
-} //function strip_html_tags ENDS
-
 // This function needs to be in the pages where this function is used.
 // This function will not be in one of the models.
 //To replace all types of whitespace with a single space
@@ -214,7 +194,7 @@ if(isset($search)){
 }
 
 require('partial files\sidebar.php');
-__loadSidebar(null);
+loadRubriekenSidebar(null);
 
 ?>
 

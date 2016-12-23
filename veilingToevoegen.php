@@ -95,7 +95,7 @@ if (isset($_POST['toevoegen'])) {
 
     <h1>Veiling Toevoegen</h1>
 <?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
+loadRubriekenSidebar(null);
 ?>
 
 

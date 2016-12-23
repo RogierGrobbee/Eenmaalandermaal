@@ -43,7 +43,7 @@ require('partial files\navigatie.php');
 echo "<h1>$voorwerp->titel</h1>";
 
 require('partial files\sidebar.php');
-loadSidebar($rubriekArray, $navigatieArray[count($navigatieArray) - 1]);
+loadRubriekenSidebar($navigatieArray[count($navigatieArray) - 1]);
 
 $list = loadBestanden($voorwerp->voorwerpnummer);
 $image = $list[0];

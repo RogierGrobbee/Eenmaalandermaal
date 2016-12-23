@@ -3,7 +3,7 @@
 require_once ('databaseString.php');
 
 // Replaces: getVoorwerpBiedingen($voorwerpnummer)
-function getBiedingenByVnr($voorwerpnummer){
+function getBiedingenByVoorwerpnummer($voorwerpnummer){
     global $db;
 
     $query = $db->prepare("SELECT * FROM bod WHERE voorwerpnummer = :voorwerpnummer ORDER BY bodbedrag DESC");

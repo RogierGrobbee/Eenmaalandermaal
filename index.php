@@ -18,7 +18,7 @@ else {
 //sidebar maken op basis van rubrieken
 require('partial files\sidebar.php');
 $rubriekArray = loadRubrieken();
-loadSidebar($rubriekArray, null);
+loadRubriekenSidebar(null);
 ?>
     <?php
         $voorwerp = featuredVoorwerp();

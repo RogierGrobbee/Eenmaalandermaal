@@ -5,7 +5,7 @@ require('partial files\header.php'); ?>
 <h1>Contact</h1>
 
 <?php require('partial files\sidebar.php');
-loadSidebar($rubriekArray, null); ?>
+loadRubriekenSidebar(null); ?>
 
         <div class="row">
             <div class="col-sm-3">
