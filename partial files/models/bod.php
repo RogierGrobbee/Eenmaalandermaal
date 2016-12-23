@@ -6,7 +6,6 @@
  * Time: 10:07
  */
 
-namespace refactor;
 
 require_once ('databaseString.php');
 
