@@ -64,15 +64,16 @@ function echoPhoneNumbers($phoneNumbers){
    ?>
 <form method="post">
     <br>
-        <div class="col-sm-6 col-xs-8">
-
-                    <input maxlength="15" value="<?php if(isset($_POST['telefoon'])){ echo $_POST['telefoon'];}?>" type="text" name="telefoon" >
+    <div class="row">
+        <div class="col-lg-3 col-md-5 col-sm-7 col-xs-12 add-number">
+            <input class="input-add-number" maxlength="15" value="<?php if(isset($_POST['telefoon'])){ echo $_POST['telefoon'];}?>" type="text" name="telefoon" >
         </div>
-        <div class="col-sm-1 col-xs-2 submit-registrion">
-            <button type="submit" name="Toevoegen" value="toevoegen">Nummer toevoegen</button>
+        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12 add-number">
+            <button class="btn-add-number" type="submit" name="Toevoegen" value="toevoegen">Nummer toevoegen</button>
         </div>
+    </div>
     <br>
-    </form>
+</form>
 <?php
 }
 

@@ -58,10 +58,14 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
 {
     global $db;
     global $itemsPerPage;
+    $searchCount = substr_count($searchQuery, ' ');
+    $searchQuery .= " ";
+
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
 
-    $countQuery = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search=?");
-    $countQuery->bindValue(1, '%' . $searchQuery . '%', PDO::PARAM_STR);
+    $countQuery = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search=?, @searchCount=?");
+    $countQuery->bindValue(1, $searchQuery, PDO::PARAM_STR);
+    $countQuery->bindParam(2, $searchCount, PDO::PARAM_INT);
     $countQuery->execute();
 
     $totalItems = 0;
@@ -69,11 +73,12 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
         $totalItems = $item->amount;
     }
 
-    $statement = $db->prepare("execute sp_SearchVoorwerpenByTitle @search=?, @nSkippedRecords=?, @itemPerPage=?, @filter=?");
-    $statement->bindValue(1, '%' . $searchQuery . '%', PDO::PARAM_STR);
-    $statement->bindParam(2, $nSkippedRecords, PDO::PARAM_INT);
-    $statement->bindParam(3, $itemsPerPage, PDO::PARAM_INT);
-    $statement->bindValue(4, $filter, PDO::PARAM_STR);
+    $statement = $db->prepare("execute sp_SearchVoorwerpenByTitle @search=?, @searchCount=?, @nSkippedRecords=?, @itemPerPage=?, @filter=?");
+    $statement->bindValue(1, $searchQuery, PDO::PARAM_STR);
+    $statement->bindParam(2, $searchCount, PDO::PARAM_INT);
+    $statement->bindParam(3, $nSkippedRecords, PDO::PARAM_INT);
+    $statement->bindParam(4, $itemsPerPage, PDO::PARAM_INT);
+    $statement->bindValue(5, $filter, PDO::PARAM_STR);
 
     $statement->execute();
     echoFilterBox($searchQuery, $filter, false);

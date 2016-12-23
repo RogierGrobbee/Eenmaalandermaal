@@ -49,8 +49,10 @@ loadSidebar($rubriekArray, null);
                 echo "<h1>Uw meest recente geboden veilingen</h1>
                     <div class='row'>";
 
-                queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp v INNER JOIN bod b ON b.voorwerpnummer=v.voorwerpnummer
-                                        WHERE b.gebruikersnaam = '". $_SESSION['user']. "' ORDER BY b.bodtijdstip DESC");
+                queryHomepageVoorwerpen("SELECT TOP 3 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+                v.looptijdeindeveiling, max(b.bodtijdstip) as bodtijdstip FROM voorwerp v INNER JOIN bod b ON b.voorwerpnummer=v.voorwerpnummer
+                    WHERE b.gebruikersnaam = '". $_SESSION['user']. "' GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+                v.looptijdeindeveiling ORDER BY max(b.bodtijdstip) DESC");
 
                 echo "</div>";
             }

@@ -318,6 +318,28 @@ form{
     padding: 0;
 }
 
+/*Profielpagina*/
+.add-number{
+    padding: 0;
+    padding-left: 10px;
+}
+
+.input-add-number{
+    width: 100%;
+    box-sizing: border-box;
+    height: 30px;
+    float: left;
+    padding: 0;
+    margin-right: 10px;
+}
+
+.btn-add-number{
+    width: 100%;
+    height: 30px;
+    float: left;
+    padding: 0;
+}
+
 /*Header en footer*/
 .headerbar {
     background-color: #4d79ff;
@@ -490,6 +512,11 @@ footer a {
     .bodprijs {
         width: 70%;
         text-align: left;
+    }
+
+    .add-number{
+        padding: 0;
+        padding-bottom: 10px;
     }
 }
 

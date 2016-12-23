@@ -2,6 +2,7 @@
 session_start();
 if(isset($_GET['search'])){
     $search = $_GET['search'];
+    $search = trim($search);
 }
 if(isset($_POST['logout'])){
     session_destroy();
