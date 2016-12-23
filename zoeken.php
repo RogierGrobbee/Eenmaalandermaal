@@ -1,4 +1,6 @@
 <?php
+require_once('partial files/models/rubriek.php');
+
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
@@ -67,7 +69,7 @@ if (isset($_GET['page'])) {
     }
 }
 
-require('partial files\databaseconnection.php');
+//require('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
 
 require('partial files\header.php');
@@ -77,7 +79,7 @@ if(isset($search)){
 }
 
 require('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
+__loadSidebar(null);
 
 ?>
 
