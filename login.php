@@ -43,7 +43,7 @@ cantVisitLoggedIn();
     <h1>Log In</h1>
 
 <?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
+loadRubriekenSidebar(null);
 ?>
 
     <div class="row" style="margin-top: -22.5px;">

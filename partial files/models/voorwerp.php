@@ -22,7 +22,7 @@ function countVrwrpenBySTerm ($searchTerm, $searchCount) {
         ':searchCount' => $searchCount
         ));
 
-    return $query->fetch(PDO::FETCH_OBJ);
+    return ($query->fetch(PDO::FETCH_OBJ))->amount;
 
 }
 

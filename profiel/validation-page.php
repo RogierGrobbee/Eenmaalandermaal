@@ -1,10 +1,12 @@
 <?php
 
-include_once('..\partial files\header.php'); ?>
+include_once('..\partial files\header.php');
+include_once('../partial files/sidebar.php');
+?>
 
 <h1>Profiel</h1>
 <?php
-loadSidebar();
+loadProfileSidebar();
 
 include_once ('..\partial files\databaseconnection.php');
 $user = getUserByUsername($username);
@@ -104,7 +106,7 @@ Vul de code in die u via de post heeft ontvangen.
 <?php
 include_once('..\partial files\footer.php');
 
-function loadSidebar()
+/*function loadSidebar()
 {
     echo '<div class="list-group col-sm-3">';
     echo "<ul class='topnav' id='myTopnav''>";
@@ -119,6 +121,6 @@ function loadSidebar()
     echo "</li>";
     echo "</ul>";
     echo '</div><div class="col-sm-9">';
-}
+}*/
 
 ?>

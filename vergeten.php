@@ -5,7 +5,7 @@ include_once('partial files\header.php'); ?>
     <h1>Wachtwoord vergeten</h1>
 
 <?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
+loadRubriekenSidebar(null);
 
 $errorMessage;
 $successMessage;

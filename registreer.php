@@ -123,7 +123,7 @@ cantVisitLoggedIn();
     <h1>Registreer</h1>
 
 <?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
+loadRubriekenSidebar(null);
 
 
 ?>

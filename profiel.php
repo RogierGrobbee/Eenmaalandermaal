@@ -5,7 +5,7 @@ include_once('partial files\header.php'); ?>
     <h1>Profiel</h1>
 
 <?php include_once('partial files\sidebar.php');
-loadSidebar($rubriekArray, null);
+loadRubriekenSidebar(null);
 if (isset($_SESSION["user"])) {
     $username = $_SESSION["user"];
 }
