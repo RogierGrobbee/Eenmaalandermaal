@@ -87,12 +87,13 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
 
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
 
+//TODO: These functions need to be executed in the search page.
     $totalItems = countVrwrpenBySTerm ($searchQuery, $searchCount);
     $totalItems = $totalItems->amount;
 
     $voorwerpen = getVrwrpenSearch($searchQuery, $searchCount, $nSkippedRecords, $itemsPerPage, $filter);
 
-    echoFilterBox($searchQuery, $filter, false);
+    echoFilterBox(trim($searchQuery), $filter, false);
 
     if (count($voorwerpen) < 1) {
         echo "Geen voorwerpen gevonden";
@@ -144,6 +145,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                     <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
                         <img src="pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
+                        <h4>Uit rubriek '. $voorwerp->rubrieknaam .'</h4>
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs. '</p>
                         <div class="veiling-info">
