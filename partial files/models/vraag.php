@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces part of the returnGeheimeVragen() function
 function getAllvragen () {
     global $db;

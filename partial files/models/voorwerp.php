@@ -6,7 +6,7 @@
  * Time: 12:58
  */
 
-namespace refactor;
+require_once ('databaseString.php');
 
 // Replaces: getVoorwerp($voorwerpId)
 function getVoorwerpById($voorwerpnummer) {
@@ -18,17 +18,29 @@ function getVoorwerpById($voorwerpnummer) {
 }
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
-function countVrwrpenBySTerm ($searchTerm) {
+function countVrwrpenBySTerm ($searchTerm, $searchCount, $nSkippedRecords, $itemsPerPage, $filter) {
     global $db;
 
-    $query = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search= :searchTerm");
-    $query->execute(array(':searchTerm' => '%' . $searchTerm . '%'));
+    $query = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search= :searchTerm,
+                                                                   @searchCount = :searchCount,
+                                                                   @nSkippedRecords = :nSkippedRecords,
+                                                                   @itemPerPage = :itemsPerPage,
+                                                                   @filter = :filter");
+    $query->execute(array(
+        ':searchTerm' => '%' . $searchTerm . '%',
+        ':searchCount' => $searchCount,
+        ':nSkippedRecords' => $nSkippedRecords,
+        ':itemsPerPage' => $itemsPerPage,
+        ':filter' => $filter,
+        ));
 
-    return ($query->fetch(PDO::FETCH_OBJ))->amount;
+    $test = $query->fetch(PDO::FETCH_OBJ);
+
+    return $test['amount'];
 }
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
-function getVrwrpenByTitle ($searchTerm, $nSkippedRecords, $itemsPerPage, $filter) {
+function getVrwrpenSearch ($searchTerm, $nSkippedRecords, $itemsPerPage, $filter) {
     global $db;
 
     $query = $db->prepare("execute sp_SearchVoorwerpenByTitle @search = :searchTerm,

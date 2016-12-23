@@ -6,9 +6,6 @@
  * Time: 13:24
  */
 
-namespace refactor;
-
-
 // Replaces: loadRubrieken()
 function loadAllRubrieken()
 {

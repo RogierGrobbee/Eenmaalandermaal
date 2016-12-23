@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces: getVoorwerpBiedingen($voorwerpnummer)
 function getBiedingenByVnr($voorwerpnummer){
     global $db;

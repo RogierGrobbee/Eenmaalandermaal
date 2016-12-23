@@ -6,6 +6,8 @@
  * Time: 14:38
  */
 
+require_once ('databaseString.php');
+
 function getAntwoordByUsrName($username) {
     global $db;
     $query = $db->prepare("SELECT vraagnummer, gebruikersnaam, antwoordtekst

@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces: getVoorwerpRubriek($voorwerpId)
 function getVoorwerpRubByVnr($voorwerpnummer)
 {

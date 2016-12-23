@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces: loadBestanden($voorwerpId)
 function loadBestandenByVnr($voorwerpnummer)
 {

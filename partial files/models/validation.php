@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces: part of the calculateExpire($code) function
 function getDTByValCode($code) {
     global $db;

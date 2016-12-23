@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces: getUserByUsername($username)
 function getUserByUsername($username) {
     global $db;

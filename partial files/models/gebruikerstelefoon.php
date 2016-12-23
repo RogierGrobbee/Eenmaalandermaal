@@ -8,6 +8,8 @@
 
 namespace refactor;
 
+require_once ('databaseString.php');
+
 // Replaces: getPhoneNumbers($username)
 function getPhoneNumbers($username) {
     global $db;
