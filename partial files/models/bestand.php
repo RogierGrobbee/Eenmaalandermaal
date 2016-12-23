@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 20-12-2016
- * Time: 13:03
- */
-
-namespace refactor;
 
 require_once ('databaseString.php');
 

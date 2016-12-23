@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 20-12-2016
- * Time: 12:58
- */
 
 require_once ('databaseString.php');
 
@@ -21,15 +15,15 @@ function getVoorwerpById($voorwerpnummer) {
 function countVrwrpenBySTerm ($searchTerm, $searchCount) {
     global $db;
 
-
     $query = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search= :searchTerm,
                                                                    @searchCount = :searchCount");
     $query->execute(array(
-        ':searchTerm' => '%' . $searchTerm . '%',
+        ':searchTerm' => $searchTerm,
         ':searchCount' => $searchCount
         ));
 
-    return ($query->fetch(PDO::FETCH_OBJ))->amount;
+    return $query->fetch(PDO::FETCH_OBJ);
+
 }
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
@@ -160,7 +154,7 @@ function veilingEnded($voorwerpnummer) {
     global $db;
     $query = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
     $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    return ($query->fetch(PDO::FETCH_OBJ))->isVoltooid;
+    return ($query->fetch(PDO::FETCH_OBJ));
 }
 
 //Replaces: endVeilingByVoorwerpnummer($voorwerpnummer)

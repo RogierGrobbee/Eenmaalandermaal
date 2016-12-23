@@ -81,7 +81,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter)
     $statement->bindValue(5, $filter, PDO::PARAM_STR);
 
     $statement->execute();
-    echoFilterBox($searchQuery, $filter, false);
+    echoFilterBox(trim($searchQuery), $filter, false);
 
     $voorwerpArray = array();
     while ($voorwerp = $statement->fetch(PDO::FETCH_OBJ)) {

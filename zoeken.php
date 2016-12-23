@@ -4,6 +4,8 @@ function loadJSScripts() {
 }
 
 require_once('partial files/models/voorwerp.php');
+require_once('partial files/models/bestand.php');
+require_once('partial files/models/bod.php');
 
 function __echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
 {
@@ -86,6 +88,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
 
     $totalItems = countVrwrpenBySTerm ($searchQuery, $searchCount);
+    $totalItems = $totalItems->amount;
 
     $voorwerpen = getVrwrpenSearch($searchQuery, $searchCount, $nSkippedRecords, $itemsPerPage, $filter);
 
@@ -96,12 +99,9 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
     }
     else {
         foreach($voorwerpen as $voorwerp) {
-            array_push($voorwerpArray, $voorwerp);
+            $image = loadBestandenByVnr($voorwerp->voorwerpnummer);
 
-            $list = loadbestanden($voorwerp->voorwerpnummer);
-            $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
-
-            $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
+            $biedingen = getBiedingenByVnr($voorwerp->voorwerpnummer);
 
             if($biedingen == null){
                 $prijs = $voorwerp->startprijs;
@@ -112,10 +112,85 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
 
             echoVoorwerp($voorwerp, $prijs, $image);
         }
-
-        echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $searchQuery);
+        if ($totalItems > $itemsPerPage) {
+            echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $searchQuery);
+        }
     }
 }
+
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+/**
+ * Prints the voorwerp onto the page.
+ *
+ * @param $voorwerp The voorwerp.
+ * @param $image The image of the voorwerp.
+ */
+function echoVoorwerp($voorwerp, $prijs, $image)
+{
+    $beschrijving = $voorwerp->beschrijving;
+
+    $beschrijving = strip_html_tags($beschrijving);
+
+    if (strlen($beschrijving) > 300) {
+        $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
+    }
+
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
+    echo '  <div class="veilingitem">
+                    <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
+                        <img src="pics/' . $image . '" alt="veilingsfoto">
+                        <h4>' . $voorwerp->titel . '</h4>
+                        <p>' . $beschrijving . '</p>
+                        <p class="prijs">€' . $prijs. '</p>
+                        <div class="veiling-info">
+                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
+                            <button class="veiling-detail">Bied</button>
+                        </div>
+                    </a>
+                </div>';
+}
+
+
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+function strip_html_tags($str)
+{
+    $str = preg_replace('/(<|>)\1{2}/is', '', $str);
+    $str = preg_replace(
+        array(// Remove invisible content
+            '@<head[^>]*?>.*?</head>@siu',
+            '@<style[^>]*?>.*?</style>@siu',
+            '@<script[^>]*?.*?</script>@siu',
+            '@<noscript[^>]*?.*?</noscript>@siu',
+        ),
+        "", //replace above with nothing
+        $str);
+    $str = replaceWhitespace($str);
+    $str = strip_tags($str, '<br>');
+    return $str;
+} //function strip_html_tags ENDS
+
+// This function needs to be in the pages where this function is used.
+// This function will not be in one of the models.
+//To replace all types of whitespace with a single space
+function replaceWhitespace($str)
+{
+    $result = $str;
+    foreach (array(
+                 "  ", " \t", " \r", " \n",
+                 "\t\t", "\t ", "\t\r", "\t\n",
+                 "\r\r", "\r ", "\r\t", "\r\n",
+                 "\n\n", "\n ", "\n\t", "\n\r",
+             ) as $replacement) {
+        $result = str_replace($replacement, $replacement[0], $result);
+    }
+    return $str !== $result ? replaceWhitespace($result) : $result;
+}
+
 
 $filter = "looptijdeindeveilingASC";
 if (isset($_GET['filter'])) {
