@@ -11,7 +11,7 @@ namespace refactor;
 require_once ('databaseString.php');
 
 // Replaces: getVoorwerpRubriek($voorwerpId)
-function getVoorwerpRubByVnr($voorwerpnummer)
+function getVoorwerpRubriekByVoorwerpnummer($voorwerpnummer)
 {
     global $db;
     $query = $db->prepare("SELECT * FROM voorwerpinrubriek WHERE voorwerpnummer = :voorwerpnummer");

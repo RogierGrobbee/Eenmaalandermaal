@@ -89,9 +89,9 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
 
 //TODO: These functions need to be executed in the search page.
-    $totalItems = countVrwrpenBySTerm ($searchQuery, $searchCount);
+    $totalItems = countVoorwerpenBySearchTerm ($searchQuery, $searchCount);
 
-    $voorwerpen = getVrwrpenSearch($searchQuery, $searchCount, $nSkippedRecords, $itemsPerPage, $filter);
+    $voorwerpen = getVoorwerpenBySearch($searchQuery, $searchCount, $nSkippedRecords, $itemsPerPage, $filter);
 
     echoFilterBox(trim($searchQuery), $filter, false);
 
@@ -100,7 +100,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
     }
     else {
         foreach($voorwerpen as $voorwerp) {
-            $image = loadBestandenByVnr($voorwerp->voorwerpnummer);
+            $image = loadBestandenByVoorwerpnummer($voorwerp->voorwerpnummer);
 
             $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
 

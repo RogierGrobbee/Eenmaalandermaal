@@ -3,7 +3,7 @@
 require_once ('databaseString.php');
 
 // Replaces: loadBestanden($voorwerpId)
-function loadBestandenByVnr($voorwerpnummer)
+function loadBestandenByVoorwerpnummer($voorwerpnummer)
 {
     global $db;
     $query = $db->prepare('execute sp_GetBestandenByVoorwerp @id = :voorwerpnummer');

@@ -11,7 +11,7 @@ namespace refactor;
 require_once ('databaseString.php');
 
 // Replaces: part of the calculateExpire($code) function
-function getDTByValCode($code) {
+function getDatumTijdByValicationCode($code) {
     global $db;
     $query = $db->prepare("select datumTijd from validation where validatiecode = :validatiecode");
     $query->execute(array(':validatiecode' => $code));

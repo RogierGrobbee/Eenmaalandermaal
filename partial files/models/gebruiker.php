@@ -87,7 +87,7 @@ function hashPass($pass) {
     return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
 
-function getVerkoperByVnr($voorwerpnummer) {
+function getVerkoperByVerkoopnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT email FROM gebruiker
                                 WHERE gebruikersnaam in(
@@ -98,7 +98,7 @@ function getVerkoperByVnr($voorwerpnummer) {
     return $row;
 }
 
-function getTopBidderByVnr($voorwerpnummer) {
+function getTopBidderByVoorwerpnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT email from gebruiker WHERE gebruikersnaam in(
                                     SELECT TOP 1 gebruikersnaam FROM bod where voorwerpnummer = :voorwerpnummer

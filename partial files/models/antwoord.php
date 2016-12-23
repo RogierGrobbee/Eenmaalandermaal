@@ -8,7 +8,7 @@
 
 require_once ('databaseString.php');
 
-function getAntwoordByUsrName($username) {
+function getAntwoordByUsername($username) {
     global $db;
     $query = $db->prepare("SELECT vraagnummer, gebruikersnaam, antwoordtekst
                                   FROM antwoord WHERE gebruikersnaam= :username ");

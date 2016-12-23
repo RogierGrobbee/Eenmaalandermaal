@@ -11,7 +11,7 @@ namespace refactor;
 require_once ('databaseString.php');
 
 // Replaces part of the returnGeheimeVragen() function
-function getAllvragen () {
+function getAllVragen () {
     global $db;
 
     $query = $db->query("SELECT tekstvraag, vraagnummer FROM vraag");
