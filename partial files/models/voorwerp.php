@@ -141,9 +141,9 @@ function getFeaturedVoorwerp()
 }
 
 //Replaces: getBiedingenByUsername($username)
-function getBiedingenByUsrName($username) {
+function getBiedingenByUsername($username) {
     global $db;
-    $query = $db->prepare('SELECT v.voorwerpnummer, v.titel, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
+    $query = $db->prepare('SELECT v.voorwerpnummer, v.titel, v.looptijdeindeveiling, v.beschrijving, b.bodbedrag, b.bodtijdstip FROM voorwerp as v full outer join bod as b on v.voorwerpnummer = b.voorwerpnummer where b.gebruikersnaam =? Order by b.bodtijdstip desc');
     $query->bindParam(1, $username);
     $query->execute();
     return $query->fetchAll(PDO::FETCH_OBJ);
