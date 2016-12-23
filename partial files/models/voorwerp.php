@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 20-12-2016
- * Time: 12:58
- */
 
 require_once ('databaseString.php');
 
@@ -18,41 +12,37 @@ function getVoorwerpById($voorwerpnummer) {
 }
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
-function countVrwrpenBySTerm ($searchTerm, $searchCount, $nSkippedRecords, $itemsPerPage, $filter) {
+function countVrwrpenBySTerm ($searchTerm, $searchCount) {
     global $db;
 
     $query = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search= :searchTerm,
+                                                                   @searchCount = :searchCount");
+    $query->execute(array(
+        ':searchTerm' => $searchTerm,
+        ':searchCount' => $searchCount
+        ));
+
+    return $query->fetch(PDO::FETCH_OBJ);
+
+}
+
+// Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
+function getVrwrpenSearch ($searchTerm, $searchCount, $nSkippedRecords, $itemsPerPage, $filter) {
+    global $db;
+
+    $query = $db->prepare("execute sp_SearchVoorwerpenByTitle @search= :searchTerm,
                                                                    @searchCount = :searchCount,
                                                                    @nSkippedRecords = :nSkippedRecords,
                                                                    @itemPerPage = :itemsPerPage,
                                                                    @filter = :filter");
+
     $query->execute(array(
         ':searchTerm' => '%' . $searchTerm . '%',
         ':searchCount' => $searchCount,
         ':nSkippedRecords' => $nSkippedRecords,
         ':itemsPerPage' => $itemsPerPage,
         ':filter' => $filter,
-        ));
-
-    $test = $query->fetch(PDO::FETCH_OBJ);
-
-    return $test['amount'];
-}
-
-// Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
-function getVrwrpenSearch ($searchTerm, $nSkippedRecords, $itemsPerPage, $filter) {
-    global $db;
-
-    $query = $db->prepare("execute sp_SearchVoorwerpenByTitle @search = :searchTerm,
-                                                                  @nSkippedRecords = :nSkippedRecords,
-                                                                  @itemPerPage = :itemPerPage,
-                                                                  @filter = :filter");
-
-    $query->execute(array(
-        ':searchTerm' => '%' . $searchTerm . '%',
-        ':nSkippedRecords' => $nSkippedRecords,
-        ':itemPerPage' => $itemsPerPage,
-        ':filter' => $filter));
+    ));
 
     return $query->fetchAll(PDO::FETCH_OBJ);
 }
@@ -164,7 +154,7 @@ function veilingEnded($voorwerpnummer) {
     global $db;
     $query = $db->prepare("SELECT isVoltooid FROM voorwerp WHERE voorwerpnummer = :voorwerpnummer ");
     $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    return ($query->fetch(PDO::FETCH_OBJ))->isVoltooid;
+    return ($query->fetch(PDO::FETCH_OBJ));
 }
 
 //Replaces: endVeilingByVoorwerpnummer($voorwerpnummer)

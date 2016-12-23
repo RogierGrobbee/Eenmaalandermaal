@@ -1,4 +1,7 @@
 <?php
+
+require_once('models/rubriek.php');
+
 function loadSidebar($rubriekArray, $selectedRubriek)
 {
     echo "<div class='list-group col-sm-3'>
@@ -24,9 +27,11 @@ function loadSidebar($rubriekArray, $selectedRubriek)
     <div class='col-sm-9'>";
 }
 
+
+
 function __loadSidebar($selectedRubriek)
 {
-    $rubriekArray = loadRubrieken();
+    $rubriekArray = loadAllRubrieken();
 
     echo "<div class='list-group col-sm-3'>
             <ul class='topnav' id='myTopnav'>
