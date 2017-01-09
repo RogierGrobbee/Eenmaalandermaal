@@ -75,7 +75,7 @@ function showBieden(){
                 </div>';
         }
         else{
-            echo "<div class='highest-bod'>U heeft al het hoogste bod!</div>";
+            echo "<div class='highest-bod'>U heeft het hoogste bod.</div>";
         }
     }
     else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){

@@ -159,6 +159,10 @@ form{
     margin: 0;
 }
 
+.veilingitem h4{
+    color: #4d79ff;
+}
+
 .veilingitem a:hover,
 .veilingitem a:active {
     color: #000080;

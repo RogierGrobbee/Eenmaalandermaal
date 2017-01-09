@@ -8,7 +8,7 @@ require_once('partial files/models/bestand.php');
 require_once('partial files/models/bod.php');
 require_once('partial files/models/miscellaneous.php');
 
-function __echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
+function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
 {
     if (($pageNumber) == $currentPageNumber) {
         echo '<b style="margin: 5px">' . $pageNumber . '</b>';
@@ -49,29 +49,29 @@ function echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $searchT
     if ($nPages > 9) {
         if ($currentPageNumber < 6) {
             for ($i = 1; $i < 10; $i++) {
-                __echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
+                echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
             }
             echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-            __echoSearchPageNumber($nPages, $currentPageNumber, $searchTerm);
+            echoSearchPageNumber($nPages, $currentPageNumber, $searchTerm);
         } else if ($currentPageNumber > ($nPages - 5)) {
-            __echoSearchPageNumber(1, $currentPageNumber, $searchTerm);
+            echoSearchPageNumber(1, $currentPageNumber, $searchTerm);
             echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
             for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
-                __echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
+                echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
             }
         } else {
-            __echoSearchPageNumber(1, $currentPageNumber, $searchTerm);
+            echoSearchPageNumber(1, $currentPageNumber, $searchTerm);
             echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
             for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
-                __echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
+                echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
             }
             echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
-            __echoSearchPageNumber($nPages, $currentPageNumber, $searchTerm);
+            echoSearchPageNumber($nPages, $currentPageNumber, $searchTerm);
         }
 
     } else {
         for ($i = 1; $i < $nPages + 1; $i++) {
-            __echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
+            echoSearchPageNumber($i, $currentPageNumber, $searchTerm);
         }
     }
     if ($currentPageNumber < $nPages) {
@@ -81,7 +81,6 @@ function echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $searchT
 }
 
 function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
-    global $itemsPerPage;
     $itemsPerPage = 10;
     $searchCount = substr_count($searchQuery, ' ');
     $searchQuery .= " ";
@@ -131,7 +130,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 {
     $beschrijving = $voorwerp->beschrijving;
 
-    $beschrijving = strip_html_tags($beschrijving);
+    $beschrijving = stripHtmlTags($beschrijving);
 
     if (strlen($beschrijving) > 300) {
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
