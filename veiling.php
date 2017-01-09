@@ -15,53 +15,24 @@ if (isset($_GET['voorwerpnummer'])) {
         $voorwerpnummer = 0;
     }
 } else {
-    //exit;
+    exit;
 }
 
 
 require('partial files\models\bod.php');
 require('partial files\models\voorwerp.php');
+require('partial files\models\rubriek.php');
+require('partial files\models\voorwerpinrubriek.php');
+require('partial files\models\bestand.php');
+require('partial files\models\miscellaneous.php');
 
 $voorwerp = getVoorwerpById($voorwerpnummer);
+$error = "";
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
-        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
-
-        if($biedingen == null){
-            if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
-                $error = "<div class='alert alert-danger error'>
-                        <strong>U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!</strong>
-                      </div>";
-            }
-        }
-        else if($_POST['bod'] < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag)){
-                $error = "<div class='alert alert-danger error'>
-                        <strong>U moet minimaal €".calculateIncrease($biedingen[0]->bodbedrag)." hoger bieden!</strong>
-                      </div>";
-            }
-        else if($_POST['user'] == $biedingen[0]->gebruikersnaam){
-                $error = "<div class='alert alert-danger error'>
-                        <strong>U heeft al het hoogste bod!</strong>
-                      </div>";
-            }
-        else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
-                $error = "<div class='alert alert-danger error'>
-                        <strong>De veiling is al afgelopen.</strong>
-                      </div>";
-        }
-        else{
-            if(!insertNewBod($voorwerp, $_POST['bod'], $_SESSION['user'])){
-            $error = "<div class='alert alert-danger error'>
-                        <strong>Er kan niet hoger geboden worden dan 100.000!</strong>
-                      </div>";
-            }
-            else{
-                $error = "<div class='success alert-success error'>
-                        <strong>Een bod is succesvol geplaatst!</strong>
-                      </div>";
-
-                /*$to      = $_POST['email'];
+        if(insertNewBod()){
+            /*$to      = $_POST['email'];
                 $subject = 'Validatie EenmaalAndermaal';
                 $message = 'Validatiecode: ' . $validatieCode;
                 $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
@@ -69,27 +40,34 @@ if(isset($_POST['bod'])){
                     'X-Mailer: PHP/' . phpversion();
 
                 mail($to, $subject, $message, $headers);*/
-            }
         }
-
-        echo $error;
     }
 }
 
-$biedingen = getVoorwerpBiedingen($voorwerpnummer);
+$biedingen = getBiedingenByVoorwerpnummer($voorwerpnummer);
 
-$inputRubriekId = getVoorwerpRubriek($voorwerpnummer);
+$inputRubriekId = getVoorwerpRubriekByVoorwerpnummer($voorwerpnummer);
 
-require('partial files\rubrieken.php');
+$rubriekArray = loadAllRubrieken();
+$huidigeRubriek = null;
+
+foreach ($rubriekArray as $k => $rubriek) {
+    if ($rubriek->rubrieknummer == $inputRubriekId) {
+        $huidigeRubriek = $rubriek;
+    }
+}
+
 require('partial files\navigatie.php');
-
 echo "<h1>$voorwerp->titel</h1>";
 
 require('partial files\sidebar.php');
 loadRubriekenSidebar($navigatieArray[count($navigatieArray) - 1]);
 
-$list = loadBestanden($voorwerp->voorwerpnummer);
-$image = $list[0];
+$list = loadBestandenByVoorwerpnummer($voorwerp->voorwerpnummer);
+if(empty($list)){
+    $image = "NoImageAvailable.jpg";
+}
+$image = $list[0]->filenaam;
 
 if($biedingen == null){
     $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
@@ -98,6 +76,53 @@ if($biedingen == null){
 else {
     $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
     $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
+}
+
+function insertNewBod(){
+    global $voorwerp;
+    global $error;
+
+    $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+
+    if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
+        $error = "<div class='alert alert-danger error'>
+                        <strong>De veiling is al afgelopen.</strong>
+                      </div>";
+        return false;
+    }
+    else if($biedingen == null){
+        if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)) {
+            $error = "<div class='alert alert-danger error'>
+                        <strong>U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!</strong>
+                      </div>";
+            return false;
+        }
+    }
+    else if($_SESSION['user'] == $biedingen[0]->gebruikersnaam){
+        $error = "<div class='alert alert-danger error'>
+                    <strong>U heeft al het hoogste bod!</strong>
+                  </div>";
+        return false;
+    }
+    else if($_POST['bod'] < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag)){
+        $error = "<div class='alert alert-danger error'>
+                        <strong>U moet minimaal €".calculateIncrease($biedingen[0]->bodbedrag)." hoger bieden!</strong>
+                      </div>";
+        return false;
+    }
+
+    if(insertBod($voorwerp, $_POST['bod'], $_SESSION['user'])){
+        $error = "<div class='alert alert-success error'>
+                        <strong>Er is succesvol een bod geplaatst!</strong>
+                      </div>";
+        return true;
+    }
+    else{
+        $error = "<div class='alert alert-danger error'>
+                        <strong>Er kan niet hoger geboden worden dan 100.000!</strong>
+                      </div>";
+        return false;
+    }
 }
 
 function calculateIncrease($prijs){
@@ -240,7 +265,7 @@ function showBieden(){
 for($i = 1; $i < 4; $i++) {
     if(!empty($list[$i])){
         echo '<div class="sm-3">
-            <img class="smallpicture" src="./pics/' . $list[$i] . '" alt="plaatje voorwerp">
+            <img class="smallpicture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
         </div>';
     }
 }

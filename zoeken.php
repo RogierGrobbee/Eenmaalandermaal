@@ -99,7 +99,7 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
     }
     else {
         foreach($voorwerpen as $voorwerp) {
-            $image = loadBestandenByVoorwerpnummer($voorwerp->voorwerpnummer);
+            $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
 
             $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
 
@@ -130,7 +130,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 {
     $beschrijving = $voorwerp->beschrijving;
 
-    $beschrijving = stripHtmlTags($beschrijving);
+    $beschrijving = strip_html_tags($beschrijving);
 
     if (strlen($beschrijving) > 300) {
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
@@ -156,24 +156,6 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                     </a>
                 </div>';
 }
-
-// This function needs to be in the pages where this function is used.
-// This function will not be in one of the models.
-//To replace all types of whitespace with a single space
-function replaceWhitespace($str)
-{
-    $result = $str;
-    foreach (array(
-                 "  ", " \t", " \r", " \n",
-                 "\t\t", "\t ", "\t\r", "\t\n",
-                 "\r\r", "\r ", "\r\t", "\r\n",
-                 "\n\n", "\n ", "\n\t", "\n\r",
-             ) as $replacement) {
-        $result = str_replace($replacement, $replacement[0], $result);
-    }
-    return $str !== $result ? replaceWhitespace($result) : $result;
-}
-
 
 $filter = "looptijdeindeveilingASC";
 if (isset($_GET['filter'])) {

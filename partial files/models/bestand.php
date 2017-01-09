@@ -3,7 +3,7 @@
 require_once ('databaseString.php');
 
 // Replaces: loadBestanden($voorwerpId)
-function loadBestandenByVoorwerpnummer($voorwerpnummer)
+function loadBestandByVoorwerpnummer($voorwerpnummer)
 {
     global $db;
     $query = $db->prepare('execute sp_GetBestandenByVoorwerp @id = :voorwerpnummer');
@@ -12,3 +12,13 @@ function loadBestandenByVoorwerpnummer($voorwerpnummer)
 
     return $bestand == null ? "NoImageAvailable.jpg" : $bestand->filenaam;
 }
+
+function loadBestandenByVoorwerpnummer($voorwerpnummer)
+{
+    global $db;
+    $query = $db->prepare('execute sp_GetBestandenByVoorwerp @id = :voorwerpnummer');
+    $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
+
+    return $query->fetchAll(PDO::FETCH_OBJ);
+}
+

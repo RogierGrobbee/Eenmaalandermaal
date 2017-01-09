@@ -81,7 +81,7 @@ function loadVeilingItems($rubriekId, $currentPageNumber, $filter)
         }
         else{
             foreach($voorwerpen as $voorwerp){
-                $image = loadBestandenByVoorwerpnummer($voorwerp->voorwerpnummer);
+                $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
 
                 $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
 
@@ -115,7 +115,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 {
     $beschrijving = $voorwerp->beschrijving;
 
-    //$beschrijving = stripHtmlTags($beschrijving);
+    $beschrijving = strip_html_tags($beschrijving);
 
     if (strlen($beschrijving) > 300) {
         $beschrijving = substr($beschrijving, 0, 280) . "... <span>lees verder</span>";
