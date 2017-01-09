@@ -1,9 +1,7 @@
+
 <?php include_once('partial files\databaseconnection.php');
-$rubriekArray = loadRubrieken();
-include_once('partial files\header.php');
-//cantVisitLoggedIn();
-
-
+        echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
+        echo '<script type="text/javascript" src="js/addImages.js"></script>';
     function returnPaymentMethode()
     {
         global $db;
@@ -33,72 +31,88 @@ include_once('partial files\header.php');
         echo "</select>";
     }
 
+    $j = 0; //Variable for indexing uploaded image
 
+    $target_path = "itemImages/"; //Declaring Path for uploaded images
+    for ($i = 0; $i < count($_FILES['file']['name']); $i++) {//loop to get individual element from the array
+        $validextensions = array("jpeg", "jpg", "png");  //Extensions which are allowed
+        $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
+        $file_extension = end($ext); //store extensions in the variable
 
-$errorMessage = "";
-$successMessage = "";
-if (isset($_POST['toevoegen'])) {
-    if (empty($_POST['titel']) ||
-        empty($_POST['beschrijving']) ||
-        empty($_POST['startprijs']) ||
-        empty($_POST['plaatsnaam'])
-    ) {
-        $errorMessage = "Niet alles ingevuld.";
-    }
-    else if(!is_numeric($_POST['startprijs'])){
-        $errorMessage = "Startprijs mag alleen cijfers bevatten.";
-    }
-    else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])){
-        $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
-    }
-    else if(!empty($_POST['verzendkosten'])){
-        if(!is_numeric($_POST['verzendkosten'])) {
-                $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
-        }
-    }
-    else
-        {
+        $target_path = $target_path . md5(uniqid()) . "." . $ext[count($ext) - 1];//set the target path with a new name of image
+        $j = $j + 1;//increment the number of uploaded images according to the files in array
+
+    $errorMessage = "";
+    $successMessage = "";
+    if (isset($_POST['toevoegen'])) {
+        if (empty($_POST['titel']) ||
+            empty($_POST['beschrijving']) ||
+            empty($_POST['startprijs']) ||
+            empty($_POST['plaatsnaam'])
+        ) {
+            $errorMessage = "Niet alles ingevuld.";
+        } else if (!is_numeric($_POST['startprijs'])) {
+            $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+        } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
+            $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
+        } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten'])) {
+            $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
+        } else if (($_FILES["file"]["size"][$i] > 1000000) && !in_array($file_extension, $validextensions)) {
+            $errorMessage = "Invalid file Size or Type.";
+        } else {
             $titel = htmlspecialchars($_POST['titel']);
             $beschrijving = htmlspecialchars($_POST['beschrijving']);
             $plaatsnaam = htmlspecialchars($_POST['plaatsnaam']);
-            $verzendinstructies;
-            $betalingsinstructie;
-            if(!empty($_POST['betalingsinstructie'])){
+            if (!empty($_POST['betalingsinstructie'])) {
                 $betalingsinstructie = htmlspecialchars($_POST['betalingsinstructie']);
+            } else {
+                $betalingsinstructie;
             }
-            elseif (!empty($_POST['verzendinstructies'])){
+            if (!empty($_POST['verzendinstructies'])) {
                 $verzendinstructies = htmlspecialchars($_POST['verzendinstructies']);
+            } else {
+                $verzendinstructies;
             }
+            if (!move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
+                echo $errorMessage =  "try again!";
+            } else {
 
-            global $db;
-            $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
-                (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)";
-            $stmt = $db->prepare($sql);
-            $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
-            $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
-            $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
-            $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
-            $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
-            $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
-            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
-            $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
-            $stmt->bindValue(':verzendkosten',  $_POST['verzendkosten'], PDO::PARAM_STR);
-            $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
-            $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
-            $stmt->execute();
+
+                global $db;
+                $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
+                    (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)";
+                $stmt = $db->prepare($sql);
+                $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
+                $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
+                $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
+                $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
+                $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
+                $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
+                $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
+                $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
+                $stmt->bindValue(':verzendkosten', $_POST['verzendkosten'], PDO::PARAM_STR);
+                $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
+                $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
+                $stmt->execute();
+                $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $successMessage = "Veiling is toegevoegd";
+                }
+            }
         }
-    $successMessage="Veiling is toegevoegd";
+    }
 
-}
 
+
+$rubriekArray = loadRubrieken();
+include_once('partial files\header.php');
+//cantVisitLoggedIn();
 ?>
 
     <h1>Veiling Toevoegen</h1>
+
 <?php include_once('partial files\sidebar.php');
-loadRubriekenSidebar(null);
+loadRubriekenSidebar($rubriekArray, null);
 ?>
-
-
     <form method="post">
         <row>
             <div class="form-group">
@@ -151,33 +165,37 @@ loadRubriekenSidebar(null);
                         <td>Verzendinstructies</td>
                         <td><input class="form-control" maxlength="255" value="<?php if(isset($_POST['verzendinstructies'])){ echo $_POST['verzendinstructies'];}?>" type="text" name="verzendinstructies" ></td>
                     </tr>
-<!--                    <tr>-->
-<!--                        <td>Afbeelding</td>-->
-<!--                        <td><input class="form-control" maxlength="15" value="--><?php //if(isset($_POST['afbeelding'])){ echo $_POST['afbeelding'];}?><!--" type="text" name="telefoon1"></td>-->
-<!--                    </tr>-->
+                    <tr>
+                            <td>
+                            Alleen JPEG,PNG en JPG zijn toegestaan. De maximale bestand grote is 1MB.
+                            <div><input name="file[]" type="file" id="file"/></div><br/>
+                            <input type="button" id="add_more" value="Add More Files"/>
+                            </td>
+                    </tr>
                 </table>
             </div>
         </row>
-
         <row>
             <div class="col-sm-12 submit-registrion orangeButton">
                 <input  type="submit" name="toevoegen" value="Toevoegen">
             </div>
-
         </row>
     </form>
     <br><br>
 
-    <div class="row" style="margin-top: -22.5px;">
-    <br>
-    <?php
-    if (!empty($errorMessage)) {
-        echo "<div class='alert alert-danger error'>$errorMessage</div>";
-    }
-    else if(!empty($successMessage)){
-        echo "<div class='alert alert-success error'>$successMessage</div>";
-    }
-    ?>
+    <row>
+        <div class="row" style="margin-top: -22.5px;">
+            <br>
+            <?php
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger error'>$errorMessage</div>";
+            }
+            else if(!empty($successMessage)){
+                echo "<div class='alert alert-success error'>$successMessage</div>";
+            }
+            ?>
+    </row>
 
 
-<?php include_once('partial files\footer.php') ?>
+
+<?php include_once('partial files\footer.php'); ?>
