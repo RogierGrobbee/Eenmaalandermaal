@@ -15,21 +15,64 @@ if (isset($_GET['voorwerpnummer'])) {
         $voorwerpnummer = 0;
     }
 } else {
-    exit;
+    //exit;
 }
 
-require('partial files\databaseconnection.php');
 
-$voorwerp = getVoorwerp($voorwerpnummer);
+require('partial files\models\bod.php');
+require('partial files\models\voorwerp.php');
+
+$voorwerp = getVoorwerpById($voorwerpnummer);
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
-        $bod = insertNewBod($voorwerp, $_POST['bod'], $_SESSION['user']);
-        if(!$bod->bodSuccesful){
-            $error = "<div class='alert alert-danger error'>
-                        <strong>$bod->message</strong>
+        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            if($biedingen < $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs)){
+                $error = "<div class='alert alert-danger error'>
+                        <strong>U moet minimaal €".calculateIncrease($voorwerp->startprijs)." hoger bieden!</strong>
+                      </div>";
+            }
+        }
+        else if($_POST['bod'] < $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag)){
+                $error = "<div class='alert alert-danger error'>
+                        <strong>U moet minimaal €".calculateIncrease($biedingen[0]->bodbedrag)." hoger bieden!</strong>
+                      </div>";
+            }
+        else if($_POST['user'] == $biedingen[0]->gebruikersnaam){
+                $error = "<div class='alert alert-danger error'>
+                        <strong>U heeft al het hoogste bod!</strong>
+                      </div>";
+            }
+        else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
+                $error = "<div class='alert alert-danger error'>
+                        <strong>De veiling is al afgelopen.</strong>
                       </div>";
         }
+        else{
+            if(!insertNewBod($voorwerp, $_POST['bod'], $_SESSION['user'])){
+            $error = "<div class='alert alert-danger error'>
+                        <strong>Er kan niet hoger geboden worden dan 100.000!</strong>
+                      </div>";
+            }
+            else{
+                $error = "<div class='success alert-success error'>
+                        <strong>Een bod is succesvol geplaatst!</strong>
+                      </div>";
+
+                /*$to      = $_POST['email'];
+                $subject = 'Validatie EenmaalAndermaal';
+                $message = 'Validatiecode: ' . $validatieCode;
+                $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
+                    'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
+
+                mail($to, $subject, $message, $headers);*/
+            }
+        }
+
+        echo $error;
     }
 }
 
@@ -57,6 +100,26 @@ else {
     $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
 }
 
+function calculateIncrease($prijs){
+    switch(true){
+        case $prijs >= 5000:
+            return 50;
+            break;
+        case $prijs >= 1000:
+            return 10;
+            break;
+        case $prijs >= 500:
+            return 5;
+            break;
+        case $prijs >= 50:
+            return 1;
+            break;
+        default:
+            return 0.50;
+            break;
+    }
+}
+
 function showBieden(){
     global $minimalePrijs;
     global $biedingen;
@@ -75,7 +138,7 @@ function showBieden(){
                 </div>';
         }
         else{
-            echo "<div class='highest-bod'>U heeft al het hoogste bod!</div>";
+            echo "<div class='highest-bod'>U heeft het hoogste bod.</div>";
         }
     }
     else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){

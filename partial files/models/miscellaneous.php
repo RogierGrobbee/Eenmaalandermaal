@@ -6,7 +6,7 @@
  * Time: 14:06
  */
 
-function strip_html_tags($str)
+function stripHtmlTags($str)
 {
     $str = preg_replace('/(<|>)\1{2}/is', '', $str);
     $str = preg_replace(

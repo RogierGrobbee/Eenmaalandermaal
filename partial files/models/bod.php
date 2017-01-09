@@ -18,9 +18,12 @@ function insertBod($voorwerp, $amount, $gebruiker) {
 
     $query = $db->prepare("INSERT INTO bod VALUES (:voorwerpnummer, :amount , :gebruiker , getdate())");
 
-    return $query->execute(array(
+    if($query->execute(array(
         ':voorwerpnummer' => $voorwerp->voorwerpnummer,
         ':amount' => $amount,
         ':gebruiker' => $gebruiker
-    ));
+    ))){
+        return true;
+    }
+    return false;
 }

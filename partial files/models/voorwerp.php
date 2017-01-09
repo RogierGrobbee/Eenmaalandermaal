@@ -23,7 +23,6 @@ function countVoorwerpenBySearchTerm ($searchTerm, $searchCount) {
         ));
 
     return ($query->fetch(PDO::FETCH_OBJ))->amount;
-
 }
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
@@ -52,7 +51,7 @@ function countVoorwerpenInRubrieken($idArray) {
     $query = $db->prepare("execute sp_CountVoorwerpenInRubrieken @ids = :ids");
     $query->execute(array(':ids' => $idArray));
 
-    return $query->fetch(PDO::FETCH_OBJ);
+    return $query->fetch(PDO::FETCH_OBJ)->amount;
 }
 
 function getVoorwerpenInRubriek($idArray, $nSkippedRecords, $itemsPerPage, $filter) {

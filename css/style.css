@@ -159,11 +159,21 @@ form{
     margin: 0;
 }
 
-.veilingitem a:hover,
-.veilingitem a:active {
-    color: #000080;
+.veilingitem h4{
+    color: #4d79ff;
 }
 
+.veilingitem h5{
+    font-size: 18px;
+    color: #0040ff;
+}
+
+.veilingitem a:hover,
+.veilingitem a:active,
+.veilingitem h5:hover,
+.veilingitem h5:active{
+    color: #000080;
+}
 
 .prijs {
     bottom: 0;
@@ -627,4 +637,8 @@ ul.topnav li.icon {display: none;}
     width: 30px;
     border: none;
     height:30px;
+}
+
+.margin-left {
+    margin-left:2em;
 }

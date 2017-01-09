@@ -82,7 +82,7 @@ loadRubriekenSidebar(null);
         <h1>Laagste prijzen</h1>
         <div class="row">
             <?php
-            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search='%', @nSkippedRecords=0, @itemPerPage=3, @filter='laagstebod'");
+            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=0, @itemPerPage=3, @filter='laagstebod'");
             ?>
         </div>
 <?php require('partial files\footer.php') ?>
