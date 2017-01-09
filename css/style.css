@@ -163,11 +163,17 @@ form{
     color: #4d79ff;
 }
 
-.veilingitem a:hover,
-.veilingitem a:active {
-    color: #000080;
+.veilingitem h5{
+    font-size: 18px;
+    color: #0040ff;
 }
 
+.veilingitem a:hover,
+.veilingitem a:active,
+.veilingitem h5:hover,
+.veilingitem h5:active{
+    color: #000080;
+}
 
 .prijs {
     bottom: 0;
