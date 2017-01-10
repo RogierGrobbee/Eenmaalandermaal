@@ -193,6 +193,40 @@ function showBieden(){
     }
 }
 
+function echoSuggestedVoorwerp($voorwerp, $prijs, $image){
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
+            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+            <img src="pics/'. $image .'"alt="veiling">
+            <h4>'.$voorwerp->titel.'</h4>
+            <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
+            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+            <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function suggestedVoorwerpen($rubrieknummer)
+{
+    $voorwerpen = getSuggestedVoorwerpen($rubrieknummer);
+
+    foreach($voorwerpen as $voorwerp){
+        $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
+        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+
+        if($biedingen == null){
+            $prijs = $voorwerp->startprijs;
+        }
+        else{
+            $prijs = $biedingen[0]->bodbedrag;
+        }
+
+        echoSuggestedVoorwerp($voorwerp, $prijs, $image);
+    }
+}
+
+
 ?>
     <div class="row">
         <?php
@@ -283,7 +317,16 @@ for($i = 1; $i < 4; $i++) {
             <img class="smallpicture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
         </div>';
     }
+    else{
+        echo '<div class="sm-3"></div>';
+    }
 }
+?>
+</div>
+    <h2>Aanbevolen veilingen</h2>
+<div class="row">
+<?php
+    suggestedVoorwerpen($inputRubriekId);
 ?>
 </div>
 <?php require('partial files\footer.php')?>

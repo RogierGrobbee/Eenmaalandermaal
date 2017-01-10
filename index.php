@@ -103,20 +103,14 @@ loadRubriekenSidebar(null);
         <h1>Meest populaire veilingen</h1>
         <div class="row">
             <?php
-            queryHomepageVoorwerpen("SELECT * FROM ( SELECT v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
-                                    v.looptijdeindeveiling, count(v.voorwerpnummer) as 'aantal biedingen', 
-                                    ROW_NUMBER() OVER (ORDER BY count(b.voorwerpnummer)  DESC) AS rownumber
-                                    FROM voorwerp v INNER JOIN Bod b ON v.voorwerpnummer=b.voorwerpnummer
-									WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
-                                    GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
-                                    v.looptijdeindeveiling) AS rows WHERE rows.rownumber BETWEEN 2 AND 4");
+            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=1, @itemPerPage=3, @filter='mostpopular'");
             ?>
         </div>
 
         <h1>Nieuwe veilingen</h1>
         <div class="row">
         <?php
-        queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) ORDER BY looptijdbeginveiling ASC");
+            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
         ?>
         </div>
 
