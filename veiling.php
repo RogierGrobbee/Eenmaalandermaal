@@ -24,28 +24,43 @@ require('partial files\models\voorwerp.php');
 require('partial files\models\rubriek.php');
 require('partial files\models\voorwerpinrubriek.php');
 require('partial files\models\bestand.php');
+require('partial files\models\gebruiker.php');
 require('partial files\models\miscellaneous.php');
 
 $voorwerp = getVoorwerpById($voorwerpnummer);
+$biedingen = getBiedingenByVoorwerpnummer($voorwerpnummer);
 $error = "";
 
 if(isset($_POST['bod'])){
     if(is_numeric($_POST['bod'])){
         if(insertNewBod()){
-            /*$to      = $_POST['email'];
-                $subject = 'Validatie EenmaalAndermaal';
-                $message = 'Validatiecode: ' . $validatieCode;
+            if(!empty($biedingen)) {
+                $to = getEmail($biedingen[0]->gebruikersnaam);
+                $subject = 'U bent overboden!';
+                $message ="
+                <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+                <html xmlns='http://www.w3.org/1999/xhtml'>
+                    <head>
+                        <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+                        <title>U bent overboden!</title>
+                    </head>
+                    <body style='font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; font-size: 18px'>
+                        U ben overboden op artikel: " . $voorwerp->titel . "<br>
+                        <a href=\"http://iproject2.icasites.nl/veiling.php?voorwerpnummer=". $voorwerp->voorwerpnummer ."\">Klik hier om de veiling te bekijken.</a>
+                    </body>
+                </html>";
                 $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
                     'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
-                    'X-Mailer: PHP/' . phpversion();
+                    'MIME-Version: 1.0'. "\r\n" .
+                    'Content-Type: text/html; charset=ISO-8859-1' . "\r\n";
 
-                mail($to, $subject, $message, $headers);*/
+                mail($to, $subject, $message, $headers);
+            }
         }
     }
 }
 
 $biedingen = getBiedingenByVoorwerpnummer($voorwerpnummer);
-
 $inputRubriekId = getVoorwerpRubriekByVoorwerpnummer($voorwerpnummer);
 
 $rubriekArray = loadAllRubrieken();

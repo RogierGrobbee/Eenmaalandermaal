@@ -85,6 +85,14 @@ function getFeaturedVoorwerp()
     return $query->fetch(PDO::FETCH_OBJ);
 }
 
+function getVoorwerpenByQuery($query){
+    global $db;
+
+    $query = $db->query($query);
+
+    return $query->fetchAll(PDO::FETCH_OBJ);
+}
+
 //Replaces: getBiedingenByUsername($username)
 function getBiedingenByUsername($username) {
     global $db;
