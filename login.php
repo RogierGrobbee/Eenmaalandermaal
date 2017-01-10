@@ -1,4 +1,10 @@
-<?php include_once('partial files\databaseconnection.php');
+<?php require('partial files\models\gebruiker.php');
+require('partial files\models\rubriek.php');
+
+if (!empty($_SESSION['user'])) {
+    header('Location: index.php');
+}
+
 $errorMessage;
 
 if (!empty($_POST['wachtwoord'])) {
@@ -24,7 +30,7 @@ if (isset($_POST['Login'])) {
 
             if (password_verify($password, $hash)) {
                 session_start();
-                $_SESSION['user'] = $username;
+                $_SESSION['user'] = strtolower($username);
                 header('Location: index.php');
             } else {
                 $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
@@ -35,9 +41,8 @@ if (isset($_POST['Login'])) {
         }
 }
 
-$rubriekArray = loadRubrieken();
+$rubriekArray = loadAllRubrieken();
 include_once('partial files\header.php');
-cantVisitLoggedIn();
 ?>
 
     <h1>Log In</h1>
