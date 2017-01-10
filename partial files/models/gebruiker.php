@@ -41,6 +41,45 @@ function addPhoneNumber($volgnr, $username, $phonenumber) {
         ));
 }
 
+//registerGebruiker instead of insertGebruiker because it does more than just inserting a gebruiker.
+function registerGebruiker($gebruikersnaam, $voornaam, $achternaam, $adres, $postcode,
+                         $plaatsnaam, $land, $geboortedatum, $email, $wachtwoord,
+                         $vraag, $validatieCode, $antwoord){
+    global $db;
+    $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
+                (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':username', $gebruikersnaam, PDO::PARAM_STR);
+    $stmt->bindValue(':firstname', $voornaam, PDO::PARAM_STR);
+    $stmt->bindValue(':lastname', $achternaam, PDO::PARAM_STR);
+    $stmt->bindValue(':adres', $adres, PDO::PARAM_STR);
+    $stmt->bindValue(':postcode', $postcode, PDO::PARAM_STR);
+    $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
+    $stmt->bindValue(':land', $land, PDO::PARAM_STR);                 //////////////////
+    $stmt->bindValue(':geboortedatum', $geboortedatum, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    $stmt->bindValue(':wachtwoord', $wachtwoord, PDO::PARAM_STR);
+    $stmt->bindValue(':verkoper', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':vraag', $vraag, PDO::PARAM_INT);                 //////////////////
+    $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $sql2 = "INSERT INTO validation (gebruikersnaam, validatiecode) VALUES
+                (:gebruiker, :validate)";
+    $stmt = $db->prepare($sql2);
+    $stmt->bindValue(':gebruiker', $gebruikersnaam, PDO::PARAM_STR);
+    $stmt->bindValue(':validate', $validatieCode, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $sql3 = "INSERT INTO antwoord (vraagnummer, gebruikersnaam, antwoordtekst) VALUES
+                (:nummer, :gebruikersnaam, :antwoord)";
+    $stmt = $db->prepare($sql3);
+    $stmt->bindValue(':nummer', $vraag, PDO::PARAM_STR);
+    $stmt->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
+    $stmt->bindValue(':antwoord', $antwoord, PDO::PARAM_STR);
+    $stmt->execute();
+}
+
 // Replaces: doesUsernameAlreadyExist($username)
 function doesUsernameExist($username) {
     global $db;
@@ -48,7 +87,10 @@ function doesUsernameExist($username) {
     $query = $db->prepare("SELECT gebruikersnaam FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam");
     $query->execute(array(':gebruikersnaam' => $username));
 
-    return !is_null($query->fetch(PDO::FETCH_OBJ)) ? true : false;
+    if($query->fetch(PDO::FETCH_OBJ)->gebruikersnaam == $username){
+        return true;
+    }
+    return false;
 }
 
 // Replaces: getPassword($username)

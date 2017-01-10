@@ -1,4 +1,12 @@
-<?php include_once('partial files\databaseconnection.php');
+<?php
+if (!empty($_SESSION['user'])) {
+    header('Location: index.php');
+}
+
+require('partial files\models\gebruiker.php');
+require('partial files\models\rubriek.php');
+require('partial files\models\vraag.php');
+require('partial files\models\land.php');
 
 $errorMessage = "";
 $successMessage = "";
@@ -28,12 +36,12 @@ if (isset($_POST['registreer'])) {
         list($y, $m, $d) = explode('-', $date);
 
         $errorMessage = "Niet alles ingevuld.";
-    } else
+    } else {
         if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
             $errorMessage = "Geen geldig emailadres.";
-        } else if (doesUsernameAlreadyExist($_POST['gebruikersnaam'])) {
+        } else if (doesUsernameExist($_POST['gebruikersnaam'])) {
             $errorMessage = "Gebruikersnaam bestaat al.";
-        } else if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
+        } else if (preg_match('/\s/', $_POST['gebruikersnaam'])) {
             $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
         } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
             $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
@@ -41,19 +49,18 @@ if (isset($_POST['registreer'])) {
             $errorMessage = "Wachtwoorden komen niet overeen.";
         } else if (!validateDate($_POST['geboortedatum'])) {
             $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
-        } else if(date("Y-m-d", strtotime("-18 year", time())) < $_POST['geboortedatum']){
+        } else if (date("Y-m-d", strtotime("-18 year", time())) < $_POST['geboortedatum']) {
             $errorMessage = "U moet minimaal 18 jaar oud zijn om mee te kunnen doen aan de veilingen.";
         } else if (postCodeCheck($_POST['postcode']) == false) {
             $errorMessage = "Geen geldige postcode.";
-        }  else if (!is_numeric($_POST['telefoon1'])) {
+        } else if (!is_numeric($_POST['telefoon1'])) {
             $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
-        }  else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaats"])){
+        } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaats"])) {
             $errorMessage = "Plaats mag alleen letters bevatten.";
-        }
-        else
-        {
+        } else {
             $validatieCode = generateRandomString();
-            $to      = $_POST['email'];
+
+            $to = $_POST['email'];
             $subject = 'Validatie EenmaalAndermaal';
             $message = 'Validatiecode: ' . $validatieCode;
             $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
@@ -65,59 +72,76 @@ if (isset($_POST['registreer'])) {
             $successMessage = "Validatie mail is verstuurd.";
 
             $password = hashPass($_POST['wachtwoord']);
+            $antwoord = hashPass($_POST['antwoord']);
 
-            global $db;
-            $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
-                (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
-            $stmt = $db->prepare($sql);
-            $stmt->bindValue(':username', $_POST['gebruikersnaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':firstname', $_POST['voornaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':lastname', $_POST['achternaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':adres', $_POST['adres'], PDO::PARAM_STR);
-            $stmt->bindValue(':postcode', $_POST['postcode'], PDO::PARAM_STR);
-            $stmt->bindValue(':plaatsnaam', $_POST['plaats'], PDO::PARAM_STR);
-            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);                 //////////////////
-            $stmt->bindValue(':geboortedatum', $_POST['geboortedatum'], PDO::PARAM_STR);
-            $stmt->bindValue(':email', $_POST['email'], PDO::PARAM_STR);
-            $stmt->bindValue(':wachtwoord', $password, PDO::PARAM_STR);
-            $stmt->bindValue(':verkoper', 0, PDO::PARAM_INT);
-            $stmt->bindValue(':vraag', $_POST['geheimeVraag'], PDO::PARAM_INT);                 //////////////////
-            $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $sql2 = "INSERT INTO validation (gebruikersnaam, validatiecode) VALUES
-                (:gebruiker, :validate)";
-            $stmt = $db->prepare($sql2);
-            $stmt->bindValue(':gebruiker', $_POST['gebruikersnaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':validate', $validatieCode, PDO::PARAM_STR);
-            $stmt->execute();
-
-
-            $antwoord = $_POST['antwoord'];
-            $sql3 = "INSERT INTO antwoord (vraagnummer, gebruikersnaam, antwoordtekst) VALUES
-                (:nummer, :gebruikersnaam, :antwoord)";
-            $stmt = $db->prepare($sql3);
-            $stmt->bindValue(':nummer', $_POST['geheimeVraag'], PDO::PARAM_STR);
-            $stmt->bindValue(':gebruikersnaam', $_POST['gebruikersnaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':antwoord', hashPass($antwoord), PDO::PARAM_STR);
-            $stmt->execute();
-
-
-            $sql4 = "INSERT INTO gebruikerstelefoon (volgnr, gebruikersnaam, telefoon) VALUES
-                (:nummer, :gebruikersnaam, :tel)";
-            $stmt = $db->prepare($sql4);
-            $stmt->bindValue(':nummer', 0, PDO::PARAM_STR);
-            $stmt->bindValue(':gebruikersnaam', $_POST['gebruikersnaam'], PDO::PARAM_STR);
-            $stmt->bindValue(':tel', $_POST['telefoon1'], PDO::PARAM_STR);
-            $stmt->execute();
+            registerGebruiker($_POST['gebruikersnaam'], $_POST['voornaam'], $_POST['achternaam'], $_POST['adres'], $_POST['postcode'],
+                $_POST['plaats'], $_POST['country'], $_POST['geboortedatum'], $_POST['email'], $password, $_POST['geheimeVraag'],
+                $validatieCode, $antwoord);
 
             header('Location: validatie.php');
         }
     }
+}
 
-$rubriekArray = loadRubrieken();
+function validateDate($date)
+{
+    $d = DateTime::createFromFormat('Y-m-d', $date);
+    return $d && $d->format('Y-m-d') === $date;
+}
+
+function postCodeCheck($postcode)
+{
+    $remove = str_replace(" ", "", $postcode);
+    $upper = strtoupper($remove);
+
+    if (preg_match("/^\W*[1-9]{1}[0-9]{3}\W*[a-zA-Z]{2}\W*$/", $upper)) {
+        return $upper;
+    } else {
+        return false;
+    }
+}
+
+function generateRandomString($length = 10)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+function echoGeheimeVragen()
+{
+    $vragen = getAllVragen();
+    echo "<select  name='geheimeVraag'>";
+    foreach ($vragen as $vraag) {
+        echo "<option value = " . $vraag->vraagnummer . " >" . $vraag->tekstvraag . "</option >";
+
+    }
+    echo "</select>";
+}
+
+function echoAllCountries()
+{
+    $landen = getAllLanden();
+    echo "<select name='country'>";
+    foreach ($landen as $land) {
+        if ($land->landnaam == 'Nederland') {
+            echo "<option selected='selected' value = " . $land->landnaam . " >" . $land->landnaam . "</option>";
+        } else {
+            echo "<option value = " . $land->landnaam . " >" . $land->landnaam . "</option>";
+        }
+    }
+    echo "</select>";
+}
+
+
+
+$rubriekArray = loadAllRubrieken();
+
 include_once('partial files\header.php');
-cantVisitLoggedIn();
 ?>
 
     <h1>Registreer</h1>
@@ -170,7 +194,7 @@ loadRubriekenSidebar(null);
                     <tr>
                         <td>Land</td>
                         <td>
-                            <?php echo returnAllCountries(); ?>
+                            <?php echoAllCountries(); ?>
                         </td>
                     </tr>
                     <tr>
@@ -192,7 +216,7 @@ loadRubriekenSidebar(null);
                     <tr>
                         <td>Geheime vraag</td>
                         <td>
-                            <?php echo returnGeheimeVragen(); ?>
+                            <?php echoGeheimeVragen(); ?>
                         </td>
                     </tr>
                     <tr>
