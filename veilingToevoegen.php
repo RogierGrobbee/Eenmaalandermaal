@@ -1,13 +1,19 @@
-<?php include_once('partial files\databaseconnection.php');
+<?php
+include_once('partial files\header.php');
+include_once('partial files\databaseconnection.php');
+$rubriekArray = loadRubrieken();
+//cantVisitLoggedIn();
+
 echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
 echo '<script type="text/javascript" src="js/addImages.js"></script>';
 
-function getVoorwerpnummer($username, $title)
+function getVoorwerpnummer($title, $username)
 {
     global $db;
-    $statement = $db->prepare("select top 1 voorwerpnummer from voorwerp where titel=:title and verkoper:username order by voorwerpnummer desc");
-    $statement->execute(array(':username' => $username));
-    $statement->execute(array(':title' => $title));
+    $statement = $db->prepare("select top 1 voorwerpnummer from voorwerp where titel=:title and verkoper=:username order by voorwerpnummer desc");
+    $statement->bindParam(':username', $username);
+    $statement->bindParam(':title', $title);
+    $statement->execute();
     $row = $statement->fetch();
     return $row['voorwerpnummer'];
 }
@@ -74,79 +80,59 @@ if (isset($_POST['toevoegen'])) {
         } else {
             $verzendinstructies;
         }
-       // $noError = true;
+        if (!empty($_POST['verzendkosten'])) {
+            $verzendkosten = $_POST['verzendkosten'];
+            $noError = true;
+        } else {
+            $verzendkosten;
+            $noError = true;
+        }
+        //echo $_FILES['file']['name'];
+        if ($_FILES['file']['name']) {
+            echo 'test';
+            for ($i = 0; $i < count($_FILES['file']['name']); $i++) {//loop to get individual element from the array
+                $validextensions = array("jpeg", "jpg", "png");  //Extensions which are allowed
+                $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
+                $file_extension = end($ext); //store extensions in the variable
+                $target_path = $target_path . md5(uniqid()) . "." . $ext[count($ext) - 1];//set the target path with a new name of image
+                $j = $j + 1;//increment the number of uploaded images according to the files in array
 
-        global $db;
-        $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
+                if (($_FILES["file"]["size"][$i] > 1000000) && !in_array($file_extension, $validextensions)) {
+                    $errorMessage = "Invalid file Size or Type.";
+                }
+                if (!move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
+                    //$errorMessage = "try again!";
+                }
+                else{
+                    $noError = true;
+                }
+            }
+        }
+        if($noError) {
+            global $db;
+            $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
                     (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)";
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
-        $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
-        $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
-        $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
-        $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
-        $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
-        $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
-        $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
-        $stmt->bindValue(':verzendkosten', $_POST['verzendkosten'], PDO::PARAM_STR);
-        $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
-        $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
-        $stmt->execute();
-        $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $successMessage = "Veiling is toegevoegd";
-        //echo getVoorwerpnummer($_SESSION['user'], $titel);
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
+            $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
+            $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
+            $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
+            $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
+            $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
+            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
+            $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
+            $stmt->bindValue(':verzendkosten', $verzendkosten, PDO::PARAM_STR);
+            $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
+            $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-//        if (isset($_FILES['file']['name'])) {
-//            for ($i = 0; $i < count($_FILES['file']['name']); $i++) {//loop to get individual element from the array
-//                $validextensions = array("jpeg", "jpg", "png");  //Extensions which are allowed
-//                $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
-//                $file_extension = end($ext); //store extensions in the variable
-//                $target_path = $target_path . md5(uniqid()) . "." . $ext[count($ext) - 1];//set the target path with a new name of image
-//                $j = $j + 1;//increment the number of uploaded images according to the files in array
-//
-//                if (($_FILES["file"]["size"][$i] > 1000000) && !in_array($file_extension, $validextensions)) {
-//                    $errorMessage = "Invalid file Size or Type.";
-//                }
-//                if (!move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
-//                    echo $errorMessage = "try again!";
-//                } else {
-//                    $noError = true;
-//                    echo 'test';
-//                }
-//            }
-//        }
+            echo getVoorwerpnummer($titel, $_SESSION['user']);
+            $successMessage = "Veiling is toegevoegd";
+        }
     }
 }
-
-//if ($noError) {
-//
-//    global $db;
-//    $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
-//                    (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)";
-//    $stmt = $db->prepare($sql);
-//    $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
-//    $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
-//    $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
-//    $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
-//    $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
-//    $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
-//    $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
-//    $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
-//    $stmt->bindValue(':verzendkosten', $_POST['verzendkosten'], PDO::PARAM_STR);
-//    $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
-//    $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
-//    $stmt->execute();
-//    $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//    $successMessage = "Veiling is toegevoegd";
-//    echo getVoorwerpnummer($_SESSION['user'], $titel);
-//}
-
-
-$rubriekArray = loadRubrieken();
-include_once('partial files\header.php');
-//cantVisitLoggedIn();
 ?>
-
     <h1>Veiling Toevoegen</h1>
 
 <?php include_once('partial files\sidebar.php');
