@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 21-12-2016
- * Time: 10:57
- */
-
-
 require_once ('databaseString.php');
 
 // Replaces: getUserByUsername($username)
@@ -103,7 +95,8 @@ function getPassword($username) {
 }
 
 // Replaces: getValidation($username)
-function getValidation($username) {
+function getValidation($username)
+{
     global $db;
     $query = $db->prepare("SELECT gevalideerd FROM gebruiker WHERE gebruikersnaam= :username ");
     $query->execute(array(':username' => $username));
