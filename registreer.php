@@ -1,7 +1,5 @@
 <?php
-if (!empty($_SESSION['user'])) {
-    header('Location: index.php');
-}
+
 
 require('partial files\models\gebruiker.php');
 require('partial files\models\rubriek.php');
@@ -142,6 +140,9 @@ function echoAllCountries()
 $rubriekArray = loadAllRubrieken();
 
 include_once('partial files\header.php');
+if (!empty($_SESSION['user'])) {
+    header('Location: index.php');
+}
 ?>
 
     <h1>Registreer</h1>

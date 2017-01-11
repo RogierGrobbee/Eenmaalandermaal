@@ -2,17 +2,20 @@
 
 include_once('..\partial files\header.php');
 include_once('../partial files/sidebar.php');
+include_once ('..\partial files\databaseconnection.php');
 ?>
 <h1>Profiel</h1>
 <?php
-loadProfileSidebar();
+$username = "";
 if (isset($_SESSION["user"])) {
     $username = $_SESSION["user"];
 }
-$username = 'jasper';
 
-include_once ('..\partial files\databaseconnection.php');
-$user = getUserByUsername($username);
+if ($username == ""){
+    header('Location: ../login.php');
+}
+
+loadProfileSidebar($username, 4);
 
 ?>
 <row>
@@ -54,10 +57,6 @@ $user = getUserByUsername($username);
         }
 
     }
-
-
-
-
 
 
     $messageString = "";

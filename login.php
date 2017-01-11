@@ -1,9 +1,6 @@
 <?php require('partial files\models\gebruiker.php');
 require('partial files\models\rubriek.php');
 
-if (!empty($_SESSION['user'])) {
-    header('Location: index.php');
-}
 
 $errorMessage;
 
@@ -43,6 +40,10 @@ if (isset($_POST['Login'])) {
 
 $rubriekArray = loadAllRubrieken();
 include_once('partial files\header.php');
+if (!empty($_SESSION['user'])) {
+    header('Location: index.php');
+}
+
 ?>
 
     <h1>Log In</h1>
