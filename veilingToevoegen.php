@@ -44,9 +44,7 @@ function returnDuration()
     }
     echo "</select>";
 }
-
 $j = 0; //Variable for indexing uploaded image
-$target_path_file;
 $target_path = "itemImages/"; //Declaring Path for uploaded images
 $noError = false;
 $itemUpload = false;
@@ -85,33 +83,30 @@ if (isset($_POST['toevoegen'])) {
         }
         if (!empty($_POST['verzendkosten'])) {
             $verzendkosten = $_POST['verzendkosten'];
-            if ($_FILES['file']['size'] <= 0) {
+            if ($_FILES['file']['size'][0] <= 0) {
                 $noError = true;
-                echo 'test1';
             }
         } else {
             $verzendkosten;
-            if ($_FILES['file']['size'] <= 0) {
+            if ($_FILES['file']['size'][0] <= 0) {
                 $noError = true;
-                echo 'test2';
             }
         }
-        if (isset($_FILES[0]['file'])){
-            echo 'testupload';
+        if ($_FILES['file']['size'][0] > 0){
             for ($i = 0; $i < count($_FILES['file']['name']); $i++) {//loop to get individual element from the array
                 $validextensions = array("jpeg", "jpg", "png");  //Extensions which are allowed
                 $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
                 $file_extension = end($ext); //store extensions in the variable
-                $target_path_file[$i] = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
                 $j = $j + 1;//increment the number of uploaded images according to the files in array
-
-                if (($_FILES["file"]["size"][$i] > 1000000) && !in_array($file_extension, $validextensions)) {
-                    $errorMessage = "Het bestand is te groot of niet van het juiste type.";
+                if ($_FILES["file"]["size"][$i] > 1000000) {
+                    $errorMessage = "Het bestand is te groot.";
                 }
-                if (empty($errorMessage)) {
-                    move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
-                    $itemUpload = true;
+                else if(!in_array($file_extension, $validextensions)){
+                    $errorMessage = "Het bestand is niet het juiste type.";
+                }
+                else{
                     $noError = true;
+                    $itemUpload = true;
                 }
             }
         }
@@ -136,11 +131,22 @@ if (isset($_POST['toevoegen'])) {
 
             $successMessage = "Veiling is toegevoegd";
 
-            if ($itemUpload) {
+            if (empty($errorMessage) && $itemUpload) {
                 for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+                    $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
+                    $file_extension = end($ext); //store extensions in the variable
+
+                    echo 'test';
+                    $target_path_file = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
+                    move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
+                    echo $_FILES['file']['tmp_name'][$i];
+                    echo '<br>';
+                    echo $target_path . $target_path_file;
+
+
                     $sql = "insert into bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
                     $stmt = $db->prepare($sql);
-                    $stmt->bindValue(':bestand', $target_path_file[$i], PDO::PARAM_STR);
+                    $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
                     $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
                     $stmt->execute();
                     $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
