@@ -2,7 +2,6 @@
 include_once('partial files\header.php');
 include_once('partial files\databaseconnection.php');
 $rubriekArray = loadRubrieken();
-//cantVisitLoggedIn();
 echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
 echo '<script type="text/javascript" src="js/addImages.js"></script>';
 function getVoorwerpnummer($title, $username)
@@ -66,7 +65,11 @@ if (isset($_POST['toevoegen'])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
     } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten'])) {
         $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
-    } else {
+    }
+
+
+
+    else {
         $titel = htmlspecialchars($_POST['titel']);
         $beschrijving = htmlspecialchars($_POST['beschrijving']);
         $plaatsnaam = htmlspecialchars($_POST['plaatsnaam']);
@@ -82,12 +85,19 @@ if (isset($_POST['toevoegen'])) {
         }
         if (!empty($_POST['verzendkosten'])) {
             $verzendkosten = $_POST['verzendkosten'];
-            $noError = true;
+            if ($_FILES['file']['size'] <= 0) {
+                $noError = true;
+                echo 'test1';
+            }
         } else {
             $verzendkosten;
-            $noError = true;
+            if ($_FILES['file']['size'] <= 0) {
+                $noError = true;
+                echo 'test2';
+            }
         }
-        if ($_FILES['file']['name']) {
+        if (isset($_FILES[0]['file'])){
+            echo 'testupload';
             for ($i = 0; $i < count($_FILES['file']['name']); $i++) {//loop to get individual element from the array
                 $validextensions = array("jpeg", "jpg", "png");  //Extensions which are allowed
                 $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
@@ -101,6 +111,7 @@ if (isset($_POST['toevoegen'])) {
                 if (empty($errorMessage)) {
                     move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
                     $itemUpload = true;
+                    $noError = true;
                 }
             }
         }
