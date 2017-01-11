@@ -17,15 +17,11 @@ function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
     }
 }
 
-function echoFilterBox($param, $filter, $isRubriek)
+function echoFilterBox($param, $filter)
 {
-    if ($isRubriek) {
-        echo '<select onchange="rubriekFilterSelect(this.value, ' . $param . ')">';
-    } else {
-        echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
-    }
+    echo '<select onchange="searchFilterSelect(this.value, \'' . $param . '\')">';
 
-    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afglopen</option>';
+    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afgelopen</option>';
 
     echo '<option value="looptijdbeginveilingDESC"'; if ($filter == "looptijdbeginveilingDESC") { echo 'selected'; } echo'>Tijd: nieuwst verschenen</option>';
 
@@ -87,12 +83,11 @@ function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
 
     $nSkippedRecords = (($currentPageNumber - 1) * $itemsPerPage);
 
-//TODO: These functions need to be executed in the search page.
     $totalItems = countVoorwerpenBySearchTerm ($searchQuery, $searchCount);
 
     $voorwerpen = getVoorwerpenBySearch($searchQuery, $searchCount, $nSkippedRecords, $itemsPerPage, $filter);
 
-    echoFilterBox(trim($searchQuery), $filter, false);
+    echoFilterBox(trim($searchQuery), $filter);
 
     if (count($voorwerpen) < 1) {
         echo "Geen voorwerpen gevonden";
