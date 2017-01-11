@@ -36,7 +36,7 @@ if(isset($_POST['logout'])){
                      <input type="image" class="user img-circle" src="http://iproject2.icasites.nl/images/IconLogOut.png" alt="Loguit">
                      <input name="logout" type="hidden">
                  </form>   
-                <a href="http://iproject2.icasites.nl/profiel.php">
+                <a href="http://iproject2.icasites.nl/profiel/overzicht.php">
                     <img class="user img-circle" src="http://iproject2.icasites.nl/images/IconGebruiker.png" alt="Gebruiker">';
 
                 echo "<h4 class='welkom-message'>";

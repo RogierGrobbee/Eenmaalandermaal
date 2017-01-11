@@ -11,6 +11,14 @@ function getVoorwerpById($voorwerpnummer) {
     return $query->fetch(PDO::FETCH_OBJ);
 }
 
+function getVoorwerpenByVerkoper($username) {
+    global $db;
+
+    $query = $db->prepare("SELECT * FROM voorwerp WHERE verkoper = :verkoper");
+    $query->execute(array(':verkoper' => $username));
+    return $query->fetchAll(PDO::FETCH_OBJ);
+}
+
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
 function countVoorwerpenBySearchTerm ($searchTerm, $searchCount) {
     global $db;
