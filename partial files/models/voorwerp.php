@@ -148,6 +148,25 @@ function getFeaturedVoorwerp()
     return $query->fetch(PDO::FETCH_OBJ);
 }
 
+function getVoorwerpenByQuery($query){
+    global $db;
+
+    $query = $db->query($query);
+
+    return $query->fetchAll(PDO::FETCH_OBJ);
+}
+
+function getSuggestedVoorwerpen($rubrieknummer){
+    global $db;
+
+    $query = $db->query("SELECT TOP 4 * FROM VOORWERP V INNER JOIN voorwerpinrubriek vr ON
+                                        v.voorwerpnummer = vr.voorwerpnummer
+                                        where vr.rubriekoplaagsteniveau=" . $rubrieknummer);
+
+    return $query->fetchAll(PDO::FETCH_OBJ);
+}
+
+
 //Replaces: getBiedingenByUsername($username)
 function getBiedingenByUsername($username) {
     global $db;
