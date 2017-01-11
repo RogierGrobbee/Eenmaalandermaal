@@ -178,7 +178,7 @@ function showBieden(){
                 </div>';
         }
         else{
-            echo "<div class='highest-bod'>U heeft het hoogste bod.</div>";
+            echo "<div class='highest-bod'>U heeft het hoogste bod</div>";
         }
     }
     else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
@@ -209,20 +209,24 @@ function echoSuggestedVoorwerp($voorwerp, $prijs, $image){
 
 function suggestedVoorwerpen($rubrieknummer)
 {
+    global $voorwerpnummer;
+    $count = 0;
     $voorwerpen = getSuggestedVoorwerpen($rubrieknummer);
 
     foreach($voorwerpen as $voorwerp){
-        $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
-        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+        if($voorwerp->voorwerpnummer != $voorwerpnummer && $count < 3){
+            $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
+            $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
 
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
-        }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
+            if ($biedingen == null) {
+                $prijs = $voorwerp->startprijs;
+            } else {
+                $prijs = $biedingen[0]->bodbedrag;
+            }
 
-        echoSuggestedVoorwerp($voorwerp, $prijs, $image);
+            echoSuggestedVoorwerp($voorwerp, $prijs, $image);
+            $count++;
+        }
     }
 }
 

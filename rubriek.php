@@ -9,7 +9,6 @@ require_once('partial files/models/bestand.php');
 require_once('partial files/models/bod.php');
 require_once('partial files/models/miscellaneous.php');
 require_once('partial files/models/rubriek.php');
-require_once('partial files/voorwerplist.php');
 
 //input rubriekId wordt opgehaald
 $inputRubriekId = null;
@@ -138,6 +137,70 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                         </div>
                     </a>
                 </div>';
+}
+
+function echoPageNumber($pageNumber, $currentPageNumber, $rubriekId)
+{
+    if (($pageNumber) == $currentPageNumber) {
+        echo '<b style="margin: 5px">' . $pageNumber . '</b>';
+    } else {
+        echo '<a style="margin: 5px" href=./rubriek.php?rubriek=' . $rubriekId . '&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+    }
+}
+
+function echoFilterBox($param, $filter)
+{
+    echo '<select onchange="rubriekFilterSelect(this.value, ' . $param . ')">';
+
+    echo '<option value="looptijdeindeveilingASC"'; if ($filter == "looptijdeindeveilingASC") { echo 'selected'; } echo'>Tijd: eerst afgelopen</option>';
+
+    echo '<option value="looptijdbeginveilingDESC"'; if ($filter == "looptijdbeginveilingDESC") { echo 'selected'; } echo'>Tijd: nieuwst verschenen</option>';
+
+    echo '<option value="laagstebod"'; if ($filter == "laagstebod") { echo 'selected'; } echo'>Prijs: laagst</option>';
+
+    echo '<option value="hoogstebod"'; if ($filter == "hoogstebod") { echo 'selected'; } echo'>Prijs: hoogst</option>';
+
+    echo '<option value="mostpopular"'; if ($filter == "mostpopular") { echo 'selected'; } echo'>Populairste veilingen</option>';
+
+    echo '</select>';
+}
+
+function echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $rubriekId) {
+    $nPages = ceil($totalItems / $itemsPerPage);
+    if ($currentPageNumber > 1) {
+        echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber - 1) . "'\">Previous</button>");
+    }
+    if ($nPages > 9) {
+        if ($currentPageNumber < 6) {
+            for ($i = 1; $i < 10; $i++) {
+                echoPageNumber($i, $currentPageNumber, $rubriekId);
+            }
+            echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+            echoPageNumber($nPages, $currentPageNumber, $rubriekId);
+        } else if ($currentPageNumber > ($nPages - 5)) {
+            echoPageNumber(1, $currentPageNumber, $rubriekId);
+            echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+            for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
+                echoPageNumber($i, $currentPageNumber, $rubriekId);
+            }
+        } else {
+            echoPageNumber(1, $currentPageNumber, $rubriekId);
+            echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+            for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
+                echoPageNumber($i, $currentPageNumber, $rubriekId);
+            }
+            echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+            echoPageNumber($nPages, $currentPageNumber, $rubriekId);
+        }
+
+    } else {
+        for ($i = 1; $i < $nPages + 1; $i++) {
+            echoPageNumber($i, $currentPageNumber, $rubriekId);
+        }
+    }
+    if ($currentPageNumber < $nPages) {
+        echo("<button onclick=\"location.href='./rubriek.php?rubriek=" . $rubriekId . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
+    }
 }
 
 require('partial files\header.php');
