@@ -36,9 +36,6 @@ function echoFilterBox($param, $filter)
 
 function echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $searchTerm) {
     $nPages = ceil($totalItems / $itemsPerPage);
-    echo '<div class="row">
-            <div class="col-sm-12">
-            ';
     if ($currentPageNumber > 1) {
         echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchTerm . "&page=" . ($currentPageNumber - 1) . "'\">Previous</button>");
     }
@@ -73,7 +70,6 @@ function echoPagination($totalItems, $itemsPerPage, $currentPageNumber, $searchT
     if ($currentPageNumber < $nPages) {
         echo("<button onclick=\"location.href='./zoeken.php?search=" . $searchTerm . "&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
     }
-    echo '</div></div>';
 }
 
 function loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) {
