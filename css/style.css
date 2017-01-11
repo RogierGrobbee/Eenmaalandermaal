@@ -282,7 +282,7 @@ form{
     color: #000000;
 }
 
-.bigpicture {
+.veiling-picture {
     width: 80vw;
     max-width: 300px;
     height: 80vw;
@@ -293,11 +293,11 @@ form{
     border: #dddddd solid 2px;
 }
 
-.smallpicture {
-    width: 250px;
+.other-veiling-picture{
+    max-width: 100%;
     float: left;
-    margin-left: 15px;
-    margin-bottom: 15px;
+    border: #dddddd solid 2px;
+    margin-bottom: 30px;
 }
 
 .extrainfo {
@@ -460,7 +460,7 @@ footer a {
         width: 78%;
     }
 
-    .bigpicture{
+    .veiling-picture{
         margin: 0 auto;
         display: block;
         margin-bottom: 15px;
@@ -507,9 +507,19 @@ footer a {
         text-align:center;
     }
 
+    .gebruikersnaam{
+        text-align: left;
+        margin: 0;
+        border-top: solid 1px #c0c0c0;
+        padding-top: 3px;
+    }
+
+    .bied-bar{
+        margin-bottom: 20px;
+    }
+
     .bod-date, .bodprijs{
         margin: 0;
-        border-bottom: solid 1px #c0c0c0;
         padding-bottom: 3px;
     }
 
@@ -532,7 +542,7 @@ footer a {
 
 @media (max-width: 400px){
     .headerbar{
-        height: 120px;
+        height: 80px;
     }
 }
 

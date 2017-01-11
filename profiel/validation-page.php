@@ -6,10 +6,19 @@ include_once('../partial files/sidebar.php');
 
 <h1>Profiel</h1>
 <?php
-loadProfileSidebar();
+
+$username = "";
+if (isset($_SESSION["user"])) {
+    $username = $_SESSION["user"];
+}
+
+if ($username == ""){
+    header('Location: ../login.php');
+}
+
+loadProfileSidebar($username, 4);
 
 include_once ('..\partial files\databaseconnection.php');
-$user = getUserByUsername($username);
 
 function calculateSellerExpire($code)
 {

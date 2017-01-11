@@ -36,13 +36,13 @@ if(isset($_POST['bod'])){
         if(insertNewBod()){
             if(!empty($biedingen)) {
                 $to = getEmail($biedingen[0]->gebruikersnaam);
-                $subject = 'U bent overboden!';
+                $subject = 'Validatie EenmaalAndermaal';
                 $message ="
                 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
                 <html xmlns='http://www.w3.org/1999/xhtml'>
                     <head>
                         <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-                        <title>U bent overboden!</title>
+                        <title>U ben overboden!</title>
                     </head>
                     <body style='font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; font-size: 18px'>
                         U ben overboden op artikel: " . $voorwerp->titel . "<br>
@@ -238,7 +238,7 @@ function suggestedVoorwerpen($rubrieknummer)
                 echo $error;
             }
         ?>
-        <?php echo '<img class="bigpicture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
+        <?php echo '<img class="veiling-picture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
@@ -317,8 +317,8 @@ function suggestedVoorwerpen($rubrieknummer)
 <?php
 for($i = 1; $i < 4; $i++) {
     if(!empty($list[$i])){
-        echo '<div class="sm-3">
-            <img class="smallpicture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
+        echo '<div class="xs-12 sm-12 md-12 col-lg-6">
+            <img class="other-veiling-picture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
         </div>';
     }
     else{
