@@ -37,10 +37,24 @@ if (isset($_POST['Vergeten'])) {
 
                     $to      = getEmail($username);
                     $subject = 'Wachtwoord vergeten EenmaalAndermaal';
-                    $message = 'Uw nieuwe wachtwoord: ' . $password;
+                    $message ="
+                    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+                    <html xmlns='http://www.w3.org/1999/xhtml'>
+                        <head>
+                            <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+                            <title>U ben overboden!</title>
+                        </head>
+                        <body style='font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; font-size: 18px'>
+                            <p>Uw nieuwe wachtwoord is: ". $password ."<br>
+                            Pas dit aan de volgende keer dat u inlogt door op uw profiel te klikken.</p>
+                        </body>
+                    </html>";
+
                     $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
                         'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
-                        'X-Mailer: PHP/' . phpversion();
+                        'MIME-Version: 1.0'. "\r\n" .
+                        'Content-Type: text/html; charset=ISO-8859-1' . "\r\n";
+
 
                     $hashedPassword = hashPass($password);
 
@@ -80,6 +94,10 @@ function generateRandomString($length = 10)
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];
+
+        if($length > 8){
+            $randomString .= $characters[rand(0, 9)];
+        }
     }
     return $randomString;
 }

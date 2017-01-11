@@ -103,21 +103,21 @@ loadRubriekenSidebar(null);
         <h1>Meest populaire veilingen</h1>
         <div class="row">
             <?php
-            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=1, @itemPerPage=3, @filter='mostpopular'");
+            queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=1, @itemPerPage=3, @filter='mostpopular'");
             ?>
         </div>
 
         <h1>Nieuwe veilingen</h1>
         <div class="row">
         <?php
-            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
+            queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
         ?>
         </div>
 
         <h1>Laagste prijzen</h1>
         <div class="row">
             <?php
-            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=0, @itemPerPage=3, @filter='laagstebod'");
+            queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='laagstebod'");
             ?>
         </div>
 <?php require('partial files\footer.php') ?>

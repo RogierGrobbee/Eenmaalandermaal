@@ -47,9 +47,6 @@ function echoBiedingen($username)
     $biedingen = getBiedingenByUsername($username);
     foreach ($biedingen as $k => $bod) {
         $prijs = $bod->bodbedrag;
-        if ($prijs < 1) {
-            $prijs = "0" . $prijs;
-        }
         $foto = loadBestandByVoorwerpnummer($bod->voorwerpnummer);
         echoVoorwerp($bod, $prijs, $foto);
     }
@@ -71,7 +68,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 
     echo '  <div class="veilingitem">
                     <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="pics/' . $image . '" alt="veilingsfoto">
+                        <img src="../pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs . '</p>
