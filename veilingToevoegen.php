@@ -1,6 +1,20 @@
 <?php
 include_once('partial files\header.php');
 include_once('partial files\databaseconnection.php');
+function userIsVerkoper($username)
+{
+    global $db;
+    $statement = $db->prepare('SELECT verkoper FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam');
+    $statement->bindParam(':gebruikersnaam', $username);
+    $statement->execute();
+    $row = $statement->fetch();
+    return $row['verkoper'];
+}
+
+if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
+    header('Location: index.php');
+}
+
 $rubriekArray = loadRubrieken();
 echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
 echo '<script type="text/javascript" src="js/addImages.js"></script>';
@@ -25,6 +39,21 @@ function returnPaymentMethode()
             echo "<option selected='selected' value = " . $row['betalingswijze'] . " >" . $row['betalingswijze'] . "</option>";
         } else {
             echo "<option value = " . $row['betalingswijze'] . " >" . $row['betalingswijze'] . "</option>";
+        }
+    }
+    echo "</select>";
+}
+
+function returnAllCountries2()
+{
+    global $db;
+    $query = $db->query("SELECT landnaam FROM land");
+    echo "<select class='form-control' name='country'>";
+    foreach ($query as $row) {
+        if ($row['landnaam'] == 'Nederland') {
+            echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+        } else {
+            echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
         }
     }
     echo "</select>";
@@ -135,14 +164,8 @@ if (isset($_POST['toevoegen'])) {
                 for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
                     $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
                     $file_extension = end($ext); //store extensions in the variable
-
-                    echo 'test';
                     $target_path_file = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
                     move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
-                    echo $_FILES['file']['tmp_name'][$i];
-                    echo '<br>';
-                    echo $target_path . $target_path_file;
-
 
                     $sql = "insert into bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
                     $stmt = $db->prepare($sql);
@@ -214,7 +237,7 @@ loadRubriekenSidebar($rubriekArray, null);
                     <tr>
                         <td>Land</td>
                         <td>
-                            <?php echo returnAllCountries(); ?>
+                            <?php echo returnAllCountries2(); ?>
                         </td>
                     </tr>
                     <tr>
