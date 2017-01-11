@@ -36,13 +36,13 @@ if(isset($_POST['bod'])){
         if(insertNewBod()){
             if(!empty($biedingen)) {
                 $to = getEmail($biedingen[0]->gebruikersnaam);
-                $subject = 'U bent overboden!';
+                $subject = 'Validatie EenmaalAndermaal';
                 $message ="
                 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
                 <html xmlns='http://www.w3.org/1999/xhtml'>
                     <head>
                         <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-                        <title>U bent overboden!</title>
+                        <title>U ben overboden!</title>
                     </head>
                     <body style='font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; font-size: 18px'>
                         U ben overboden op artikel: " . $voorwerp->titel . "<br>
