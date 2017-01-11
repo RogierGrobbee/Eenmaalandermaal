@@ -11,16 +11,8 @@ function getVoorwerpById($voorwerpnummer) {
     return $query->fetch(PDO::FETCH_OBJ);
 }
 
-function getVoorwerpenByVerkoper($username) {
-    global $db;
-
-    $query = $db->prepare("SELECT * FROM voorwerp WHERE verkoper = :verkoper");
-    $query->execute(array(':verkoper' => $username));
-    return $query->fetchAll(PDO::FETCH_OBJ);
-}
-
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
-function countVrwrpenBySTerm ($searchTerm, $searchCount) {
+function countVoorwerpenBySearchTerm ($searchTerm, $searchCount) {
     global $db;
 
     $query = $db->prepare("execute sp_CountSearchVoorwerpenByTitle @search= :searchTerm,
@@ -31,11 +23,10 @@ function countVrwrpenBySTerm ($searchTerm, $searchCount) {
         ));
 
     return ($query->fetch(PDO::FETCH_OBJ))->amount;
-
 }
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
-function getVrwrpenSearch ($searchTerm, $searchCount, $nSkippedRecords, $itemsPerPage, $filter) {
+function getVoorwerpenBySearch ($searchTerm, $searchCount, $nSkippedRecords, $itemsPerPage, $filter) {
     global $db;
 
     $query = $db->prepare("execute sp_SearchVoorwerpenByTitle @search= :searchTerm,
@@ -55,15 +46,15 @@ function getVrwrpenSearch ($searchTerm, $searchCount, $nSkippedRecords, $itemsPe
     return $query->fetchAll(PDO::FETCH_OBJ);
 }
 
-function countVoorwerpenInRubs($idArray) {
+function countVoorwerpenInRubrieken($idArray) {
     global $db;
     $query = $db->prepare("execute sp_CountVoorwerpenInRubrieken @ids = :ids");
     $query->execute(array(':ids' => $idArray));
 
-    return $query->fetch(PDO::FETCH_OBJ);
+    return $query->fetch(PDO::FETCH_OBJ)->amount;
 }
 
-function getVoorwerpenInRub($idArray, $nSkippedRecords, $itemsPerPage, $filter) {
+function getVoorwerpenInRubriek($idArray, $nSkippedRecords, $itemsPerPage, $filter) {
     global $db;
 
     $query = $db->prepare("execute sp_GetVoorwerpenInRubrieken @ids = :ids,
@@ -131,7 +122,7 @@ function veilingEnded($voorwerpnummer) {
 }
 
 //Replaces: endVeilingByVoorwerpnummer($voorwerpnummer)
-function endVeilingByVnr($voorwerpnummer) {
+function endVeilingByVoorwerpnummer($voorwerpnummer) {
     global $db;
     $query = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
     return $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
