@@ -289,19 +289,19 @@ function suggestedVoorwerpen($rubrieknummer)
                         <div class='bodprijs'>€".$prijs."</div><br></div>";?>
             </div>
 
-            <p><?php echo "Deze voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
+            <p><?php echo "Dit voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
             <h4>Beschrijving</h4>
             <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 extrainfo">
-            <h4>Betalingswijze- en instructie</h4>
+            <h4>Betalingswijze en -instructie</h4>
             <p>
                 <?php echo "$voorwerp->betalingswijze, $voorwerp->betalingsinstructie" ?>
             </p>
 
-            <h4>Verzendkosten- en instructie</h4>
+            <h4>Verzendkosten en -instructie</h4>
             <p>
                 <?php
                     if($voorwerp->verzendkosten == 0) {

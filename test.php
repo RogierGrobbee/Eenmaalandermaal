@@ -14,6 +14,8 @@ loadRubriekenSidebar(null);
 $query = $db->query("SELECT * FROM rubriek WHERE superrubriek is null ORDER BY rubrieknaam");
 
 
+
+
 foreach ($query as $row) {
     $id = $row['rubrieknummer'];
     $idString = "#" . $row['rubrieknummer'];
@@ -42,8 +44,13 @@ foreach ($query as $row) {
             foreach ($query4 as $row4) {
                 $id4 = $row4['rubrieknummer'];
                 $idString4 = "#" . $row4['rubrieknummer'];
-                echo "<a href='" . $idString4 . "' data-toggle='collapse'>" . $row4['rubrieknaam'] . "</a>";
-                echo "<br>";
+                if ($query4->rowCount() > 0) {
+                    echo "<a href='" . $idString4 . "' data-toggle='collapse'>" . $row4['rubrieknaam'] . "</a>";
+                    echo "<br>";
+                } else {
+                    echo "<a href='veilingToevoegen.php'>" . $row4['rubrieknaam'] . "</a>";
+                    echo "<br>";
+                }
             }
             echo "</div>";
         }

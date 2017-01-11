@@ -42,7 +42,7 @@ if (isset($_POST['registreer'])) {
         } else if (preg_match('/\s/', $_POST['gebruikersnaam'])) {
             $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
         } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-            $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
+            $errorMessage = "Wachtwoord moet minimaal 8 karakters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
         } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
             $errorMessage = "Wachtwoorden komen niet overeen.";
         } else if (!validateDate($_POST['geboortedatum'])) {
@@ -161,7 +161,7 @@ loadRubriekenSidebar(null);
                 <table class="registration-table">
                     <tr>
                         <td>Email</td>
-                        <td><input maxlength="255" placeholder="name@example.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
+                        <td><input maxlength="255" placeholder="naam@voorbeeld.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
                     </tr>
                     <tr>
                         <td>Gebruikersnaam</td>
