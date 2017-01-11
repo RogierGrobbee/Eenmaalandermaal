@@ -1,52 +1,13 @@
 <?php include_once('partial files\databaseconnection.php');
-$errorMessage;
-
-if (!empty($_POST['wachtwoord'])) {
-    $password = $_POST['wachtwoord'];
-
-    $uppercase = preg_match('@[A-Z]@', $password);
-    $lowercase = preg_match('@[a-z]@', $password);
-    $number = preg_match('@[0-9]@', $password);
-}
-if (isset($_POST['Login'])) {
-    if (
-        empty($_POST['gebruikersnaam']) ||
-        empty($_POST['wachtwoord'])
-    ) {
-        $errorMessage = "Niet alles is ingevuld.";
-    } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-        $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
-    } else
-        if (getValidation($_POST['gebruikersnaam'])) {
-            $password = $_POST['wachtwoord'];
-            $username = $_POST['gebruikersnaam'];
-            $hash = getPassword($username);
-
-            if (password_verify($password, $hash)) {
-                session_start();
-                $_SESSION['user'] = $username;
-                header('Location: index.php');
-            } else {
-                $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
-            }
-        } else {
-            $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
-        }
-}
-
 $rubriekArray = loadRubrieken();
 include_once('partial files\header.php');
 ?>
 
-    <h1>Log In</h1>
+    <h1>Test</h1>
 
 <?php include_once('partial files\sidebar.php');
 loadRubriekenSidebar(null);
 ?>
-
-
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <?php
@@ -92,8 +53,4 @@ foreach ($query as $row) {
 }
 
 ?>
-
-
-
-
 <?php include_once('partial files\footer.php') ?>
