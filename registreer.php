@@ -51,8 +51,7 @@ if (isset($_POST['registreer'])) {
             $errorMessage = "U moet minimaal 18 jaar oud zijn om mee te kunnen doen aan de veilingen.";
         } else if (date("Y-m-d", strtotime("1900-01-01")) > $_POST['geboortedatum']){
             $errorMessage = "Voer een geldige leeftijd in.";
-        }
-        else if (postCodeCheck($_POST['postcode']) == false) {
+        } else if (postCodeCheck($_POST['postcode']) == false) {
             $errorMessage = "Geen geldige postcode.";
         } else if (!is_numeric($_POST['telefoon1'])) {
             $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
