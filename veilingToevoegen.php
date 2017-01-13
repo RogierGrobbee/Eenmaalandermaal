@@ -197,7 +197,7 @@ if (isset($_POST['toevoegen'])) {
     <h1>Veiling Toevoegen</h1>
 
     <?php include_once('partial files\sidebar.php');
-    loadRubriekenSidebar($rubriekArray, null);
+        loadProfileSidebar($_SESSION[user], 5);
     ?>
     <form method="post" enctype="multipart/form-data">
         <row>
