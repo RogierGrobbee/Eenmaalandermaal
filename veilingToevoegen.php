@@ -7,6 +7,7 @@ function loadJSScripts() {
     echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
     echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>';
     echo '<script type="text/javascript" src="js/veilingToevoegen.js"></script>';
+    echo '<script type="text/javascript" src="js/addImages.js"></script>';
 }
 
 
@@ -25,9 +26,6 @@ if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
 }
 
 $rubriekArray = loadRubrieken();
-echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
-echo '<script type="text/javascript" src="js/addImages.js"></script>';
-echo '<script type="text/javascript" src="js/bootstrap.min.js"></script>';
 function getVoorwerpnummer($title, $username)
 {
     global $db;
@@ -290,7 +288,8 @@ if (isset($_POST['toevoegen'])) {
                                 <select selected='selected' name="rubriekenList" id="rubriekenList" multiple>
 
                                 </select>
-                                <button type="button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
+                                <button type="button" class="btn" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
+                                <button type="button" class="btn" id="deleteRubriek" disabled>Verwijder rubriek</button>
                         </td>
                         <!-- Modal -->
                         <div class="modal fade" id="myModal" role="dialog">

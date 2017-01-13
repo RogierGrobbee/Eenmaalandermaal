@@ -2,6 +2,29 @@
  * Created by jamiel on 13-1-2017.
  */
 
+document.getElementById('deleteRubriek').addEventListener("click", deleteRubriek);
+
+function deleteRubriek() {
+    var selectElement = document.getElementById('rubriekenList');
+    var options = selectElement.options;
+
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].selected) {
+            selectElement.options[i] = null;
+        }
+    }
+}
+
+function disableDeleteButton() {
+    var selectElement = document.getElementById('rubriekenList');
+    if (getSelectValues(selectElement).length >= 1) {
+        document.getElementById('deleteRubriek').disabled = false;
+    }
+    else {
+        document.getElementById('deleteRubriek').disabled = true;
+    }
+}
+
 function getSelectValues(select) {
     var result = [];
     var options = select && select.options;
@@ -13,6 +36,10 @@ function getSelectValues(select) {
     }
     return result;
 }
+
+$('#rubriekenList').change(function(e) {
+    disableDeleteButton();
+});
 
 function loadSubrubrieken(sender) {
     $.ajax({
@@ -50,10 +77,10 @@ function showSubrubrieken(rubrieken) {
 }
 
 function addRubriekToList(sender) {
-    var myselect = document.getElementById('rubriekenList');
+    var selectElement = document.getElementById('rubriekenList');
     var objOption = document.createElement("option");
     objOption.text = sender.text;
     objOption.value = sender.getAttribute('data-id');
 
-    myselect.options.add(objOption);
+    selectElement.options.add(objOption);
 }
