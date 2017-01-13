@@ -31,6 +31,9 @@ if (isset($_POST['Login'])) {
             if (password_verify($password, $hash)) {
                 session_start();
                 $_SESSION['user'] = strtolower($username);
+                if(isset($_SESSION["return"])){
+                    header('Location: feedback.php');
+                }
                 header('Location: index.php');
             } else {
                 $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
