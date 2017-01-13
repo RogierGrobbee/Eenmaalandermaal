@@ -18,6 +18,7 @@ if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
 $rubriekArray = loadRubrieken();
 echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
 echo '<script type="text/javascript" src="js/addImages.js"></script>';
+echo '<script type="text/javascript" src="js/bootstrap.min.js"></script>';
 function getVoorwerpnummer($title, $username)
 {
     global $db;
@@ -73,6 +74,7 @@ function returnDuration()
     }
     echo "</select>";
 }
+
 $j = 0; //Variable for indexing uploaded image
 $target_path = "itemImages/"; //Declaring Path for uploaded images
 $noError = false;
@@ -93,9 +95,7 @@ if (isset($_POST['toevoegen'])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
     } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten'])) {
         $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
-    }
-
-    else {
+    } else {
         $titel = htmlspecialchars($_POST['titel']);
         $beschrijving = htmlspecialchars($_POST['beschrijving']);
         $plaatsnaam = htmlspecialchars($_POST['plaatsnaam']);
@@ -120,7 +120,7 @@ if (isset($_POST['toevoegen'])) {
                 $noError = true;
             }
         }
-        if ($_FILES['file']['size'][0] > 0){
+        if ($_FILES['file']['size'][0] > 0) {
             for ($i = 0; $i < count($_FILES['file']['name']); $i++) {//loop to get individual element from the array
                 $validextensions = array("jpeg", "jpg", "png");  //Extensions which are allowed
                 $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
@@ -128,11 +128,9 @@ if (isset($_POST['toevoegen'])) {
                 $j = $j + 1;//increment the number of uploaded images according to the files in array
                 if ($_FILES["file"]["size"][$i] > 1000000) {
                     $errorMessage = "Het bestand is te groot.";
-                }
-                else if(!in_array($file_extension, $validextensions)){
+                } else if (!in_array($file_extension, $validextensions)) {
                     $errorMessage = "Het bestand is niet het juiste type.";
-                }
-                else{
+                } else {
                     $noError = true;
                     $itemUpload = true;
                 }
@@ -166,7 +164,7 @@ if (isset($_POST['toevoegen'])) {
                     $target_path_file = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
                     move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
 
-                    $sql = "insert into bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
+                    $sql = "INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
                     $stmt = $db->prepare($sql);
                     $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
                     $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
@@ -174,15 +172,26 @@ if (isset($_POST['toevoegen'])) {
                     $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 }
             }
+
+//            if (empty($errorMessage) && !empty($rubrieknummers)) {
+//                for ($i = 0; $i < count($rubrieknummers); $i++) {
+//                    $sql = " INSERT INTO voorwerpinrubriek (voorwerpnummer,rubriekoplaagsteniveau ) VALUES(:voorwerpnummer, :rubrieknummer)";
+//                    $stmt = $db->prepare($sql);
+//                    $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
+//                    $stmt->bindValue(':rubrieknummer', $rubrieknummers[$i], PDO::PARAM_STR);
+//                    $stmt->execute();
+//                    $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//                }
+//            }
         }
     }
 }
-?>
+    ?>
     <h1>Veiling Toevoegen</h1>
 
-<?php include_once('partial files\sidebar.php');
-loadRubriekenSidebar($rubriekArray, null);
-?>
+    <?php include_once('partial files\sidebar.php');
+    loadRubriekenSidebar($rubriekArray, null);
+    ?>
     <form method="post" enctype="multipart/form-data">
         <row>
             <div class="form-group">
@@ -254,9 +263,10 @@ loadRubriekenSidebar($rubriekArray, null);
                     </tr>
                     <tr>
                         <td>
-                            Alleen JPEG,PNG en JPG zijn toegestaan. De maximale bestand grote is 1MB.
+                            Afbeelding toevoegen
                         </td>
                         <td>
+                            Alleen JPEG,PNG en JPG zijn toegestaan. De maximale bestand grote is 1MB.
                             <div><input name="file[]" type="file" id="file"/></div>
                             <br/>
                             <input type="button" id="add_more" value="Voeg meer bestanden toe">
@@ -267,10 +277,29 @@ loadRubriekenSidebar($rubriekArray, null);
                             Rubriek Toevoegen
                         </td>
                         <td>
-                            <div><input name="file[]" type="file" id="file"/></div>
-                            <br/>
-                            <input type="button" id="add_more" value="Voeg meer bestanden toe">
+                            <!-- Trigger the modal with a button -->
+                            <button type="button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
                         </td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Rubrieken</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>hier komt de tekst</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" data-dismiss="modal">Voeg toe</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </tr>
                 </table>
             </div>
@@ -296,4 +325,4 @@ loadRubriekenSidebar($rubriekArray, null);
     </row>
 
 
-<?php include_once('partial files\footer.php'); ?>
+    <?php include_once('partial files\footer.php'); ?>
