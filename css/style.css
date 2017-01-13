@@ -543,6 +543,7 @@ footer a {
 @media (max-width: 400px){
     .headerbar{
         height: 80px;
+        margin-bottom: 40px;
     }
 }
 
@@ -657,4 +658,26 @@ ul.topnav li.icon {display: none;}
     float: left;
     margin-left: 15px;
     margin-right: 5px;
+}
+
+.radio-rating > input{
+    visibility: hidden;
+    position: absolute;
+}
+
+.radio-rating > input + img{
+    cursor: pointer;
+    filter: grayscale(0.7);
+    margin-right: 20px;
+}
+
+.radio-rating > input:checked + img{
+    filter: none;
+}
+
+.feedback-comment{
+    width: 250px;
+    height: 80px;
+    max-width: 500px;
+    max-height: 300px;
 }
