@@ -73,11 +73,11 @@ loadRubriekenSidebar(null);
             <table class="registration-table" style="width: 60%;">
                 <tr>
                     <td>Gebruikersnaam</td>
-                    <td><input pattern="[a-zA-Z0-9-]+" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
+                    <td><input class="form-control" pattern="[a-zA-Z0-9-]+" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
                 </tr>
                 <tr>
                     <td>Wachtwoord</td>
-                    <td><input type="password" name="wachtwoord" ></td>
+                    <td><input class="form-control" type="password" name="wachtwoord" ></td>
                 </tr>
             </table>
         </div>
