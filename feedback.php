@@ -1,34 +1,46 @@
 <?php
 require('partial files\models\voorwerp.php');
-require('partial files\header.php');
+require('partial files\models\feedback.php');
 
 $voorwerp = "";
-
-if(isset($_POST['beoordeling']) && isset($_POST['commentaar'])){
-    if(insertFeedbackKoper($_GET['voorwerpnummer'], $_SESSION['user'], $_POST['beoordeling'], $_POST['commentaar'])){
-        $_SESSION['message'] = "Bedankt voor het geven van feedback";
-        header('Location: index.php');
-    }
-}
 
 if(!isset($_GET['voorwerpnummer'])){
     header('Location: index.php');
 }
 else{
-    $voorwerp = getVoorwerp($_GET['voorwerpnummer']);
+    $voorwerp = getVoorwerpById($_GET['voorwerpnummer']);
 }
 
+session_start();
 if(!isset($_SESSION['user'])){
     $_SESSION['message'] = "Log eerst in voordat u feedback achterlaat.";
     $_SESSION['return'] = "feedback.php";
-    header('Location: index.php');
+    header('Location: login.php');
 }
 else{
     if($voorwerp->koper != $_SESSION['user']){
         header('Location: index.php');
     }
+    else{
+        $feedbackgegeven = isFeedbackGiven($voorwerp->voorwerpnummer);
+
+        if(!empty($feedbackgegeven)){
+            if($feedbackgegeven->gebruikersnaam == $_SESSION['user']){
+                $_SESSION['message'] = "U heeft al feedback gegeven aan deze gebruiker.";
+                header('Location: profiel/overzicht.php?user='.$voorwerp->verkoper);
+            }
+        }
+    }
 }
 
+if(isset($_POST['beoordeling']) && isset($_POST['commentaar'])){
+    if(insertFeedbackKoper($voorwerp->voorwerpnummer, $_SESSION['user'], $_POST['beoordeling'], $_POST['commentaar'])){
+        $_SESSION['message'] = "Bedankt voor het geven van feedback";
+        header('Location: profiel/overzicht.php?user='.$voorwerp->verkoper);
+    }
+}
+
+require('partial files\header.php');
 require('partial files\models\rubriek.php');
 $rubriekArray = loadAllRubrieken();?>
 
@@ -43,7 +55,7 @@ loadRubriekenSidebar(null); ?>
         }
 
 
-    echo '<p style="font-size: 18px;">U heeft <a href="veiling.php?voorwerpnummer='. $voorwerp->voorwerpnummer .'">'.
+    echo '<p class="feedback-description" ">U heeft <a href="veiling.php?voorwerpnummer='. $voorwerp->voorwerpnummer .'">'.
         $voorwerp->titel .'</a> gewonnen<br>Geef feedback op <a href="profiel/overzicht.php?user='. $voorwerp->verkoper .'">'.
         $voorwerp->verkoper.'</a></p>';
 

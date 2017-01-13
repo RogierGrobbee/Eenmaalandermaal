@@ -33,8 +33,15 @@ if ($username == ""){
 $user = getUserByUsername($username);
 if ($user == null) {
     echo '<h1>Profiel van ' . $username . '</h1>
-    <div class="col-sm-12">
-    Geen gebruiker gevonden
+    <div class="col-sm-12">';
+    if(isset($_SESSION['message'])){
+        echo "<div class='alert alert-success'>
+                <strong>". $_SESSION['message'] ."</strong>
+              </div>";
+        unset($_SESSION['message']);
+    }
+
+    echo 'Geen gebruiker gevonden
     </div>';
 } else {
 if ($loggedIn) {
@@ -63,7 +70,17 @@ if ($loggedIn) {
 } else { ?>
 
 <h1>Profiel van <?php echo $username ?></h1>
+
 <div class="col-sm-12">
+    <?php
+    if(isset($_SESSION['message'])){
+        echo "<div class='alert alert-success'>
+                <strong>". $_SESSION['message'] ."</strong>
+              </div>";
+        unset($_SESSION['message']);
+    }
+    ?>
+
     <h3>Overzicht</h3>
     <div class="well">
         Username: <?php echo $user->gebruikersnaam; ?>

@@ -681,3 +681,16 @@ ul.topnav li.icon {display: none;}
     max-width: 500px;
     max-height: 300px;
 }
+
+.feedback-description{
+    font-size: 17px;
+}
+
+.feedback-description a{
+    color: #4d79ff;
+}
+
+.feedback-description a:hover,
+.feedback-description a:active{
+    color: #000;
+}

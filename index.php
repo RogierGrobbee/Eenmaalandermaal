@@ -62,15 +62,6 @@ require('partial files\sidebar.php');
 $rubriekArray = loadAllRubrieken();
 loadRubriekenSidebar(null);
 
-
-
-    if(isset($_SESSION['message'])){
-        echo "<div class='alert alert-success error'>
-                <strong>". $_SESSION['message'] ."</strong>
-              </div>";
-        unset($_SESSION['message']);
-    }
-
     $voorwerp = getFeaturedVoorwerp();
     $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
 
