@@ -82,19 +82,18 @@ $successMessage = "";
 if (isset($_POST['toevoegen'])) {
     if (empty($_POST['titel']) ||
         empty($_POST['beschrijving']) ||
-        empty($_POST['startprijs']) ||
         empty($_POST['plaatsnaam'])
     ) {
         $errorMessage = "Niet alles ingevuld.";
     } else if (!is_numeric($_POST['startprijs'])) {
         $errorMessage = "Startprijs mag alleen cijfers bevatten.";
+    } else if (empty($_POST['startprijs'])) {
+        $errorMessage = "Startprijs moet hoger zijn dan €0";
     } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
     } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten'])) {
         $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
     }
-
-
 
     else {
         $titel = htmlspecialchars($_POST['titel']);
