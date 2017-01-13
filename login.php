@@ -32,6 +32,7 @@ if (isset($_POST['Login'])) {
                 session_start();
                 $_SESSION['user'] = strtolower($username);
                 if(isset($_SESSION["return"])){
+                    unset($_SESSION['return']);
                     header('Location: feedback.php');
                 }
                 header('Location: index.php');
