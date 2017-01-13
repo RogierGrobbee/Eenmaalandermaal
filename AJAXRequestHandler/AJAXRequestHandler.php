@@ -14,6 +14,7 @@
  */
 
 include_once('endVeiling.php');
+include_once('..\partial files\models\rubriek.php');
 
 /**
  * Converts the output of 'file_get_contents('php://input')' to a hash table.
@@ -53,5 +54,9 @@ if (isLegalPostData($action)) {
                 endAuction($content['voorwerpnummer']);
             }
             break;
+        case 'getSubrubrieken':
+            if (isLegalPostData($content['rubrieknummer'])) {
+                echo json_encode(getRubriekenBySuperrubriek($content['rubrieknummer']));
+            }
     }
 }

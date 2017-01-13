@@ -36,13 +36,15 @@ if (isset($_POST['registreer'])) {
         } else if (preg_match('/\s/',$_POST['gebruikersnaam'])) {
             $errorMessage = "Gebruikersnaam mag geen spaties bevatten.";
         } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-            $errorMessage = "Wachtwoord moet minimaal 8 characters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
+            $errorMessage = "Wachtwoord moet minimaal 8 karakters lang zijn en 1 kleine letter, 1 hoofdletter en een nummer bevatten.";
         } else if ($_POST['wachtwoord'] != $_POST['wachtwoord2']) {
             $errorMessage = "Wachtwoorden komen niet overeen.";
         } else if (!validateDate($_POST['geboortedatum'])) {
             $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
         } else if(date("Y-m-d", strtotime("-18 year", time())) < $_POST['geboortedatum']){
             $errorMessage = "U moet minimaal 18 jaar oud zijn om mee te kunnen doen aan de veilingen.";
+        } else if (date("Y-m-d", strtotime("1900-01-01")) > $_POST['geboortedatum']){
+            $errorMessage = "Voer een geldige leeftijd in.";
         } else if (postCodeCheck($_POST['postcode']) == false) {
             $errorMessage = "Geen geldige postcode.";
         }  else if (!is_numeric($_POST['telefoon1'])) {
@@ -136,7 +138,7 @@ loadRubriekenSidebar(null);
                 <table class="registration-table">
                     <tr>
                         <td>Email</td>
-                        <td><input maxlength="255" placeholder="name@example.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
+                        <td><input maxlength="255" placeholder="naam@voorbeeld.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
                     </tr>
                     <tr>
                         <td>Gebruikersnaam</td>

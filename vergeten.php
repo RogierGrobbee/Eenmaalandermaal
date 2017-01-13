@@ -1,5 +1,11 @@
-<?php include_once('partial files\databaseconnection.php');
-$rubriekArray = loadRubrieken();
+<?php require('partial files\models\rubriek.php');
+$rubriekArray = loadAllRubrieken();
+require('partial files\models\antwoord.php');
+require('partial files\models\gebruiker.php');
+require('partial files\models\vraag.php');
+
+
+
 include_once('partial files\header.php'); ?>
 
     <h1>Wachtwoord vergeten</h1>
@@ -23,16 +29,32 @@ if (isset($_POST['Vergeten'])) {
             $secretQuestion = $_POST['geheimeVraag'];
             $answer = strtolower($_POST['antwoord']);
             $username = $_POST['gebruikersnaam'];
-            $hash = getSecretAnswer($username);
+            $databaseAnswer = getAntwoordByUsername($username);
+
             if (getValidation($_POST['gebruikersnaam'])) {
-                if (password_verify($answer, $hash) && getQuestionNumber($username) == $secretQuestion) {
+                if (password_verify($answer, $databaseAnswer->antwoordtekst) && $databaseAnswer->vraagnummer == $secretQuestion) {
                     $password = generateRandomString();
+
                     $to      = getEmail($username);
                     $subject = 'Wachtwoord vergeten EenmaalAndermaal';
-                    $message = 'Uw nieuwe wachtwoord: ' . $password;
+                    $message ="
+                    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+                    <html xmlns='http://www.w3.org/1999/xhtml'>
+                        <head>
+                            <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+                            <title>U ben overboden!</title>
+                        </head>
+                        <body style='font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; font-size: 18px'>
+                            <p>Uw nieuwe wachtwoord is: ". $password ."<br>
+                            Pas dit aan de volgende keer dat u inlogt door op uw profiel te klikken.</p>
+                        </body>
+                    </html>";
+
                     $headers = 'From: webmaster@eenmaalandermaal.com' . "\r\n" .
                         'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
-                        'X-Mailer: PHP/' . phpversion();
+                        'MIME-Version: 1.0'. "\r\n" .
+                        'Content-Type: text/html; charset=ISO-8859-1' . "\r\n";
+
 
                     $hashedPassword = hashPass($password);
 
@@ -53,7 +75,50 @@ if (isset($_POST['Vergeten'])) {
         }
 }
 
+function echoGeheimeVragen()
+{
+    $vragen = getAllVragen();
+    echo "<select  name='geheimeVraag'>";
+    foreach ($vragen as $vraag) {
+        echo "<option value = " . $vraag->vraagnummer . " >" . $vraag->tekstvraag . "</option >";
+
+    }
+    echo "</select>";
+}
+
+
+function generateRandomString($length = 10)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+
+        if($length > 8){
+            $randomString .= $characters[rand(0, 9)];
+        }
+    }
+    return $randomString;
+}
+
 ?>
+
+    <div style="color:red" class="col-sm-12">
+        <?php
+        if (!empty($errorMessage)) {
+            echo "<div class='alert alert-danger'>";
+            echo $errorMessage;
+            echo "</div>";
+        }
+        elseif (!empty($successMessage)) {
+            echo "<div class='alert alert-success'>";
+            echo $successMessage;
+            echo "</div>";
+        }
+        ?>
+    </div>
+
     <form method="post">
         <row>
             <div class="col-sm-6">
@@ -65,7 +130,7 @@ if (isset($_POST['Vergeten'])) {
                     <tr>
                         <td>Geheime vraag</td>
                         <td>
-                            <?php echo returnGeheimeVragen(); ?>
+                            <?php echoGeheimeVragen(); ?>
                         </td>
                     </tr>
                     <tr>
@@ -83,22 +148,4 @@ if (isset($_POST['Vergeten'])) {
         </row>
     </form>
     <br><br>
-    <row>
-        <div style="color:red" class="col-sm-12">
-            <br>
-            <?php
-            if (!empty($errorMessage)) {
-                echo "<div class='alert alert-danger'>";
-                echo $errorMessage;
-                echo "</div>";
-            }
-            elseif (!empty($successMessage)) {
-                echo "<div class='alert alert-success'>";
-                echo $successMessage;
-                echo "</div>";
-            }
-            ?>
-        </div>
-
-    </row>
 <?php include_once('partial files\footer.php') ?>
