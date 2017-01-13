@@ -1,5 +1,10 @@
 <?php
-require_once ('databaseString.php');
+/**
+ * Created by PhpStorm.
+ * User: jamiel
+ * Date: 20-12-2016
+ * Time: 13:24
+ */
 
 // Replaces: loadRubrieken()
 function loadAllRubrieken()

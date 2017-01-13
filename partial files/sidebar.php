@@ -41,9 +41,9 @@ function loadProfileSidebar($username, $selectedTab)
     }
     else{
         if ($selectedTab == 4){
-            echo '<li><a class="list-group-item active" href=#>Mijn veilingen</a></li>';
+            echo '<li><a class="list-group-item active" href=veilingen.php>Mijn veilingen</a></li>';
         }else {
-            echo '<li><a class="list-group-item" href=#>Mijn veilingen</a></li>';
+            echo '<li><a class="list-group-item" href=veilingen.php>Mijn veilingen</a></li>';
         }
     }
 

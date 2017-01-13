@@ -4,10 +4,7 @@ function loadJSScripts() {
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
 }
 
-require('partial files\models\rubriek.php');
-require('partial files\models\voorwerp.php');
-require('partial files\models\bestand.php');
-require('partial files\models\bod.php');
+require('partial files\databaseconnection.php');
 require('partial files\header.php');
 
 if(isset($_SESSION['user'])){
@@ -17,54 +14,15 @@ else {
     echo "<h1>Meer dan 2000 veilingen! Bied nu!</h1>";
 }
 
-function echoHomepageVoorwerp($voorwerp, $prijs, $image){
-    if($prijs < 1){
-        $prijs = "0".$prijs;
-    }
-
-    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
-            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-            <img src="pics/'. $image .'"alt="veiling">
-            <h4>'.$voorwerp->titel.'</h4>
-            <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
-            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
-            <button class="veiling-detail btn-homepage">Bied</button></a></div>';
-}
-
-function queryHomepageVoorwerpen($queryString)
-{
-    $voorwerpen = getVoorwerpenByQuery($queryString);
-
-    $count = 0;
-
-    foreach($voorwerpen as $voorwerp){
-        $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
-        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
-
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
-        }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
-
-        $count++;
-        echoHomepageVoorwerp($voorwerp, $prijs, $image);
-    }
-
-    if($count == 0){
-        echo "<div class='error'>U heeft nog niet geboden op een veiling.</div>";
-    }
-}
 
 //sidebar maken op basis van rubrieken
 require('partial files\sidebar.php');
-$rubriekArray = loadAllRubrieken();
+$rubriekArray = loadRubrieken();
 loadRubriekenSidebar(null);
 ?>
     <?php
-        $voorwerp = getFeaturedVoorwerp();
-        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+        $voorwerp = featuredVoorwerp();
+        $biedingen = getVoorwerpBiedingen($voorwerp->voorwerpnummer);
 
         if($biedingen == null){
             $prijs = $voorwerp->startprijs;
@@ -73,7 +31,8 @@ loadRubriekenSidebar(null);
             $prijs = $biedingen[0]->bodbedrag;
         }
 
-        $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
+        $list = loadbestanden($voorwerp->voorwerpnummer);
+        $image = $list != null ? $list[0] : "NoImageAvailable.jpg";
         echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
         <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
 
@@ -103,14 +62,20 @@ loadRubriekenSidebar(null);
         <h1>Meest populaire veilingen</h1>
         <div class="row">
             <?php
-            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=1, @itemPerPage=3, @filter='mostpopular'");
+            queryHomepageVoorwerpen("SELECT * FROM ( SELECT v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+                                    v.looptijdeindeveiling, count(v.voorwerpnummer) as 'aantal biedingen', 
+                                    ROW_NUMBER() OVER (ORDER BY count(b.voorwerpnummer)  DESC) AS rownumber
+                                    FROM voorwerp v INNER JOIN Bod b ON v.voorwerpnummer=b.voorwerpnummer
+									WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE())
+                                    GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+                                    v.looptijdeindeveiling) AS rows WHERE rows.rownumber BETWEEN 2 AND 4");
             ?>
         </div>
 
         <h1>Nieuwe veilingen</h1>
         <div class="row">
         <?php
-            queryHomepageVoorwerpen("EXECUTE sp_SearchVoorwerpenByTitle @search=' ', @searchCount=0, @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
+        queryHomepageVoorwerpen("SELECT TOP 3 * FROM voorwerp WHERE looptijdeindeveiling > DATEADD(MINUTE, 1, GETDATE()) ORDER BY looptijdbeginveiling ASC");
         ?>
         </div>
 

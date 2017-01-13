@@ -71,13 +71,12 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 
     echo '  <div class="veilingitem">
                     <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="pics/' . $image . '" alt="veilingsfoto">
+                        <img src="../pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs . '</p>
                         <div class="veiling-info">
-                            <span data-tijd="' . $voorwerp->bodtijdstip . '" class="tijd"></span>
-                            <button class="veiling-detail">Bied</button>
+                            '.date("d-m-Y H:m", strtotime($voorwerp->bodtijdstip)).'
                         </div>
                     </a>
                 </div>';

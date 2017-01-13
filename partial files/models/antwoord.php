@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: jamiel
+ * Date: 21-12-2016
+ * Time: 14:38
+ */
 
 require_once ('databaseString.php');
 

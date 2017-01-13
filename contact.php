@@ -1,8 +1,6 @@
-<?php
-require('partial files\header.php');
-
-require('partial files\models\rubriek.php');
-$rubriekArray = loadAllRubrieken();?>
+<?php require('partial files\databaseconnection.php');
+$rubriekArray = loadRubrieken();
+require('partial files\header.php'); ?>
 
 <h1>Contact</h1>
 

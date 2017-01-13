@@ -142,16 +142,6 @@ if ($loggedIn) {
         <?php
     }
 
-    function echoBiedingen($username)
-    {
-        $biedingen = getBiedingenByUsername($username);
-        foreach ($biedingen as $k => $bod) {
-            echo '<div class="well">';
-            echo '<a href="./veiling.php?voorwerpnummer=' . $bod->voorwerpnummer . '"><h4>Veiling: ' . $bod->titel . '</h4><br></a>Uw bod: € ' . $bod->bodbedrag;
-            echo '</div>';
-        }
-    }
-
     function echoVoorwerp($voorwerp, $prijs, $image)
     {
         $beschrijving = $voorwerp->beschrijving;
@@ -168,13 +158,12 @@ if ($loggedIn) {
 
         echo '  <div class="veilingitem">
                     <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="pics/' . $image . '" alt="veilingsfoto">
+                        <img src="../pics/' . $image . '" alt="veilingsfoto">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs . '</p>
                         <div class="veiling-info">
-                            <span data-tijd="' . $voorwerp->looptijdeindeveiling . '" class="tijd"></span>
-                            <button class="veiling-detail">Bied</button>
+                            '.date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)).' 
                         </div>
                     </a>
                 </div>';
@@ -182,11 +171,21 @@ if ($loggedIn) {
 
     function echoVeilingen($username)
     {
-        $voorwerpList = getVoorwerpenByVerkoper($username);
+        $itemsPerPage = 10;
+        $currentPage = 1;
+        if (isset($_GET['page'])) {
+            if (is_numeric($_GET['page'])){
+                $currentPage = $_GET['page'];
+            }
+        }
+
+        $nVeilingen = countVoorwerpenByVerkoper($username);
+        $voorwerpList = getVoorwerpenByVerkoper($username, $currentPage, $itemsPerPage);
+
         foreach ($voorwerpList as $voorwerp) {
 
             $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
-            if($biedingen == null){
+            if($biedingen == null) {
                 $prijs = $voorwerp->startprijs;
             }
             else {
@@ -195,8 +194,59 @@ if ($loggedIn) {
 
             $foto = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
             echoVoorwerp($voorwerp,$prijs,$foto);
+
         }
 
+        echoPagination($nVeilingen, $itemsPerPage, $currentPage, $username);
+    }
+
+    function echoPagination($totalItems, $itemsPerPage, $currentPageNumber) {
+        global $username;
+        $nPages = ceil($totalItems / $itemsPerPage);
+        if ($currentPageNumber > 1) {
+            echo("<button onclick='location.href='./overzicht.php?user='.$username.'&page=" . ($currentPageNumber - 1) . "''>Previous</button>");
+        }
+        if ($nPages > 9) {
+            if ($currentPageNumber < 6) {
+                for ($i = 1; $i < 10; $i++) {
+                    echoPageNumber($i, $currentPageNumber);
+                }
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echoPageNumber($nPages, $currentPageNumber);
+            } else if ($currentPageNumber > ($nPages - 5)) {
+                echoPageNumber(1, $currentPageNumber);
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
+                    echoPageNumber($i, $currentPageNumber);
+                }
+            } else {
+                echoPageNumber(1, $currentPageNumber);
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
+                    echoPageNumber($i, $currentPageNumber);
+                }
+                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echoPageNumber($nPages, $currentPageNumber);
+            }
+
+        } else {
+            for ($i = 1; $i < $nPages + 1; $i++) {
+                echoPageNumber($i, $currentPageNumber);
+            }
+        }
+        if ($currentPageNumber < $nPages) {
+            echo("<button onclick=\"location.href='./overzicht.php?user='.$username.'&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
+        }
+    }
+
+    function echoPageNumber($pageNumber, $currentPageNumber)
+    {
+        global $username;
+        if (($pageNumber) == $currentPageNumber) {
+            echo '<b style="margin: 5px">' . $pageNumber . '</b>';
+        } else {
+            echo '<a style="margin: 5px" href=./overzicht.php?user='.$username.'&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+        }
     }
 
     ?>

@@ -1,11 +1,5 @@
-<?php require('partial files\models\rubriek.php');
-$rubriekArray = loadAllRubrieken();
-require('partial files\models\antwoord.php');
-require('partial files\models\gebruiker.php');
-require('partial files\models\vraag.php');
-
-
-
+<?php include_once('partial files\databaseconnection.php');
+$rubriekArray = loadRubrieken();
 include_once('partial files\header.php'); ?>
 
     <h1>Wachtwoord vergeten</h1>
@@ -29,12 +23,10 @@ if (isset($_POST['Vergeten'])) {
             $secretQuestion = $_POST['geheimeVraag'];
             $answer = strtolower($_POST['antwoord']);
             $username = $_POST['gebruikersnaam'];
-            $databaseAnswer = getAntwoordByUsername($username);
-
+            $hash = getSecretAnswer($username);
             if (getValidation($_POST['gebruikersnaam'])) {
-                if (password_verify($answer, $databaseAnswer->antwoordtekst) && $databaseAnswer->vraagnummer == $secretQuestion) {
+                if (password_verify($answer, $hash) && getQuestionNumber($username) == $secretQuestion) {
                     $password = generateRandomString();
-
                     $to      = getEmail($username);
                     $subject = 'Wachtwoord vergeten EenmaalAndermaal';
                     $message = 'Uw nieuwe wachtwoord: ' . $password;
@@ -61,46 +53,7 @@ if (isset($_POST['Vergeten'])) {
         }
 }
 
-function echoGeheimeVragen()
-{
-    $vragen = getAllVragen();
-    echo "<select  name='geheimeVraag'>";
-    foreach ($vragen as $vraag) {
-        echo "<option value = " . $vraag->vraagnummer . " >" . $vraag->tekstvraag . "</option >";
-
-    }
-    echo "</select>";
-}
-
-
-function generateRandomString($length = 10)
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
 ?>
-
-    <div style="color:red" class="col-sm-12">
-        <?php
-        if (!empty($errorMessage)) {
-            echo "<div class='alert alert-danger'>";
-            echo $errorMessage;
-            echo "</div>";
-        }
-        elseif (!empty($successMessage)) {
-            echo "<div class='alert alert-success'>";
-            echo $successMessage;
-            echo "</div>";
-        }
-        ?>
-    </div>
-
     <form method="post">
         <row>
             <div class="col-sm-6">
@@ -112,7 +65,7 @@ function generateRandomString($length = 10)
                     <tr>
                         <td>Geheime vraag</td>
                         <td>
-                            <?php echoGeheimeVragen(); ?>
+                            <?php echo returnGeheimeVragen(); ?>
                         </td>
                     </tr>
                     <tr>
@@ -130,4 +83,22 @@ function generateRandomString($length = 10)
         </row>
     </form>
     <br><br>
+    <row>
+        <div style="color:red" class="col-sm-12">
+            <br>
+            <?php
+            if (!empty($errorMessage)) {
+                echo "<div class='alert alert-danger'>";
+                echo $errorMessage;
+                echo "</div>";
+            }
+            elseif (!empty($successMessage)) {
+                echo "<div class='alert alert-success'>";
+                echo $successMessage;
+                echo "</div>";
+            }
+            ?>
+        </div>
+
+    </row>
 <?php include_once('partial files\footer.php') ?>
