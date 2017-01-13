@@ -1,6 +1,15 @@
 <?php
 include_once('partial files\header.php');
 include_once('partial files\databaseconnection.php');
+include_once('partial files\models\rubriek.php');
+
+function loadJSScripts() {
+    echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
+    echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>';
+    echo '<script type="text/javascript" src="js/veilingToevoegen.js"></script>';
+}
+
+
 function userIsVerkoper($username)
 {
     global $db;
@@ -278,7 +287,10 @@ if (isset($_POST['toevoegen'])) {
                         </td>
                         <td>
                             <!-- Trigger the modal with a button -->
-                            <button type="button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
+                                <select selected='selected' name="rubriekenList" id="rubriekenList" multiple>
+
+                                </select>
+                                <button type="button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
                         </td>
                         <!-- Modal -->
                         <div class="modal fade" id="myModal" role="dialog">
@@ -291,7 +303,19 @@ if (isset($_POST['toevoegen'])) {
                                         <h4 class="modal-title">Rubrieken</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>hier komt de tekst</p>
+                                        <?php
+                                        $rootRubriek = getRubriekenBySuperrubriek();
+
+                                        foreach ($rootRubriek as $row) {
+                                            $id = $row->rubrieknummer;
+                                            $idString = "#" . $row->rubrieknummer;
+
+                                            echo "<a href='#" . $id . "' data-id='" . $id . "' data-toggle='collapse' onclick='loadSubrubrieken(this)'>" . $row->rubrieknaam . "</a>";
+                                            echo "<br>";
+                                            echo "<div id='" . $id . "' class='collapse margin-left'>";
+                                            echo '</div>';
+                                        }
+                                        ?>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" data-dismiss="modal">Voeg toe</button>
