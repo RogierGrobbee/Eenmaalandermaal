@@ -9,6 +9,26 @@ $rubriekArray = loadAllRubrieken();?>
 <?php require('partial files\sidebar.php');
 loadRubriekenSidebar(null); ?>
 
-    <textarea name="commentaar" cols="40" rows="5" style="min-width: 300px; min-height: 200px;"></textarea>
+    <p style="font-size: 18px;">U heeft <a href="">product</a> gewonnen/geveild<br>
+    Geef feedback op <a href="">gebruiker</a></p>
+
+    <h2>Beoordeling</h2>
+    <label class="radio-rating">
+        <input type="radio" name="beoordeling" value="positief" />
+        <img src="images/positief.png">
+    </label>
+    <label class="radio-rating">
+        <input type="radio" name="beoordeling" value="neutraal" />
+        <img src="images/neutraal.png">
+    </label>
+    <label class="radio-rating">
+        <input type="radio" name="beoordeling" value="negatief" />
+        <img src="images/negatief.png">
+    </label>
+
+    <h2>Commentaar</h2>
+    <textarea name="commentaar" class="feedback-comment" maxlength="75"></textarea><Br><br>
+
+    <button>Verzend</button>
 
 <?php require('partial files\footer.php')?>
