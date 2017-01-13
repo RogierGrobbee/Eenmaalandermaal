@@ -178,7 +178,7 @@ function showBieden(){
                 </div>';
         }
         else{
-            echo "<div class='highest-bod'>U heeft het hoogste bod.</div>";
+            echo "<div class='highest-bod'>U heeft het hoogste bod</div>";
         }
     }
     else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
@@ -193,6 +193,44 @@ function showBieden(){
     }
 }
 
+function echoSuggestedVoorwerp($voorwerp, $prijs, $image){
+    if($prijs < 1){
+        $prijs = "0".$prijs;
+    }
+
+    echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
+            <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+            <img src="pics/'. $image .'"alt="veiling">
+            <h4>'.$voorwerp->titel.'</h4>
+            <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
+            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
+            <button class="veiling-detail btn-homepage">Bied</button></a></div>';
+}
+
+function suggestedVoorwerpen($rubrieknummer)
+{
+    global $voorwerpnummer;
+    $count = 0;
+    $voorwerpen = getSuggestedVoorwerpen($rubrieknummer);
+
+    foreach($voorwerpen as $voorwerp){
+        if($voorwerp->voorwerpnummer != $voorwerpnummer && $count < 3){
+            $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
+            $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+
+            if ($biedingen == null) {
+                $prijs = $voorwerp->startprijs;
+            } else {
+                $prijs = $biedingen[0]->bodbedrag;
+            }
+
+            echoSuggestedVoorwerp($voorwerp, $prijs, $image);
+            $count++;
+        }
+    }
+}
+
+
 ?>
     <div class="row">
         <?php
@@ -200,7 +238,7 @@ function showBieden(){
                 echo $error;
             }
         ?>
-        <?php echo '<img class="bigpicture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
+        <?php echo '<img class="veiling-picture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
@@ -279,11 +317,20 @@ function showBieden(){
 <?php
 for($i = 1; $i < 4; $i++) {
     if(!empty($list[$i])){
-        echo '<div class="sm-3">
-            <img class="smallpicture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
+        echo '<div class="xs-12 sm-12 md-12 col-lg-6">
+            <img class="other-veiling-picture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
         </div>';
     }
+    else{
+        echo '<div class="sm-3"></div>';
+    }
 }
+?>
+</div>
+    <h2>Aanbevolen veilingen</h2>
+<div class="row">
+<?php
+    suggestedVoorwerpen($inputRubriekId);
 ?>
 </div>
 <?php require('partial files\footer.php')?>
