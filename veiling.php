@@ -165,7 +165,10 @@ function showBieden(){
     global $biedingen;
     global $voorwerp;
 
-    if(isset($_SESSION['user']) && date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('d/m/y H:i:s')){
+    if($_SESSION['user'] == $voorwerp->verkoper){
+        echo "<div class='highest-bod'>Biedingen</div>";
+    }
+    else if(isset($_SESSION['user']) && date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('d/m/y H:i:s')){
         if($biedingen[0]->gebruikersnaam != $_SESSION['user']) {
             echo '<div class="bieden">
                     <form action="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" method="post">
@@ -177,6 +180,7 @@ function showBieden(){
                     </form>
                 </div>';
         }
+
         else{
             echo "<div class='highest-bod'>U heeft het hoogste bod</div>";
         }
@@ -249,7 +253,10 @@ function suggestedVoorwerpen($rubrieknummer)
                 <?php
                 showBieden();
 
-                if($biedingen == null){
+                if($_SESSION['user'] == $voorwerp->verkoper) {
+                    echo "<div class='highest-bod'>Er zijn nog geen biedingen!</div>";
+                }
+                else if($biedingen == null){
                     echo "<div class='highest-bod'>Er zijn nog geen biedingen! Bied snel!</div>";
                 }
                 else {
