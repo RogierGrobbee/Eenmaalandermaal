@@ -49,7 +49,10 @@ if (isset($_POST['registreer'])) {
             $errorMessage = "Geen geldige datum (jjjj-mm-dd).";
         } else if (date("Y-m-d", strtotime("-18 year", time())) < $_POST['geboortedatum']) {
             $errorMessage = "U moet minimaal 18 jaar oud zijn om mee te kunnen doen aan de veilingen.";
-        } else if (postCodeCheck($_POST['postcode']) == false) {
+        } else if (date("Y-m-d", strtotime("1900-01-01")) > $_POST['geboortedatum']){
+            $errorMessage = "Voer een geldige leeftijd in.";
+        }
+        else if (postCodeCheck($_POST['postcode']) == false) {
             $errorMessage = "Geen geldige postcode.";
         } else if (!is_numeric($_POST['telefoon1'])) {
             $errorMessage = "Telefoonnummer mag alleen bestaan uit cijfers.";
