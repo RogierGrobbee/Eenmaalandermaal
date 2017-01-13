@@ -4,10 +4,10 @@ include_once('partial files\databaseconnection.php');
 include_once('partial files\models\rubriek.php');
 
 function loadJSScripts() {
-    echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
+    echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
     echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>';
-    echo '<script type="text/javascript" src="js/veilingToevoegen.js"></script>';
-    echo '<script type="text/javascript" src="js/addImages.js"></script>';
+    echo '<script type="text/javascript" src="../js/veilingToevoegen.js"></script>';
+    echo '<script type="text/javascript" src="../js/addImages.js"></script>';
 }
 
 
@@ -22,7 +22,7 @@ function userIsVerkoper($username)
 }
 
 if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
-    header('Location: index.php');
+    header('Location: ./index.php');
 }
 
 $rubriekArray = loadRubrieken();

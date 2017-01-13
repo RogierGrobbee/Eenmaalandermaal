@@ -49,7 +49,7 @@ function loadProfileSidebar($username, $selectedTab)
         if ($selectedTab == 5){
             echo '<li><a class="list-group-item active" href=veilingToevoegen.php>Veiling toevoegen</a></li>';
         }else {
-            echo '<li><a class="list-group-item" href=veilingenToevoegen.php>Veiling toevoegen</a></li>';
+            echo '<li><a class="list-group-item" href=veilingToevoegen.php>Veiling toevoegen</a></li>';
         }
     }
 
