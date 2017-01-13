@@ -194,7 +194,7 @@ if (isset($_POST['toevoegen'])) {
     }
 }
     ?>
-    <h1>Veiling Toevoegen</h1>
+    <h1>Profiel</h1>
 
     <?php include_once('partial files\sidebar.php');
         loadProfileSidebar($_SESSION[user], 5);

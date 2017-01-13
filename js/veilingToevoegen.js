@@ -13,6 +13,7 @@ function deleteRubriek() {
             selectElement.options[i] = null;
         }
     }
+    disableDeleteButton();
 }
 
 function disableDeleteButton() {
