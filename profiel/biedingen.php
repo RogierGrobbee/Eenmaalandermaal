@@ -47,6 +47,9 @@ function echoBiedingen($username)
     $biedingen = getBiedingenByUsername($username);
     foreach ($biedingen as $k => $bod) {
         $prijs = $bod->bodbedrag;
+        if ($prijs < 1) {
+            $prijs = "0" . $prijs;
+        }
         $foto = loadBestandByVoorwerpnummer($bod->voorwerpnummer);
         echoVoorwerp($bod, $prijs, $foto);
     }

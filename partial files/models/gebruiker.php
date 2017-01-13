@@ -88,6 +88,14 @@ function hashPass($pass) {
     return password_hash($pass, PASSWORD_BCRYPT, $options);
 }
 
+function updateWachtwoord($username, $hash) {
+    global $db;
+    $statement = $db->prepare("update gebruiker set wachtwoord=? where gebruikersnaam=?");
+    $statement->bindParam(1, $hash);
+    $statement->bindParam(2, $username);
+    $statement->execute();
+}
+
 function getVerkoperByVerkoopnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT email FROM gebruiker

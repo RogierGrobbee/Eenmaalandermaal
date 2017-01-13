@@ -15,9 +15,9 @@ function loadProfileSidebar($username, $selectedTab)
         echo '<li><a class="list-group-item" href=overzicht.php>Overzicht</a></li>';
     }
     if ($selectedTab == 2) {
-        echo '<li><a class="list-group-item active" href=overzicht.php#>Wachtwoord wijzigen</a></li>';
+        echo '<li><a class="list-group-item active" href=wachtwoordwijzigen.php>Wachtwoord wijzigen</a></li>';
     } else {
-        echo '<li><a class="list-group-item" href=overzicht.php#>Wachtwoord wijzigen</a></li>';
+        echo '<li><a class="list-group-item" href=wachtwoordwijzigen.php>Wachtwoord wijzigen</a></li>';
     }
     if ($selectedTab == 3){
         echo '<li><a class="list-group-item active" href=biedingen.php>Bod historie</a></li>';
@@ -44,6 +44,12 @@ function loadProfileSidebar($username, $selectedTab)
             echo '<li><a class="list-group-item active" href=veilingen.php>Mijn veilingen</a></li>';
         }else {
             echo '<li><a class="list-group-item" href=veilingen.php>Mijn veilingen</a></li>';
+        }
+
+        if ($selectedTab == 5){
+            echo '<li><a class="list-group-item active" href=veilingToevoegen.php>Veiling toevoegen</a></li>';
+        }else {
+            echo '<li><a class="list-group-item" href=veilingenToevoegen.php>Veiling toevoegen</a></li>';
         }
     }
 
