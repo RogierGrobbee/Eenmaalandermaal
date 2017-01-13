@@ -61,63 +61,71 @@ function queryHomepageVoorwerpen($queryString)
 require('partial files\sidebar.php');
 $rubriekArray = loadAllRubrieken();
 loadRubriekenSidebar(null);
-?>
+
+
+
+    if(isset($_SESSION['message'])){
+        echo "<div class='alert alert-success error'>
+                <strong>". $_SESSION['message'] ."</strong>
+              </div>";
+        unset($_SESSION['message']);
+    }
+
+    $voorwerp = getFeaturedVoorwerp();
+    $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+
+    if($biedingen == null){
+        $prijs = $voorwerp->startprijs;
+    }
+    else{
+        $prijs = $biedingen[0]->bodbedrag;
+    }
+
+    $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
+    echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
+    <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
+
+    echo '<div class="col-lg-4 col-md-5 col-sm-7 homepage-featured-detail">
+        <h2>'. $voorwerp->titel .'</h2>
+        <div class="homepage-featured-prijs">€'. $prijs .'<br>
+            <span data-tijd="'. $voorwerp->looptijdeindeveiling .'"
+             data-nummer= "' . $voorwerp->voorwerpnummer . '" class="tijd"></span>
+        </div>
+        <button class="veiling-detail btn-homepage">Bied</button></div></a>' ?>
+
     <?php
-        $voorwerp = getFeaturedVoorwerp();
-        $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
+        if(isset($_SESSION['user'])){
+            echo "<h1>Uw meest recente geboden veilingen</h1>
+                <div class='row'>";
 
-        if($biedingen == null){
-            $prijs = $voorwerp->startprijs;
+            queryHomepageVoorwerpen("SELECT TOP 3 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+            v.looptijdeindeveiling, max(b.bodtijdstip) as bodtijdstip FROM voorwerp v INNER JOIN bod b ON b.voorwerpnummer=v.voorwerpnummer
+                WHERE b.gebruikersnaam = '". $_SESSION['user']. "' GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
+            v.looptijdeindeveiling ORDER BY max(b.bodtijdstip) DESC");
+
+            echo "</div>";
         }
-        else{
-            $prijs = $biedingen[0]->bodbedrag;
-        }
+    ?>
 
-        $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
-        echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-        <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
 
-        echo '<div class="col-lg-4 col-md-5 col-sm-7 homepage-featured-detail">
-            <h2>'. $voorwerp->titel .'</h2>
-            <div class="homepage-featured-prijs">€'. $prijs .'<br>
-                <span data-tijd="'. $voorwerp->looptijdeindeveiling .'"
-                 data-nummer= "' . $voorwerp->voorwerpnummer . '" class="tijd"></span>
-            </div>
-            <button class="veiling-detail btn-homepage">Bied</button></div></a>' ?>
-
+    <h1>Meest populaire veilingen</h1>
+    <div class="row">
         <?php
-            if(isset($_SESSION['user'])){
-                echo "<h1>Uw meest recente geboden veilingen</h1>
-                    <div class='row'>";
-
-                queryHomepageVoorwerpen("SELECT TOP 3 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
-                v.looptijdeindeveiling, max(b.bodtijdstip) as bodtijdstip FROM voorwerp v INNER JOIN bod b ON b.voorwerpnummer=v.voorwerpnummer
-                    WHERE b.gebruikersnaam = '". $_SESSION['user']. "' GROUP BY v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
-                v.looptijdeindeveiling ORDER BY max(b.bodtijdstip) DESC");
-
-                echo "</div>";
-            }
+        queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=1, @itemPerPage=3, @filter='mostpopular'");
         ?>
+    </div>
 
+    <h1>Nieuwe veilingen</h1>
+    <div class="row">
+    <?php
+        queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
+    ?>
+    </div>
 
-        <h1>Meest populaire veilingen</h1>
-        <div class="row">
-            <?php
-            queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=1, @itemPerPage=3, @filter='mostpopular'");
-            ?>
-        </div>
-
-        <h1>Nieuwe veilingen</h1>
-        <div class="row">
+    <h1>Laagste prijzen</h1>
+    <div class="row">
         <?php
-            queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
+        queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='laagstebod'");
         ?>
-        </div>
-
-        <h1>Laagste prijzen</h1>
-        <div class="row">
-            <?php
-            queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='laagstebod'");
-            ?>
-        </div>
+    </div>
 <?php require('partial files\footer.php') ?>

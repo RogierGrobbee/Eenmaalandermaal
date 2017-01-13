@@ -4,8 +4,11 @@ require('partial files\header.php');
 
 $voorwerp = "";
 
-if(isset($_POST['beoordeling'])){
-
+if(isset($_POST['beoordeling']) && isset($_POST['commentaar'])){
+    if(insertFeedbackKoper($_GET['voorwerpnummer'], $_SESSION['user'], $_POST['beoordeling'], $_POST['commentaar'])){
+        $_SESSION['message'] = "Bedankt voor het geven van feedback";
+        header('Location: index.php');
+    }
 }
 
 if(!isset($_GET['voorwerpnummer'])){
@@ -38,15 +41,18 @@ loadRubriekenSidebar(null); ?>
         if (!empty($errorMessage)) {
             echo "<div class='alert alert-danger error'>$errorMessage</div>";
         }
+
+
+    echo '<p style="font-size: 18px;">U heeft <a href="veiling.php?voorwerpnummer='. $voorwerp->voorwerpnummer .'">'.
+        $voorwerp->titel .'</a> gewonnen<br>Geef feedback op <a href="profiel/overzicht.php?user='. $voorwerp->verkoper .'">'.
+        $voorwerp->verkoper.'</a></p>';
+
+
+    echo "<form action='feedback.php?voorwerpnummer=" . $voorwerp->voorwerpnummer . "'" . "method='post'>"
     ?>
-
-    <p style="font-size: 18px;">U heeft <a href="">product</a> gewonnen/geveild<br>
-    Geef feedback op <a href="">gebruiker</a></p>
-
-    <form method="post">
         <h2>Beoordeling</h2>
         <label class="radio-rating">
-            <input type="radio" name="beoordeling" value="positief" />
+            <input type="radio" name="beoordeling" value="positief" required/>
             <img src="images/positief.png">
         </label>
         <label class="radio-rating">
