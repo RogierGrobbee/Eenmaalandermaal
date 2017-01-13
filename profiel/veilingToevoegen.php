@@ -1,7 +1,7 @@
 <?php
-include_once('partial files\header.php');
-include_once('partial files\databaseconnection.php');
-include_once('partial files\models\rubriek.php');
+include_once('..\partial files\header.php');
+include_once('..\partial files\databaseconnection.php');
+include_once('..\partial files\models\rubriek.php');
 
 function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
@@ -22,7 +22,7 @@ function userIsVerkoper($username)
 }
 
 if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
-    header('Location: ./index.php');
+    header('Location: ../index.php');
 }
 
 $rubriekArray = loadRubrieken();
@@ -196,7 +196,7 @@ if (isset($_POST['toevoegen'])) {
     ?>
     <h1>Profiel</h1>
 
-    <?php include_once('partial files\sidebar.php');
+    <?php include_once('..\partial files\sidebar.php');
         loadProfileSidebar($_SESSION[user], 5);
     ?>
     <div class="col-sm-12">
@@ -351,4 +351,4 @@ if (isset($_POST['toevoegen'])) {
     </row>
 
 
-    <?php include_once('partial files\footer.php'); ?>
+    <?php include_once('..\partial files\footer.php'); ?>
