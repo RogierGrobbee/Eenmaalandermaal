@@ -138,31 +138,31 @@ loadRubriekenSidebar(null);
                 <table class="registration-table">
                     <tr>
                         <td>Email</td>
-                        <td><input maxlength="255" placeholder="naam@voorbeeld.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
+                        <td><input class="form-control" maxlength="255" placeholder="naam@voorbeeld.com" value="<?php if(isset($_POST['email'])){ echo $_POST['email'];}?>" type="text" name="email" ></td>
                     </tr>
                     <tr>
                         <td>Gebruikersnaam</td>
-                        <td><input  maxlength="35" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
+                        <td><input class="form-control" maxlength="35" value="<?php if(isset($_POST['gebruikersnaam'])){ echo $_POST['gebruikersnaam'];}?>" type="text" name="gebruikersnaam" ></td>
                     </tr>
                     <tr>
                         <td>Voornaam</td>
-                        <td><input  value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
+                        <td><input class="form-control" value="<?php if(isset($_POST['voornaam'])){ echo $_POST['voornaam'];}?>" type="text" name="voornaam" ></td>
                     </tr>
                     <tr>
                         <td>Achternaam</td>
-                        <td><input   value="<?php if(isset($_POST['achternaam'])){ echo $_POST['achternaam'];}?>" type="text" name="achternaam" ></td>
+                        <td><input class="form-control" value="<?php if(isset($_POST['achternaam'])){ echo $_POST['achternaam'];}?>" type="text" name="achternaam" ></td>
                     </tr>
                     <tr>
                         <td>Wachtwoord</td>
-                        <td><input maxlength="100" type="password" name="wachtwoord" ></td>
+                        <td><input class="form-control" maxlength="100" type="password" name="wachtwoord" ></td>
                     </tr>
                     <tr>
                         <td>Bevestig wachtwoord</td>
-                        <td><input maxlength="100" type="password" name="wachtwoord2" ></td>
+                        <td><input class="form-control" maxlength="100" type="password" name="wachtwoord2" ></td>
                     </tr>
                     <tr>
                         <td>Geboortedatum</td>
-                        <td><input  placeholder="jjjj-mm-dd" value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
+                        <td><input class="form-control" placeholder="jjjj-mm-dd" value="<?php if(isset($_POST['geboortedatum'])){ echo $_POST['geboortedatum'];}?>" name="geboortedatum" type="date" data-date-inline-picker="true"/></td>
                     </tr>
 
                 </table>
@@ -177,19 +177,19 @@ loadRubriekenSidebar(null);
                     </tr>
                     <tr>
                         <td>Adres</td>
-                        <td><input maxlength="53" value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
+                        <td><input class="form-control" maxlength="53" value="<?php if(isset($_POST['adres'])){ echo $_POST['adres'];}?>" type="text" name="adres" ></td>
                     </tr>
                     <tr>
                         <td>Plaats</td>
-                        <td><input maxlength="100" value="<?php if(isset($_POST['plaats'])){ echo $_POST['plaats'];}?>" type="text" name="plaats" ></td>
+                        <td><input class="form-control" maxlength="100" value="<?php if(isset($_POST['plaats'])){ echo $_POST['plaats'];}?>" type="text" name="plaats" ></td>
                     </tr>
                     <tr>
                         <td>Postcode</td>
-                        <td><input  placeholder="1234AB" value="<?php if(isset($_POST['postcode'])){ echo $_POST['postcode'];}?>" type="text" name="postcode" ></td>
+                        <td><input class="form-control" placeholder="1234AB" value="<?php if(isset($_POST['postcode'])){ echo $_POST['postcode'];}?>" type="text" name="postcode" ></td>
                     </tr>
                     <tr>
                         <td>Telefoon</td>
-                        <td><input maxlength="15" value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
+                        <td><input class="form-control" maxlength="15" value="<?php if(isset($_POST['telefoon1'])){ echo $_POST['telefoon1'];}?>" type="text" name="telefoon1"></td>
                     </tr>
                     <tr>
                         <td>Geheime vraag</td>
@@ -199,7 +199,7 @@ loadRubriekenSidebar(null);
                     </tr>
                     <tr>
                         <td>Antwoord</td>
-                        <td><input maxlength="100" value="<?php if(isset($_POST['antwoord'])){ echo $_POST['antwoord'];}?>" type="text" name="antwoord"></td>
+                        <td><input class="form-control" maxlength="100" value="<?php if(isset($_POST['antwoord'])){ echo $_POST['antwoord'];}?>" type="text" name="antwoord"></td>
                     </tr>
 
                 </table>

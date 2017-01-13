@@ -581,7 +581,7 @@ function returnGeheimeVragen()
     global $db;
 
     $query = $db->query("SELECT tekstvraag, vraagnummer FROM vraag");
-    echo "<select  name='geheimeVraag'>";
+    echo "<select class='form-control' name='geheimeVraag'>";
     foreach ($query as $row) {
         echo "<option value = " . $row['vraagnummer'] . " >" . $row['tekstvraag'] . "</option >";
 
@@ -596,7 +596,7 @@ function returnAllCountries()
 {
     global $db;
     $query = $db->query("SELECT landnaam FROM land");
-    echo "<select name='country'>";
+    echo "<select class='form-control' name='country'>";
     foreach ($query as $row) {
         if ($row['landnaam'] == 'Nederland') {
             echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";

@@ -2,6 +2,18 @@
  * Created by jamiel on 13-1-2017.
  */
 
+function getSelectValues(select) {
+    var result = [];
+    var options = select && select.options;
+
+    for (var i=0, iLen=options.length; i<iLen; i++) {
+        if (options[i].selected) {
+            result.push(options[i].value || options[i].text);
+        }
+    }
+    return result;
+}
+
 function loadSubrubrieken(sender) {
     $.ajax({
         type: 'POST',
@@ -15,6 +27,9 @@ function loadSubrubrieken(sender) {
             sender.onclick = null;
             if (rubrieken.length > 1) {
                 showSubrubrieken(rubrieken);
+            }
+            else {
+                sender.onclick = addRubriekToList(sender);
             }
         }
     });
@@ -32,4 +47,13 @@ function showSubrubrieken(rubrieken) {
         container.append("<br>");
         container.append("<div id='" + rubrieken[i].rubrieknummer + "' class='collapse margin-left'></div>");
     }
+}
+
+function addRubriekToList(sender) {
+    var myselect = document.getElementById('rubriekenList');
+    var objOption = document.createElement("option");
+    objOption.text = sender.text;
+    objOption.value = sender.getAttribute('data-id');
+
+    myselect.options.add(objOption);
 }
