@@ -263,9 +263,10 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>
-                            Alleen JPEG,PNG en JPG zijn toegestaan. De maximale bestand grote is 1MB.
+                            Afbeelding toevoegen
                         </td>
                         <td>
+                            Alleen JPEG,PNG en JPG zijn toegestaan. De maximale bestand grote is 1MB.
                             <div><input name="file[]" type="file" id="file"/></div>
                             <br/>
                             <input type="button" id="add_more" value="Voeg meer bestanden toe">
