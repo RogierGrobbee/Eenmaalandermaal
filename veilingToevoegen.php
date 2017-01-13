@@ -262,6 +262,16 @@ loadRubriekenSidebar($rubriekArray, null);
                             <input type="button" id="add_more" value="Voeg meer bestanden toe">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            Rubriek Toevoegen
+                        </td>
+                        <td>
+                            <div><input name="file[]" type="file" id="file"/></div>
+                            <br/>
+                            <input type="button" id="add_more" value="Voeg meer bestanden toe">
+                        </td>
+                    </tr>
                 </table>
             </div>
         </row>
