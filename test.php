@@ -28,16 +28,29 @@ foreach ($query as $row) {
     foreach ($query2 as $row2) {
         $id2 = $row2['rubrieknummer'];
         $idString2 = "#" . $row2['rubrieknummer'];
-        echo "<a href='" . $idString2 . "' data-toggle='collapse'>" . $row2['rubrieknaam'] . "</a>";
-        echo "<br>";
+        if ($query2->rowCount() > 0) {
+            echo "<a href='" . $idString2 . "' data-toggle='collapse'>" . $row2['rubrieknaam'] . "</a>";
+            echo "<br>";
+        }
+        else{
+            echo "<a href='veilingToevoegen.php'>" . $row2['rubrieknaam'] . "</a>";
+            echo "<br>";
+        }
         echo "<div id='" . $id2 . "' class='collapse margin-left'>";
 
         $query3 = $db->query("SELECT * FROM rubriek WHERE superrubriek = $id2 ORDER BY rubrieknaam");
         foreach ($query3 as $row3) {
             $id3 = $row3['rubrieknummer'];
             $idString3 = "#" . $row3['rubrieknummer'];
-            echo "<a href='" . $idString3 . "' data-toggle='collapse'>" . $row3['rubrieknaam'] . "</a>";
-            echo "<br>";
+            if ($query3->rowCount() > 0) {
+                echo "<a href='" . $idString3 . "' data-toggle='collapse'>" . $row3['rubrieknaam'] . "</a>";
+                echo "<br>";
+            }
+            else{
+
+                echo "<a href='veilingToevoegen.php'>" . $row3['rubrieknaam'] . "</a>";
+                echo "<br>";
+            }
             echo "<div id='" . $id3 . "' class='collapse margin-left'>";
 
             $query4 = $db->query("SELECT * FROM rubriek WHERE superrubriek = $id3 ORDER BY rubrieknaam");
