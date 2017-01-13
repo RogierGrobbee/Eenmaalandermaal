@@ -667,7 +667,7 @@ ul.topnav li.icon {display: none;}
 
 .radio-rating > input + img{
     cursor: pointer;
-    filter: grayscale(0.7);
+    filter: grayscale(0.8);
     margin-right: 20px;
 }
 

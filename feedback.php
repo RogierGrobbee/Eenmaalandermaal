@@ -1,5 +1,16 @@
 <?php
+require('partial files\models\voorwerp.php');
 require('partial files\header.php');
+
+if(!isset($_GET['voorwerpnummer'])){
+    header('Location: index.php');
+}
+
+if(!isset($_SESSION['user'])){
+    $_SESSION['message'] = "Login";
+
+    header('Location: index.php');
+}
 
 require('partial files\models\rubriek.php');
 $rubriekArray = loadAllRubrieken();?>
