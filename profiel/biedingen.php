@@ -73,8 +73,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs . '</p>
                         <div class="veiling-info">
-                            <span data-tijd="' . $voorwerp->bodtijdstip . '" class="tijd"></span>
-                            <button class="veiling-detail">Bied</button>
+                            '.date("d-m-Y H:m", strtotime($voorwerp->bodtijdstip)).'
                         </div>
                     </a>
                 </div>';

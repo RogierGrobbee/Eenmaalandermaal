@@ -11,13 +11,27 @@ function getVoorwerpById($voorwerpnummer) {
     return $query->fetch(PDO::FETCH_OBJ);
 }
 
-function getVoorwerpenByVerkoper($username) {
+function countVoorwerpenByVerkoper($username){
     global $db;
 
-    $query = $db->prepare("SELECT * FROM voorwerp WHERE verkoper = :verkoper");
-    $query->execute(array(':verkoper' => $username));
+    $query = $db->prepare("select count(voorwerpnummer) as amount from voorwerp where verkoper = :username");
+    $query->execute(array(':username' => $username));
+    return ($query->fetch(PDO::FETCH_OBJ))->amount;
+}
+
+function getVoorwerpenByVerkoper($username, $page, $itemsPerPage) {
+    global $db;
+    $nSkippedRecords = ($page - 1) * $itemsPerPage;
+
+    $query = $db->prepare("execute sp_getVeilingenByVerkoper @username=?, @skippedRecords=?, @itemsPerPage=?");
+    $query->bindParam(1, $username);
+    $query->bindParam(2, $nSkippedRecords);
+    $query->bindParam(3, $itemsPerPage);
+
+    $query->execute();
     return $query->fetchAll(PDO::FETCH_OBJ);
 }
+
 
 // Replaces: Part of the loadVeilingItemsSearch($searchQuery, $currentPageNumber, $filter) function
 function countVoorwerpenBySearchTerm ($searchTerm, $searchCount) {
@@ -92,25 +106,6 @@ function getFeaturedVoorwerp()
 
     return $query->fetch(PDO::FETCH_OBJ);
 }
-
-function getVoorwerpenByQuery($query){
-    global $db;
-
-    $query = $db->query($query);
-
-    return $query->fetchAll(PDO::FETCH_OBJ);
-}
-
-function getSuggestedVoorwerpen($rubrieknummer){
-    global $db;
-
-    $query = $db->query("SELECT TOP 4 * FROM VOORWERP V INNER JOIN voorwerpinrubriek vr ON
-                                        v.voorwerpnummer = vr.voorwerpnummer
-                                        where vr.rubriekoplaagsteniveau=" . $rubrieknummer);
-
-    return $query->fetchAll(PDO::FETCH_OBJ);
-}
-
 
 //Replaces: getBiedingenByUsername($username)
 function getBiedingenByUsername($username) {
