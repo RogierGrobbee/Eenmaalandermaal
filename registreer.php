@@ -1,6 +1,4 @@
 <?php
-
-
 require('partial files\models\gebruiker.php');
 require('partial files\models\rubriek.php');
 require('partial files\models\vraag.php');
@@ -115,7 +113,7 @@ function generateRandomString($length = 10)
 function echoGeheimeVragen()
 {
     $vragen = getAllVragen();
-    echo "<select  name='geheimeVraag'>";
+    echo "<select class='form-control' name='geheimeVraag'>";
     foreach ($vragen as $vraag) {
         echo "<option value = " . $vraag->vraagnummer . " >" . $vraag->tekstvraag . "</option >";
 
@@ -126,7 +124,7 @@ function echoGeheimeVragen()
 function echoAllCountries()
 {
     $landen = getAllLanden();
-    echo "<select name='country'>";
+    echo "<select class='form-control' name='country'>";
     foreach ($landen as $land) {
         if ($land->landnaam == 'Nederland') {
             echo "<option selected='selected' value = " . $land->landnaam . " >" . $land->landnaam . "</option>";
@@ -142,7 +140,10 @@ function echoAllCountries()
 $rubriekArray = loadAllRubrieken();
 
 include_once('partial files\header.php');
-cantVisitLoggedIn();
+if (!empty($_SESSION['user'])) {
+    header('Location: index.php');
+}
+
 ?>
 
     <h1>Registreer</h1>
@@ -195,7 +196,7 @@ loadRubriekenSidebar(null);
                     <tr>
                         <td>Land</td>
                         <td>
-                            <?php echo returnAllCountries(); ?>
+                            <?php echoAllCountries(); ?>
                         </td>
                     </tr>
                     <tr>
@@ -217,7 +218,7 @@ loadRubriekenSidebar(null);
                     <tr>
                         <td>Geheime vraag</td>
                         <td>
-                            <?php echo returnGeheimeVragen(); ?>
+                            <?php echoGeheimeVragen(); ?>
                         </td>
                     </tr>
                     <tr>
