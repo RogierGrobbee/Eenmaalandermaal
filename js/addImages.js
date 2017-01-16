@@ -27,7 +27,7 @@ $('body').on('change', '#file', function(){
                 reader.readAsDataURL(this.files[0]);
                
 			    $(this).hide();
-                $("#abcd"+ abc).append($("<img/>", {id: 'img', src: 'images/x.png', alt: 'delete'}).click(function() {
+                $("#abcd"+ abc).append($("<img/>", {id: 'img', src: '../images/x.png', alt: 'delete'}).click(function() {
                 $(this).parent().parent().remove();
                 }));
             }
