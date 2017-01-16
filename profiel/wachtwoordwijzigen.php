@@ -45,7 +45,7 @@ if (isset($_POST['Login'])) {
         if (password_verify($_POST['oud_wachtwoord'], $hash)) {
 
             $passHash = hashPass($password);
-            updateWachtwoord($username, $hash);
+            updateWachtwoord($username, $passHash);
             $succesMessage = 'Wachtwoord is gewijzigd';
         } else {
             $errorMessage = 'Oude wachtwoord is niet correct';
