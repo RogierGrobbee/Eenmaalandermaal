@@ -1,28 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 16-12-2016
- * Time: 10:16
- */
-include_once('../partial files/models/voorwerp.php');
-include_once('../partial files/models/gebruiker.php');
-
+include_once('..\partial files\models\voorwerp.php');
+include_once('..\partial files\models\gebruiker.php');
 /**
  * Ends the auction and emails the highest bidder and verkoper.
  * @param $voorwerpId ID of the voorwerp.
  */
 function endAuction($voorwerpId) {
-    if (!veilingEnded($voorwerpId)) {
+    echo "a";
+
+    if (veilingEnded($voorwerpId)->isVoltooid == 0) {
         $verkoper = getVerkoperByVerkoopnummer($voorwerpId);
         $highestBidder = getTopBidderByVoorwerpnummer($voorwerpId);
 
-        //$isSendToVerkoper = mailAuctionEndedToVerkoper($verkoper, $voorwerpId);
-        //$isSendToHighestBidder = mailAuctionEndedToKoper($highestBidder, $voorwerpId);
+        mailAuctionEndedToVerkoper($verkoper, $voorwerpId);
+        mailAuctionEndedToKoper($highestBidder, $voorwerpId);
 
-        //if ($isSendToVerkoper && $isSendToHighestBidder) {
         endVeilingByVoorwerpnummer($voorwerpId, $highestBidder->gebruikersnaam);
-        //}
     }
 }
 
@@ -38,7 +31,7 @@ function mailAuctionEndedToVerkoper($gebruiker, $voorwerpnummer) {
         'Reply-To: webmaster@eenmaalandermaal.com' . "\r\n" .
         'X-Mailer: PHP/' . phpversion();
 
-    return mail($email,
+    mail($email,
         'EenmaalAndermaal: Veilingnummer: ' . $voorwerpnummer . ' afgelopen!',
     "De veiling met het veilingnummer: " . $voorwerpnummer . ' is afgelopen!', $headers);
 }
@@ -50,7 +43,7 @@ function mailAuctionEndedToKoper($gebruiker, $voorwerpnummer) {
         'MIME-Version: 1.0'. "\r\n" .
         'Content-Type: text/html; charset=ISO-8859-1' . "\r\n";
 
-    return mail($email,
+    mail($email,
         'EenmaalAndermaal: Veilingnummer: ' . $voorwerpnummer . ' afgelopen!',
         "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
             <html xmlns='http://www.w3.org/1999/xhtml'>

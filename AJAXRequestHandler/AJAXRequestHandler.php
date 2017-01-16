@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 19-12-2016
- * Time: 11:14
- */
-
 /*
  * This file is used to invoke the right function according to the AJAX.
  * The AJAX NEEDS to send action to the server. The data in the Javascript needs this as a bare minimum:

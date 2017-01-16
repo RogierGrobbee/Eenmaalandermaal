@@ -148,7 +148,7 @@ function getVerkoperByVerkoopnummer($voorwerpnummer) {
 
 function getTopBidderByVoorwerpnummer($voorwerpnummer) {
     global $db;
-    $statement = $db->prepare("SELECT email from gebruiker WHERE gebruikersnaam in(
+    $statement = $db->prepare("SELECT gebruikersnaam, email from gebruiker WHERE gebruikersnaam in(
                                     SELECT TOP 1 gebruikersnaam FROM bod where voorwerpnummer = :voorwerpnummer
                                     ORDER BY bodbedrag DESC
                                 )");

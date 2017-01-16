@@ -1,4 +1,9 @@
-a, /*etc*/
+h1{
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+a,
 a:visited,
 span {
     color: inherit;

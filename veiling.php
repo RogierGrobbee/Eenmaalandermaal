@@ -4,7 +4,6 @@ date_default_timezone_set("Europe/Amsterdam");
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
-    echo '<script type="text/javascript" src="js/veiling.js"></script>';
 }
 require('partial files\header.php');
 
