@@ -16,6 +16,18 @@ function deleteRubriek() {
     disableDeleteButton();
 }
 
+function isRubriekInSelect(rubriek) {
+    var selectElement = document.getElementById('rubriekenList');
+    var options = selectElement.options;
+
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].text === rubriek) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function disableDeleteButton() {
     var selectElement = document.getElementById('rubriekenList');
     if (getSelectValues(selectElement).length >= 1) {
@@ -42,22 +54,34 @@ $('#rubriekenList').change(function(e) {
     disableDeleteButton();
 });
 
+
+function rubriekClick(sender) {
+    var state = sender.getAttribute('data-state');
+
+    if (state == 0) {
+        loadSubrubrieken(sender);
+    }
+    else if (state == 1) {
+        addRubriekToList(sender);
+    }
+}
 function loadSubrubrieken(sender) {
     $.ajax({
         type: 'POST',
-        url: "AJAXRequestHandler/AJAXRequestHandler.php",
+        url: "/AJAXRequestHandler/AJAXRequestHandler.php",
         data: ({
             action: 'getSubrubrieken',
             rubrieknummer: sender.getAttribute('data-id')
         }),
         success: function(data) {
             var rubrieken = JSON.parse(data);
-            sender.onclick = null;
             if (rubrieken.length > 1) {
                 showSubrubrieken(rubrieken);
+                sender.setAttribute('data-state', -1);
             }
             else {
-                sender.onclick = addRubriekToList(sender);
+                sender.setAttribute('data-state', 1);
+                addRubriekToList(sender);
             }
         }
     });
@@ -69,7 +93,7 @@ function showSubrubrieken(rubrieken) {
     for (i = 0; i < rubrieken.length; i++) {
         var subRubriek = $("<a href='#" + rubrieken[i].rubrieknummer +
             "' data-id='" + rubrieken[i].rubrieknummer +
-                    "' data-toggle='collapse' onclick='loadSubrubrieken(this)'>" + rubrieken[i].rubrieknaam + "</a>");
+                    "' data-toggle='collapse' onclick='rubriekClick(this)' data-state='0'>" + rubrieken[i].rubrieknaam + "</a>");
         var container = $("#" + superRubriekId);
         container.append(subRubriek);
         container.append("<br>");
@@ -78,10 +102,13 @@ function showSubrubrieken(rubrieken) {
 }
 
 function addRubriekToList(sender) {
-    var selectElement = document.getElementById('rubriekenList');
-    var objOption = document.createElement("option");
-    objOption.text = sender.text;
-    objOption.value = sender.getAttribute('data-id');
+    if (!isRubriekInSelect(sender.text)) {
+        var selectElement = document.getElementById('rubriekenList');
+        var objOption = document.createElement("option");
+        objOption.text = sender.text;
+        objOption.value = sender.getAttribute('data-id');
 
-    selectElement.options.add(objOption);
+        selectElement.options.add(objOption);
+        $('#myModal').modal('hide');
+    }
 }

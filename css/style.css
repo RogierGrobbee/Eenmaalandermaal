@@ -694,3 +694,11 @@ ul.topnav li.icon {display: none;}
 .feedback-description a:active{
     color: #000;
 }
+
+.rubriek-button {
+    border-radius: 0px;
+}
+
+#rubrieken-list {
+    margin: 5px;
+}
