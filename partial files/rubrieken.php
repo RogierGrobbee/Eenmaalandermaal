@@ -1,5 +1,5 @@
 <?php
-include_once('databaseconnection.php');
+include_once('models/databaseString.php');
 $query = $db->query('SELECT * FROM rubriek ORDER BY volgnr, rubrieknaam');
 $rubriekArray = array();
 $huidigeRubriek = null;

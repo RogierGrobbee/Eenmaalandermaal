@@ -22,7 +22,7 @@ function userIsVerkoper($username)
 }
 
 if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
-    header('Location: ../index.php');
+    header('Location: ../login.php');
 }
 
 $rubriekArray = loadRubrieken();
@@ -80,6 +80,20 @@ function returnDuration()
         }
     }
     echo "</select>";
+}
+
+function showRootRubrieken() {
+    $rootRubriek = getRubriekenBySuperrubriek();
+
+    foreach ($rootRubriek as $row) {
+        $id = $row->rubrieknummer;
+
+        echo "<a href='#" . $id . "' data-id='" . $id . "' data-toggle='collapse' onclick='rubriekClick(this)' data-state='0'>"
+            . $row->rubrieknaam . "</a>";
+        echo "<br>";
+        echo "<div id='" . $id . "' class='collapse margin-left'>";
+        echo '</div>';
+    }
 }
 
 $j = 0; //Variable for indexing uploaded image
@@ -288,11 +302,11 @@ if (isset($_POST['toevoegen'])) {
                         </td>
                         <td>
                             <!-- Trigger the modal with a button -->
-                                <select selected='selected' name="rubriekenList" id="rubriekenList" multiple>
+                                <select selected='selected' name="rubriekenList" id="rubrieken-list" multiple>
 
                                 </select>
-                                <button type="button" class="btn" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
-                                <button type="button" class="btn" id="deleteRubriek" disabled>Verwijder rubriek</button>
+                                <button type="button" class="btn rubriek-button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
+                                <button type="button" class="btn rubriek-button" id="deleteRubriek" disabled>Verwijder rubriek</button>
                         </td>
                         <!-- Modal -->
                         <div class="modal fade" id="myModal" role="dialog">
@@ -305,22 +319,7 @@ if (isset($_POST['toevoegen'])) {
                                         <h4 class="modal-title">Rubrieken</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <?php
-                                        $rootRubriek = getRubriekenBySuperrubriek();
-
-                                        foreach ($rootRubriek as $row) {
-                                            $id = $row->rubrieknummer;
-                                            $idString = "#" . $row->rubrieknummer;
-
-                                            echo "<a href='#" . $id . "' data-id='" . $id . "' data-toggle='collapse' onclick='loadSubrubrieken(this)'>" . $row->rubrieknaam . "</a>";
-                                            echo "<br>";
-                                            echo "<div id='" . $id . "' class='collapse margin-left'>";
-                                            echo '</div>';
-                                        }
-                                        ?>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" data-dismiss="modal">Voeg toe</button>
+                                        <?php showRootRubrieken(); ?>
                                     </div>
                                 </div>
 

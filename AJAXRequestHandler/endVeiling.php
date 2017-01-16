@@ -5,24 +5,28 @@
  * Date: 16-12-2016
  * Time: 10:16
  */
-
-include_once('../partial files/databaseconnection.php');
+include_once('../partial files/models/voorwerp.php');
+include_once('../partial files/models/gebruiker.php');
 
 /**
  * Ends the auction and emails the highest bidder and verkoper.
  * @param $voorwerpId ID of the voorwerp.
  */
 function endAuction($voorwerpId) {
+    echo "wasda";
+
     if (!veilingEnded($voorwerpId)) {
-        $verkoper = getVerkoperByVoorwerpnummer($voorwerpId);
-        $highestBidder = getHighestBidderByVoorwerpnummer($voorwerpId);
+        echo "werkt wel";
+
+        $verkoper = getVerkoperByVerkoopnummer($voorwerpId);
+        $highestBidder = getTopBidderByVoorwerpnummer($voorwerpId);
 
         $isSendToVerkoper = mailAuctionEndedToVerkoper($verkoper, $voorwerpId);
         $isSendToHighestBidder = mailAuctionEndedToKoper($highestBidder, $voorwerpId);
 
-        if ($isSendToVerkoper && $isSendToHighestBidder) {
-            endVeilingByVoorwerpnummer($voorwerpId);
-        }
+        //if ($isSendToVerkoper && $isSendToHighestBidder) {
+        endVeilingByVoorwerpnummer($voorwerpId, $highestBidder->gebruikersnaam);
+        //}
     }
 }
 
@@ -60,7 +64,7 @@ function mailAuctionEndedToKoper($gebruiker, $voorwerpnummer) {
                 </head>
                 <body style='font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; font-size: 18px'>
                     De veiling met het veilingnummer: " . $voorwerpnummer . " is afgelopen<br>
-                    <a href=\"http://iproject2.icasites.nl/veiling.php?voorwerpnummer=". $voorwerpnummer ."\">Klik hier om feedback te geven aan verkoper.</a>
+                    <a href=\"http://iproject2.icasites.nl/feedback.php?voorwerpnummer=". $voorwerpnummer ."\">Klik hier om feedback te geven aan verkoper.</a>
                 </body>
             </html>", $headers);
 }
