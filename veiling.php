@@ -296,7 +296,7 @@ function suggestedVoorwerpen($rubrieknummer)
                         <div class='bodprijs'>€".$prijs."</div><br></div>";?>
             </div>
 
-            <p><?php echo "Dit voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
+            <p><?php echo "Dit voorwerp is aangeboden door <a href='profiel/overzicht.php?user=$voorwerp->verkoper'>$voorwerp->verkoper</a> ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
             <h4>Beschrijving</h4>
             <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>

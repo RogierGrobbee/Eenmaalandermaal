@@ -13,16 +13,20 @@ include_once('../partial files/models/gebruiker.php');
  * @param $voorwerpId ID of the voorwerp.
  */
 function endAuction($voorwerpId) {
+    echo "wasda";
+
     if (!veilingEnded($voorwerpId)) {
+        echo "werkt wel";
+
         $verkoper = getVerkoperByVerkoopnummer($voorwerpId);
         $highestBidder = getTopBidderByVoorwerpnummer($voorwerpId);
 
         $isSendToVerkoper = mailAuctionEndedToVerkoper($verkoper, $voorwerpId);
         $isSendToHighestBidder = mailAuctionEndedToKoper($highestBidder, $voorwerpId);
 
-        if ($isSendToVerkoper && $isSendToHighestBidder) {
-            endVeilingByVoorwerpnummer($voorwerpId, $highestBidder->gebruikersnaam);
-        }
+        //if ($isSendToVerkoper && $isSendToHighestBidder) {
+        endVeilingByVoorwerpnummer($voorwerpId, $highestBidder->gebruikersnaam);
+        //}
     }
 }
 

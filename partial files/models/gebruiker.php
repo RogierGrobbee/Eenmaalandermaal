@@ -111,7 +111,7 @@ function getTopBidderByVoorwerpnummer($voorwerpnummer) {
     global $db;
     $statement = $db->prepare("SELECT email from gebruiker WHERE gebruikersnaam in(
                                     SELECT TOP 1 gebruikersnaam FROM bod where voorwerpnummer = :voorwerpnummer
-                                    ORDER BY gebruikersnaam ASC
+                                    ORDER BY bodbedrag DESC
                                 )");
     $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
     $row = $statement->fetch(PDO::FETCH_OBJ);
