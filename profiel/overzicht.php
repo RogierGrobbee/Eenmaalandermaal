@@ -25,7 +25,7 @@ if (isset($_SESSION["user"])) {
     }
 }
 
-if ($username == ""){
+if ($username == "") {
     header('Location: ../login.php');
 }
 
@@ -34,9 +34,9 @@ $user = getUserByUsername($username);
 if ($user == null) {
     echo '<h1>Profiel van ' . $username . '</h1>
     <div class="col-sm-12">';
-    if(isset($_SESSION['message'])){
+    if (isset($_SESSION['message'])) {
         echo "<div class='alert alert-success'>
-                <strong>". $_SESSION['message'] ."</strong>
+                <strong>" . $_SESSION['message'] . "</strong>
               </div>";
         unset($_SESSION['message']);
     }
@@ -73,9 +73,9 @@ if ($loggedIn) {
 
 <div class="col-sm-12">
     <?php
-    if(isset($_SESSION['message'])){
+    if (isset($_SESSION['message'])) {
         echo "<div class='alert alert-success'>
-                <strong>". $_SESSION['message'] ."</strong>
+                <strong>" . $_SESSION['message'] . "</strong>
               </div>";
         unset($_SESSION['message']);
     }
@@ -91,10 +91,30 @@ if ($loggedIn) {
     </div>
     <h3>Beoordeling</h3>
     <div class="well">
-        Hier komt wat stuff over de rating
+        <div style="float: left">
+            <img width="50px" src="../images/positief.png">
+            <div style="text-align: center">
+                <label>43</label>
+            </div>
+        </div>
+        <div style="float: left">
+            <img width="50px" src="../images/neutraal.png">
+            <div style="text-align: center">
+                <label>178</label>
+            </div>
+        </div>
+        <div style="float: left">
+            <img width="50px" src="../images/negatief.png">
+            <div style="text-align: center">
+                <label>5</label>
+            </div>
+        </div>
+<br><br><br><br>
+        <h4>Recente beoordelingen</h4>
+
     </div>
     <h3>Veilingen</h3>
-        <?php echoVeilingen($username) ?>
+    <?php echoVeilingen($username) ?>
 
 
     <?php
@@ -180,7 +200,7 @@ if ($loggedIn) {
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs . '</p>
                         <div class="veiling-info">
-                            '.date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)).' 
+                            ' . date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)) . ' 
                         </div>
                     </a>
                 </div>';
@@ -191,7 +211,7 @@ if ($loggedIn) {
         $itemsPerPage = 10;
         $currentPage = 1;
         if (isset($_GET['page'])) {
-            if (is_numeric($_GET['page'])){
+            if (is_numeric($_GET['page'])) {
                 $currentPage = $_GET['page'];
             }
         }
@@ -202,22 +222,22 @@ if ($loggedIn) {
         foreach ($voorwerpList as $voorwerp) {
 
             $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
-            if($biedingen == null) {
+            if ($biedingen == null) {
                 $prijs = $voorwerp->startprijs;
-            }
-            else {
+            } else {
                 $prijs = $biedingen[0]->bodbedrag;
             }
 
             $foto = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
-            echoVoorwerp($voorwerp,$prijs,$foto);
+            echoVoorwerp($voorwerp, $prijs, $foto);
 
         }
 
         echoPagination($nVeilingen, $itemsPerPage, $currentPage, $username);
     }
 
-    function echoPagination($totalItems, $itemsPerPage, $currentPageNumber) {
+    function echoPagination($totalItems, $itemsPerPage, $currentPageNumber)
+    {
         global $username;
         $nPages = ceil($totalItems / $itemsPerPage);
         if ($currentPageNumber > 1) {
@@ -262,7 +282,7 @@ if ($loggedIn) {
         if (($pageNumber) == $currentPageNumber) {
             echo '<b style="margin: 5px">' . $pageNumber . '</b>';
         } else {
-            echo '<a style="margin: 5px" href=./overzicht.php?user='.$username.'&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+            echo '<a style="margin: 5px" href=./overzicht.php?user=' . $username . '&page=' . $pageNumber . '>' . $pageNumber . '</a>';
         }
     }
 

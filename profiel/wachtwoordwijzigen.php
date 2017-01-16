@@ -42,7 +42,7 @@ if (isset($_POST['Login'])) {
     } else if (getValidation($username)) {
         $hash = getPassword($username);
 
-        if (password_verify($password, $hash)) {
+        if (password_verify($_POST['oud_wachtwoord'], $hash)) {
 
             $passHash = hashPass($password);
             updateWachtwoord($username, $hash);
