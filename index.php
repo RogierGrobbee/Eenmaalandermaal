@@ -24,7 +24,7 @@ function echoHomepageVoorwerp($voorwerp, $prijs, $image){
 
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-            <img src="pics/'. $image .'"alt="veiling">
+            <img src="pics/'. $image .'"alt="veiling" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">
             <h4>'.$voorwerp->titel.'</h4>
             <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
             <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
@@ -74,7 +74,7 @@ loadRubriekenSidebar(null);
 
     $image = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
     echo '<a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-    <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img">';
+    <img src="pics/'.$image.'" alt="homepage featured" class="homepage-featured-img" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">';
 
     echo '<div class="col-lg-4 col-md-5 col-sm-7 homepage-featured-detail">
         <h2>'. $voorwerp->titel .'</h2>

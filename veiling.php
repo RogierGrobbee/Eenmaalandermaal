@@ -79,10 +79,10 @@ require('partial files\sidebar.php');
 loadRubriekenSidebar($navigatieArray[count($navigatieArray) - 1]);
 
 $list = loadBestandenByVoorwerpnummer($voorwerp->voorwerpnummer);
-if(empty($list)){
-    $image = "NoImageAvailable.jpg";
-}
 $image = $list[0]->filenaam;
+if(empty($list)){
+    $image = "NoImageAvailable.png";
+}
 
 if($biedingen == null){
     $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
@@ -204,7 +204,7 @@ function echoSuggestedVoorwerp($voorwerp, $prijs, $image){
 
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-            <img src="pics/'. $image .'"alt="veiling">
+            <img src="pics/'. $image .'" alt="veiling" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">
             <h4>'.$voorwerp->titel.'</h4>
             <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
             <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
@@ -242,7 +242,7 @@ function suggestedVoorwerpen($rubrieknummer)
                 echo $error;
             }
         ?>
-        <?php echo '<img class="veiling-picture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
+        <?php echo '<img class="veiling-picture" src="pics/'.$image.'" alt="geveilde voorwerp" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">' ?>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
@@ -325,7 +325,7 @@ function suggestedVoorwerpen($rubrieknummer)
 for($i = 1; $i < 4; $i++) {
     if(!empty($list[$i])){
         echo '<div class="xs-12 sm-12 md-12 col-lg-6">
-            <img class="other-veiling-picture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
+            <img class="other-veiling-picture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp" onError="this.onerror=null;this.src=\'itemImages/'. $list[$i]->filenaam . '\'">
         </div>';
     }
     else{

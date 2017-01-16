@@ -10,7 +10,7 @@ function loadBestandByVoorwerpnummer($voorwerpnummer)
     $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
     $bestand = $query->fetch(PDO::FETCH_OBJ);
 
-    return $bestand == null ? "NoImageAvailable.jpg" : $bestand->filenaam;
+    return $bestand == null ? "NoImageAvailable.png" : $bestand->filenaam;
 }
 
 function loadBestandenByVoorwerpnummer($voorwerpnummer)
