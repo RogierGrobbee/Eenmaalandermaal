@@ -144,8 +144,9 @@ function veilingEnded($voorwerpnummer) {
 }
 
 //Replaces: endVeilingByVoorwerpnummer($voorwerpnummer)
-function endVeilingByVoorwerpnummer($voorwerpnummer) {
+function endVeilingByVoorwerpnummer($voorwerpnummer, $koper) {
     global $db;
-    $query = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 WHERE voorwerpnummer = :voorwerpnummer");
-    return $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $query = $db->prepare("UPDATE voorwerp SET isVoltooid = 1 AND koper = :koper  WHERE voorwerpnummer = :voorwerpnummer");
+    return $query->execute(array(':koper' => $koper,
+        ':voorwerpnummer' => $voorwerpnummer));
 }
