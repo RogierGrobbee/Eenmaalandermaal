@@ -7,7 +7,8 @@ function loadProfileSidebar($username, $selectedTab)
     $verkoper = getVerkoperByUsername($username);
 
     echo '<div class="list-group col-sm-3">';
-    echo "<ul class='topnav' id='myTopnav''>";
+
+    echo "<ul style='list-style: none; margin-left:-40px; display:block' id='myTopnav''>";
     echo "<li><strong><div class='list-group-item rubriekList' href='#'>Menu</div></strong></li>";
     if ($selectedTab == 1) {
         echo '<li><a class="list-group-item active" href=overzicht.php>Overzicht</a></li>';
