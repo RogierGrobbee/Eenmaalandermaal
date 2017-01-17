@@ -23,7 +23,7 @@ if ($biedingen == null) {
     <?php loadProfileSidebar($username, 3) ?>
     <div class="col-sm-12">
         <h3>Bod historie</h3>
-        Geen biedningen
+        Geen biedingen
     </div>
 
     <?php
