@@ -4,7 +4,6 @@ date_default_timezone_set("Europe/Amsterdam");
 function loadJSScripts() {
     echo '<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>';
     echo '<script type="text/javascript" src="js/countdown.js"></script>';
-    echo '<script type="text/javascript" src="js/veiling.js"></script>';
 }
 require('partial files\header.php');
 
@@ -79,18 +78,18 @@ require('partial files\sidebar.php');
 loadRubriekenSidebar($navigatieArray[count($navigatieArray) - 1]);
 
 $list = loadBestandenByVoorwerpnummer($voorwerp->voorwerpnummer);
-if(empty($list)){
-    $image = "NoImageAvailable.jpg";
-}
 $image = $list[0]->filenaam;
+if(empty($list)){
+    $image = "NoImageAvailable.png";
+}
 
 if($biedingen == null){
     $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
-    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
+    //$minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
 }
 else {
     $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
-    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
+    //$minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
 }
 
 function insertNewBod(){
@@ -168,7 +167,9 @@ function showBieden(){
     if($_SESSION['user'] == $voorwerp->verkoper){
         echo "<div class='highest-bod'>Biedingen</div>";
     }
-    else if(isset($_SESSION['user']) && date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('d/m/y H:i:s')){
+    else if(isset($_SESSION['user']) && date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('Y-m-d H:i:s')){
+        echo date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling));
+        echo date("Y-m-d H:i:s");
         if($biedingen[0]->gebruikersnaam != $_SESSION['user']) {
             echo '<div class="bieden">
                     <form action="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" method="post">
@@ -180,12 +181,11 @@ function showBieden(){
                     </form>
                 </div>';
         }
-
         else{
             echo "<div class='highest-bod'>U heeft het hoogste bod</div>";
         }
     }
-    else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
+    else if(date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('Y-m-d H:i:s')){
 
     }
     else{
@@ -204,7 +204,7 @@ function echoSuggestedVoorwerp($voorwerp, $prijs, $image){
 
     echo '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 homepage-veiling">
             <a href="veiling.php?voorwerpnummer='.$voorwerp->voorwerpnummer.'">
-            <img src="pics/'. $image .'"alt="veiling">
+            <img src="pics/'. $image .'" alt="veiling" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">
             <h4>'.$voorwerp->titel.'</h4>
             <div class="homepage-veiling-prijstijd">€'. $prijs .'<br>
             <span data-tijd="'. $voorwerp->looptijdeindeveiling .'" class="tijd"></span></div>
@@ -242,7 +242,7 @@ function suggestedVoorwerpen($rubrieknummer)
                 echo $error;
             }
         ?>
-        <?php echo '<img class="veiling-picture" src="pics/'.$image.'" alt="geveilde voorwerp">' ?>
+        <?php echo '<img class="veiling-picture" src="pics/'.$image.'" alt="geveilde voorwerp" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">' ?>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
             <div class="boddetail">
                 <div class="veilingtijd">
@@ -296,7 +296,7 @@ function suggestedVoorwerpen($rubrieknummer)
                         <div class='bodprijs'>€".$prijs."</div><br></div>";?>
             </div>
 
-            <p><?php echo "Dit voorwerp is aangeboden door $voorwerp->verkoper ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
+            <p><?php echo "Dit voorwerp is aangeboden door <a style='color: #4d79ff' href='profiel/overzicht.php?user=$voorwerp->verkoper'>$voorwerp->verkoper</a> ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
             <h4>Beschrijving</h4>
             <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>
@@ -325,7 +325,7 @@ function suggestedVoorwerpen($rubrieknummer)
 for($i = 1; $i < 4; $i++) {
     if(!empty($list[$i])){
         echo '<div class="xs-12 sm-12 md-12 col-lg-6">
-            <img class="other-veiling-picture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp">
+            <img class="other-veiling-picture" src="./pics/' . $list[$i]->filenaam . '" alt="plaatje voorwerp" onError="this.onerror=null;this.src=\'itemImages/'. $list[$i]->filenaam . '\'">
         </div>';
     }
     else{

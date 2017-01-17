@@ -127,7 +127,7 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 
     echo '<div class="veilingitem">
                     <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="pics/' . $image . '" alt="veilingsfoto">
+                        <img src="pics/' . $image . '" alt="veilingsfoto" onError="this.onerror=null;this.src=\'itemImages/'. $image . '\'">
                         <h4>' . $voorwerp->titel . '</h4>
                         <p>' . $beschrijving . '</p>
                         <p class="prijs">€' . $prijs. '</p>

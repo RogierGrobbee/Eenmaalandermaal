@@ -1,13 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jamiel
- * Date: 21-12-2016
- * Time: 10:50
- */
-
-namespace refactor;
-
 require_once ('databaseString.php');
 
 // Replaces: part of the calculateExpire($code) function

@@ -5,6 +5,7 @@ include_once('..\partial files\models\voorwerp.php');
 include_once('..\partial files\models\gebruikerstelefoon.php');
 include_once('..\partial files\sidebar.php');
 include_once('..\partial files\models\bestand.php');
+include_once('..\partial files\models\feedback.php');
 include_once('..\partial files\models\bod.php');
 include_once('..\partial files\models\miscellaneous.php');
 
@@ -25,18 +26,18 @@ if (isset($_SESSION["user"])) {
     }
 }
 
-if ($username == ""){
+if ($username == "") {
     header('Location: ../login.php');
 }
 
-
 $user = getUserByUsername($username);
+$ratingList = getRatingsByUser($username);
 if ($user == null) {
     echo '<h1>Profiel van ' . $username . '</h1>
     <div class="col-sm-12">';
-    if(isset($_SESSION['message'])){
+    if (isset($_SESSION['message'])) {
         echo "<div class='alert alert-success'>
-                <strong>". $_SESSION['message'] ."</strong>
+                <strong>" . $_SESSION['message'] . "</strong>
               </div>";
         unset($_SESSION['message']);
     }
@@ -73,9 +74,9 @@ if ($loggedIn) {
 
 <div class="col-sm-12">
     <?php
-    if(isset($_SESSION['message'])){
+    if (isset($_SESSION['message'])) {
         echo "<div class='alert alert-success'>
-                <strong>". $_SESSION['message'] ."</strong>
+                <strong>" . $_SESSION['message'] . "</strong>
               </div>";
         unset($_SESSION['message']);
     }
@@ -91,10 +92,35 @@ if ($loggedIn) {
     </div>
     <h3>Beoordeling</h3>
     <div class="well">
-        Hier komt wat stuff over de rating
+        <div style="display: inline-block">
+            <div style="float: left; margin-right: 10px;">
+                <img width="50px" src="../images/positief.png">
+                <div style="text-align: center">
+                    <label><?php echo echoRating("positief") ?></label>
+                </div>
+            </div>
+            <div style="float: left; margin-right: 10px;">
+                <img width="50px" src="../images/neutraal.png">
+                <div style="text-align: center">
+                    <label><?php echo echoRating("neutraal") ?></label>
+                </div>
+            </div>
+            <div style="float: left; margin-right: 10px;">
+                <img width="50px" src="../images/negatief.png">
+                <div style="text-align: center">
+                    <label><?php echo echoRating("negatief") ?></label>
+                </div>
+            </div>
+        </div>
+
+        <h4>3 meest recente beoordelingen</h4>
+        <br>
+        <div style="display: inline-block">
+            <?php echoTop3Ratings() ?>
+        </div>
     </div>
     <h3>Veilingen</h3>
-        <?php echoVeilingen($username) ?>
+    <?php echoVeilingen($username) ?>
 
 
     <?php
@@ -104,9 +130,46 @@ if ($loggedIn) {
 
     include_once('..\partial files\footer.php');
 
+    function echoTop3Ratings()
+    {
+        global $username;
+
+        $ratingList = getTop3Ratings($username);
+        foreach ($ratingList as $rating) {
+            echo '<blockquote style="background-color: white; float: left; margin-right: 10px;">';
+            echo '<div>';
+            if ($rating->feedbacksoort == 'positief') {
+                echo '<img width="20px" src="../images/positief.png"> &nbsp;';
+            } else if ($rating->feedbacksoort == 'neutraal') {
+                echo '<img width="20px" src="../images/neutraal.png"> &nbsp;';
+            } else if ($rating->feedbacksoort == 'negatief') {
+                echo '<img width="20px" src="../images/negatief.png"> &nbsp;';
+            }
+
+            echo strip_tags($rating->commentaar);
+            echo '</div>';
+            echo '<p style="color: gray; font-size: medium; float: left">'.$rating->gebruikersnaam.'</p>';
+            echo '<p style="color: gray; font-size: medium; float: right">'.date("d-m-Y H:m", strtotime($rating->dagtijdstip)).'</p>';
+            echo '</blockquote > ';
+        }
+
+    }
+
+    function echoRating($ratingSoort)
+    {
+        global $ratingList;
+
+        foreach ($ratingList as $rating) {
+            if ($rating->feedbacksoort == $ratingSoort) {
+                return $rating->aantal;
+            }
+        }
+        return 0;
+    }
+
     function echoPhoneNumbers()
     {
-        echo '<br>';
+        echo '<br > ';
         global $username;
 
         $phoneNumbersObjects = getPhoneNumbers($username);
@@ -122,10 +185,10 @@ if ($loggedIn) {
         $phoneNumbers = array();
         echo 'Telefoonnummers:';
         if (count($phoneNumbersObjects) < 2 && !isset($_POST['telefoon'])) {
-            echo '<div class="row"><p style="float: left; margin-left: 20px">' . $phoneNumbersObjects[0]->telefoon . '</p></div>';
+            echo '<div class="row"><p class="telephone">' . $phoneNumbersObjects[0]->telefoon . '</p></div>';
         } else {
             foreach ($phoneNumbersObjects as $k => $number) {
-                echo '<div class="row"><p style="float: left; margin-left: 20px">' . $number->telefoon . '</p> <form method="post" style="float:left" ><button style="float:left" type="submit" name="remove" value="' . $number->telefoon . '">X</button></form></div>';
+                echo '<div class="row"><p class="telephone">' . $number->telefoon . '</p> <form method="post" style="float:left" ><button style="float:left; border-radius: 50px; " type="submit" name="remove" value="' . $number->telefoon . '"><b>X</b></button></form></div>';
                 array_push($phoneNumbers, $number->telefoon);
             }
             if (isset($_POST['telefoon'])) {
@@ -136,7 +199,7 @@ if ($loggedIn) {
                         $hoogsteVolgnr++;
 
                         insertPhoneNumber($hoogsteVolgnr, $username, $_POST['telefoon']);
-                        echo '<div class="row"><p style="float: left; margin-left: 20px">' . $_POST['telefoon'] . '</p><form method="post" style="float: left"><button style="float: left" type="submit" name="remove" value="' . $_POST['telefoon'] . '">X</button> </form></div>';
+                        echo '<div class="row"><p class="telephone">' . $_POST['telefoon'] . '</p><form method="post" style="float: left"><button style="float: left; border-radius: 50px;" type="submit" name="remove" value="' . $_POST['telefoon'] . '"><b>X</b></button> </form></div>';
                     }
                 }
             }
@@ -173,17 +236,17 @@ if ($loggedIn) {
             $prijs = "0" . $prijs;
         }
 
-        echo '  <div class="veilingitem">
-                    <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="../pics/' . $image . '" alt="veilingsfoto">
-                        <h4>' . $voorwerp->titel . '</h4>
-                        <p>' . $beschrijving . '</p>
-                        <p class="prijs">€' . $prijs . '</p>
-                        <div class="veiling-info">
-                            '.date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)).' 
-                        </div>
-                    </a>
-                </div>';
+        echo '  <div class="veilingitem" >
+                    <a href = "/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" >
+                        <img src = "../pics/' . $image . '" alt = "veilingsfoto" onError="this.onerror=null;this.src=\'../itemImages/'. $image . '\'">
+                        <h4 > ' . $voorwerp->titel . '</h4 >
+                        <p > ' . $beschrijving . '</p >
+                        <p class="prijs" >€' . $prijs . ' </p >
+                        <div class="veiling-info" >
+' . date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)) . ' 
+                        </div >
+                    </a >
+                </div > ';
     }
 
     function echoVeilingen($username)
@@ -191,7 +254,7 @@ if ($loggedIn) {
         $itemsPerPage = 10;
         $currentPage = 1;
         if (isset($_GET['page'])) {
-            if (is_numeric($_GET['page'])){
+            if (is_numeric($_GET['page'])) {
                 $currentPage = $_GET['page'];
             }
         }
@@ -202,47 +265,53 @@ if ($loggedIn) {
         foreach ($voorwerpList as $voorwerp) {
 
             $biedingen = getBiedingenByVoorwerpnummer($voorwerp->voorwerpnummer);
-            if($biedingen == null) {
+            if ($biedingen == null) {
                 $prijs = $voorwerp->startprijs;
-            }
-            else {
+            } else {
                 $prijs = $biedingen[0]->bodbedrag;
             }
 
             $foto = loadBestandByVoorwerpnummer($voorwerp->voorwerpnummer);
-            echoVoorwerp($voorwerp,$prijs,$foto);
-
+            echoVoorwerp($voorwerp, $prijs, $foto);
         }
 
-        echoPagination($nVeilingen, $itemsPerPage, $currentPage, $username);
+        if (count($voorwerpList) < 1){
+
+            echo '<div class="well">Deze gebruiker heeft geen veilingen</div>';
+        }
+
+        if ($nVeilingen < 2) {
+            echoPagination($nVeilingen, $itemsPerPage, $currentPage, $username);
+        }
     }
 
-    function echoPagination($totalItems, $itemsPerPage, $currentPageNumber) {
+    function echoPagination($totalItems, $itemsPerPage, $currentPageNumber)
+    {
         global $username;
         $nPages = ceil($totalItems / $itemsPerPage);
         if ($currentPageNumber > 1) {
-            echo("<button onclick='location.href='./overzicht.php?user='.$username.'&page=" . ($currentPageNumber - 1) . "''>Previous</button>");
+            echo("<button onclick='location . href = './overzicht.php?user=' . $username . '&page=" . ($currentPageNumber - 1) . "''>Previous</button>");
         }
         if ($nPages > 9) {
             if ($currentPageNumber < 6) {
                 for ($i = 1; $i < 10; $i++) {
                     echoPageNumber($i, $currentPageNumber);
                 }
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
                 echoPageNumber($nPages, $currentPageNumber);
             } else if ($currentPageNumber > ($nPages - 5)) {
                 echoPageNumber(1, $currentPageNumber);
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
                 for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
                     echoPageNumber($i, $currentPageNumber);
                 }
             } else {
                 echoPageNumber(1, $currentPageNumber);
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
                 for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
                     echoPageNumber($i, $currentPageNumber);
                 }
-                echo '&nbsp; &nbsp;...&nbsp; &nbsp;';
+                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
                 echoPageNumber($nPages, $currentPageNumber);
             }
 
@@ -252,7 +321,7 @@ if ($loggedIn) {
             }
         }
         if ($currentPageNumber < $nPages) {
-            echo("<button onclick=\"location.href='./overzicht.php?user='.$username.'&page=" . ($currentPageNumber + 1) . "'\">Next</button>");
+            echo("<button onclick=\"location.href=' ./overzicht . php ? user = '.$username.' & page = " . ($currentPageNumber + 1) . "'\">Next</button>");
         }
     }
 
@@ -260,9 +329,9 @@ if ($loggedIn) {
     {
         global $username;
         if (($pageNumber) == $currentPageNumber) {
-            echo '<b style="margin: 5px">' . $pageNumber . '</b>';
+            echo ' < b style = "margin: 5px" > ' . $pageNumber . '</b > ';
         } else {
-            echo '<a style="margin: 5px" href=./overzicht.php?user='.$username.'&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+            echo '<a style = "margin: 5px" href =./overzicht . php ? user = ' . $username . ' & page = ' . $pageNumber . ' > ' . $pageNumber . '</a > ';
         }
     }
 

@@ -1,4 +1,8 @@
-<?php include_once('partial files\databaseconnection.php');
+<?php
+require('partial files\models\validation.php');
+require('partial files\models\rubriek.php');
+require('partial files\models\gebruiker.php');
+
 
 $errorString = "";
 
@@ -12,12 +16,29 @@ if (isset($_POST['valideer'])) {
         header('Location: login.php');
 
     } else {
-        $errorString =  "<div class='alert alert-danger'>Validatiecode niet correct of is verlopen.</div>";
+        $errorString =  "<div class='alert alert-danger error'>Validatiecode niet correct of is verlopen.</div>";
 
     }
 }
 
-$rubriekArray = loadRubrieken();
+function calculateExpire($code)
+{
+    $datumtijd = getDatumTijdByValicationCode($code);
+
+    $expire = date("Y-m-d H:i:s", strtotime('+0 hour'));
+    $timestamp1 = strtotime($expire);
+    $timestamp2 = strtotime($datumtijd->datumTijd);
+    $hour = abs($timestamp2 - $timestamp1)/(60*60);
+    if ($hour > 4 ) {
+        return false;
+    } else {
+        return true;
+    }
+
+
+}
+
+$rubriekArray = loadAllRubrieken();
 include_once('partial files\header.php');
 ?>
     <h1>Registreer</h1>
@@ -27,6 +48,8 @@ loadRubriekenSidebar(null);
 ?>
     <row>
         <div class="col-sm-12">
+            <?php echo $errorString; ?>
+
             <h3>E-mailadres bevestigen</h3>
             <p> Uw e-mailadres moet bevestigd worden voor dat u kan inloggen.<br>
                 Vul hier de naar uw e-mailadres gestuurde validatiecode in:
@@ -35,10 +58,6 @@ loadRubriekenSidebar(null);
                 Validatiecode: <input type="text" name="validatiecode">
                 <input type="submit" name="valideer" value="Valideer">
             </form>
-            <strong>
-                <br>
-                <?php echo $errorString; ?>
-            </strong>
         </div>
     </row>
 

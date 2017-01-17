@@ -1,6 +1,7 @@
 <?php
 include_once('..\partial files\header.php');
 include_once('..\partial files\models\gebruiker.php');
+include_once('..\partial files\models\bod.php');
 include_once('..\partial files\models\voorwerp.php');
 include_once('..\partial files\models\bestand.php');
 include_once('..\partial files\models\miscellaneous.php');
@@ -46,16 +47,22 @@ function echoBiedingen($username)
 {
     $biedingen = getBiedingenByUsername($username);
     foreach ($biedingen as $k => $bod) {
+        $voorwerpBiedingen = getBiedingenByVoorwerpnummer($bod->voorwerpnummer);
+        $overboden = false;
+
+        if($voorwerpBiedingen[0]->bodbedrag != $bod->bodbedrag){
+            $overboden = true;
+        }
         $prijs = $bod->bodbedrag;
         if ($prijs < 1) {
             $prijs = "0" . $prijs;
         }
         $foto = loadBestandByVoorwerpnummer($bod->voorwerpnummer);
-        echoVoorwerp($bod, $prijs, $foto);
+        echoVoorwerp($bod, $prijs, $foto, $overboden);
     }
 }
 
-function echoVoorwerp($voorwerp, $prijs, $image)
+function echoVoorwerp($voorwerp, $prijs, $image, $overboden)
 {
     $beschrijving = $voorwerp->beschrijving;
 
@@ -71,12 +78,17 @@ function echoVoorwerp($voorwerp, $prijs, $image)
 
     echo '  <div class="veilingitem">
                     <a href="/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '">
-                        <img src="../pics/' . $image . '" alt="veilingsfoto">
+                        <img src="../pics/' . $image . '" alt="veilingsfoto" onError="this.onerror=null;this.src=\'../itemImages/'. $image . '\'">
                         <h4>' . $voorwerp->titel . '</h4>
-                        <p>' . $beschrijving . '</p>
-                        <p class="prijs">€' . $prijs . '</p>
-                        <div class="veiling-info">
-                            '.date("d-m-Y H:m", strtotime($voorwerp->bodtijdstip)).'
+                        <p>' . $beschrijving . '</p>';
+    if($overboden) {
+        echo '<p class="prijs" style="color:red;">€' . $prijs . ' - U bent overboden</p>';
+    }
+    else{
+        echo '<p class="prijs">€' . $prijs . '</p>';
+    }
+    echo '<div class="veiling-info">
+                            '.date("d-m-Y H:i", strtotime($voorwerp->bodtijdstip)).'
                         </div>
                     </a>
                 </div>';
