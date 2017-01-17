@@ -148,8 +148,8 @@ if ($loggedIn) {
 
             echo strip_tags($rating->commentaar);
             echo '</div>';
-            echo '<p style="color: gray; font-size: medium; float: left">'.$rating->gebruikersnaam.'</p>';
-            echo '<p style="color: gray; font-size: medium; float: right">'.date("d-m-Y H:m", strtotime($rating->dagtijdstip)).'</p>';
+            echo '<p style="color: gray; font-size: medium; float: left">' . $rating->gebruikersnaam . '</p>';
+            echo '<p style="color: gray; font-size: medium; float: right">' . date("d-m-Y H:m", strtotime($rating->dagtijdstip)) . '</p>';
             echo '</blockquote > ';
         }
 
@@ -238,7 +238,7 @@ if ($loggedIn) {
 
         echo '  <div class="veilingitem" >
                     <a href = "/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" >
-                        <img src = "../pics/' . $image . '" alt = "veilingsfoto" onError="this.onerror=null;this.src=\'../itemImages/'. $image . '\'">
+                        <img src = "../pics/' . $image . '" alt = "veilingsfoto" onError="this.onerror=null;this.src=\'../itemImages/' . $image . '\'">
                         <h4 > ' . $voorwerp->titel . '</h4 >
                         <p > ' . $beschrijving . '</p >
                         <p class="prijs" >€' . $prijs . ' </p >
@@ -275,7 +275,7 @@ if ($loggedIn) {
             echoVoorwerp($voorwerp, $prijs, $foto);
         }
 
-        if (count($voorwerpList) < 1){
+        if (count($voorwerpList) < 1) {
 
             echo '<div class="well">Deze gebruiker heeft geen veilingen</div>';
         }
@@ -289,39 +289,41 @@ if ($loggedIn) {
     {
         global $username;
         $nPages = ceil($totalItems / $itemsPerPage);
-        if ($currentPageNumber > 1) {
-            echo("<button onclick='location . href = './overzicht.php?user=' . $username . '&page=" . ($currentPageNumber - 1) . "''>Previous</button>");
-        }
-        if ($nPages > 9) {
-            if ($currentPageNumber < 6) {
-                for ($i = 1; $i < 10; $i++) {
-                    echoPageNumber($i, $currentPageNumber);
-                }
-                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
-                echoPageNumber($nPages, $currentPageNumber);
-            } else if ($currentPageNumber > ($nPages - 5)) {
-                echoPageNumber(1, $currentPageNumber);
-                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
-                for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
-                    echoPageNumber($i, $currentPageNumber);
-                }
-            } else {
-                echoPageNumber(1, $currentPageNumber);
-                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
-                for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
-                    echoPageNumber($i, $currentPageNumber);
-                }
-                echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
-                echoPageNumber($nPages, $currentPageNumber);
+        if ($nPages > 1) {
+            if ($currentPageNumber > 1) {
+                echo("<button onclick='location . href = './overzicht.php?user=' . $username . '&page=" . ($currentPageNumber - 1) . "''>Previous</button>");
             }
+            if ($nPages > 9) {
+                if ($currentPageNumber < 6) {
+                    for ($i = 1; $i < 10; $i++) {
+                        echoPageNumber($i, $currentPageNumber);
+                    }
+                    echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
+                    echoPageNumber($nPages, $currentPageNumber);
+                } else if ($currentPageNumber > ($nPages - 5)) {
+                    echoPageNumber(1, $currentPageNumber);
+                    echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
+                    for ($i = ($nPages - 8); $i < $nPages + 1; $i++) {
+                        echoPageNumber($i, $currentPageNumber);
+                    }
+                } else {
+                    echoPageNumber(1, $currentPageNumber);
+                    echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
+                    for ($i = ($currentPageNumber - 4); $i < $currentPageNumber + 5; $i++) {
+                        echoPageNumber($i, $currentPageNumber);
+                    }
+                    echo ' & nbsp; &nbsp;...&nbsp; &nbsp;';
+                    echoPageNumber($nPages, $currentPageNumber);
+                }
 
-        } else {
-            for ($i = 1; $i < $nPages + 1; $i++) {
-                echoPageNumber($i, $currentPageNumber);
+            } else {
+                for ($i = 1; $i < $nPages + 1; $i++) {
+                    echoPageNumber($i, $currentPageNumber);
+                }
             }
-        }
-        if ($currentPageNumber < $nPages) {
-            echo("<button onclick=\"location.href=' ./overzicht . php ? user = '.$username.' & page = " . ($currentPageNumber + 1) . "'\">Next</button>");
+            if ($currentPageNumber < $nPages) {
+                echo("<button onclick=\"location.href=' ./overzicht . php ? user = '.$username.' & page = " . ($currentPageNumber + 1) . "'\">Next</button>");
+            }
         }
     }
 
