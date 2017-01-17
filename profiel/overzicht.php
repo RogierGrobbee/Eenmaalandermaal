@@ -240,7 +240,7 @@ if ($loggedIn) {
                         <p > ' . $beschrijving . '</p >
                         <p class="prijs" >€' . $prijs . ' </p >
                         <div class="veiling-info" >
-' . date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)) . ' 
+' . date("d-m-Y H:i", strtotime($voorwerp->looptijdeindeveiling)) . ' 
                         </div >
                     </a >
                 </div > ';
