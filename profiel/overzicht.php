@@ -86,9 +86,6 @@ if ($loggedIn) {
     <div class="well">
         Username: <?php echo $user->gebruikersnaam; ?>
         <br>Naam: <?php echo $user->voornaam . " " . $user->achternaam ?>
-        <br>Email: <?php echo $user->email ?>
-        <br> <?php //echoPhoneNumbers($user)
-        ?>
     </div>
     <h3>Beoordeling</h3>
     <div class="well">
