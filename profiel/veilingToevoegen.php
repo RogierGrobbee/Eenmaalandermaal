@@ -2,6 +2,7 @@
 include_once('..\partial files\header.php');
 include_once('..\partial files\databaseconnection.php');
 include_once('..\partial files\models\rubriek.php');
+include_once('..\partial files\models\voorwerpinrubriek.php');
 
 function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
@@ -97,7 +98,7 @@ function showRootRubrieken() {
 }
 
 $j = 0; //Variable for indexing uploaded image
-$target_path = "itemImages/"; //Declaring Path for uploaded images
+$target_path = "../itemImages/"; //Declaring Path for uploaded images
 $noError = false;
 $itemUpload = false;
 $errorMessage = "";
@@ -157,6 +158,10 @@ if (isset($_POST['toevoegen'])) {
                 }
             }
         }
+        if (!isset($_POST['rubriekenList'])) {
+            $noError = false;
+            $errorMessage = "De veiling moet minimaal in 1 rubriek zitten.";
+        }
         if ($noError) {
             global $db;
             $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
@@ -177,6 +182,13 @@ if (isset($_POST['toevoegen'])) {
             $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $successMessage = "Veiling is toegevoegd";
+
+            if (empty($errorMessage) &&  isset($_POST['rubriekenList'])) {
+                for ($deIndex = 0; $deIndex < count($_POST['rubriekenList']); $deIndex++) {
+                    $voorwerpnummer = getVoorwerpnummer($titel, $_SESSION['user']);
+                    insertVoorwerpInRubriek($voorwerpnummer, $_POST['rubriekenList'][$deIndex]);
+                }
+            }
 
             if (empty($errorMessage) && $itemUpload) {
                 for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
@@ -216,7 +228,7 @@ if (isset($_POST['toevoegen'])) {
     <div class="col-sm-12">
         <h3>Veiling Toevoegen</h3>
     </div>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" id="add-veiling-form" name="add-veiling-form">
         <row>
             <div class="form-group">
                 <table class="registration-table">
@@ -302,11 +314,11 @@ if (isset($_POST['toevoegen'])) {
                         </td>
                         <td>
                             <!-- Trigger the modal with a button -->
-                                <select selected='selected' name="rubriekenList" id="rubrieken-list" multiple>
+                                <select selected='selected' name="rubriekenList[]" id="rubrieken-list" multiple="multiple" form="add-veiling-form">
 
                                 </select>
                                 <button type="button" class="btn rubriek-button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
-                                <button type="button" class="btn rubriek-button" id="deleteRubriek" disabled>Verwijder rubriek</button>
+                                <button type="button" class="btn rubriek-button" id="delete-rubriek" disabled>Verwijder rubriek</button>
                         </td>
                         <!-- Modal -->
                         <div class="modal fade" id="myModal" role="dialog">

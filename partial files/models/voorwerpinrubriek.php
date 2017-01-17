@@ -10,3 +10,15 @@ function getVoorwerpRubriekByVoorwerpnummer($voorwerpnummer)
 
     return ($query->fetch(PDO::FETCH_OBJ))->rubriekoplaagsteniveau;
 }
+
+function insertVoorwerpInRubriek($voorwerpnummer,$rubrieknummer) {
+    global $db;
+
+    $query = $db->prepare("INSERT INTO voorwerpinrubriek (voorwerpnummer,rubriekoplaagsteniveau ) VALUES(:voorwerpnummer, :rubrieknummer)");
+    $query->bindValue(':voorwerpnummer', $voorwerpnummer, PDO::PARAM_STR);
+    $query->bindValue(':rubrieknummer', $rubrieknummer, PDO::PARAM_STR);
+    return $query->execute(array(
+        ':voorwerpnummer' => $voorwerpnummer,
+        ':rubrieknummer' => $rubrieknummer
+    ));
+}

@@ -2,13 +2,20 @@
  * Created by jamiel on 13-1-2017.
  */
 
-document.getElementById('deleteRubriek').addEventListener("click", deleteRubriek);
+jQuery('[name="add-veiling-form"]').on("submit",selectAllRubriekenInSelect);
 
-function deleteRubriek() {
-    var selectElement = document.getElementById('rubriekenList');
+function selectAllRubriekenInSelect()
+{
+    jQuery('[name="rubriekenList[]"] option').prop('selected', true);
+}
+
+document.getElementById('delete-rubriek').addEventListener("click", deleteRubrieken);
+
+function deleteRubrieken() {
+    var selectElement = document.getElementById('rubrieken-list');
     var options = selectElement.options;
 
-    for (var i = 0; i < options.length; i++) {
+    for (var i = options.length - 1; i >= 0; i--) {
         if (options[i].selected) {
             selectElement.options[i] = null;
         }
@@ -17,7 +24,7 @@ function deleteRubriek() {
 }
 
 function isRubriekInSelect(rubriek) {
-    var selectElement = document.getElementById('rubriekenList');
+    var selectElement = document.getElementById('rubrieken-list');
     var options = selectElement.options;
 
     for (var i = 0; i < options.length; i++) {
@@ -29,12 +36,12 @@ function isRubriekInSelect(rubriek) {
 }
 
 function disableDeleteButton() {
-    var selectElement = document.getElementById('rubriekenList');
+    var selectElement = document.getElementById('rubrieken-list');
     if (getSelectValues(selectElement).length >= 1) {
-        document.getElementById('deleteRubriek').disabled = false;
+        document.getElementById('delete-rubriek').disabled = false;
     }
     else {
-        document.getElementById('deleteRubriek').disabled = true;
+        document.getElementById('delete-rubriek').disabled = true;
     }
 }
 
@@ -50,7 +57,7 @@ function getSelectValues(select) {
     return result;
 }
 
-$('#rubriekenList').change(function(e) {
+$('#rubrieken-list').change(function(e) {
     disableDeleteButton();
 });
 
@@ -103,7 +110,7 @@ function showSubrubrieken(rubrieken) {
 
 function addRubriekToList(sender) {
     if (!isRubriekInSelect(sender.text)) {
-        var selectElement = document.getElementById('rubriekenList');
+        var selectElement = document.getElementById('rubrieken-list');
         var objOption = document.createElement("option");
         objOption.text = sender.text;
         objOption.value = sender.getAttribute('data-id');
@@ -111,4 +118,13 @@ function addRubriekToList(sender) {
         selectElement.options.add(objOption);
         $('#myModal').modal('hide');
     }
+}
+
+function addRubriekToSelectList(sender) {
+    var form = document.getElementById('add-veiling-form');
+    var input = document.createElement("input");
+
+    input.type = "hidden";
+    input.value = "";
+    form.appendChild()
 }
