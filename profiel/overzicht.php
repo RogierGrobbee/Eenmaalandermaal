@@ -146,7 +146,7 @@ if ($loggedIn) {
             echo strip_tags($rating->commentaar);
             echo '</div>';
             echo '<p style="color: gray; font-size: medium; float: left">' . $rating->gebruikersnaam . '</p>';
-            echo '<p style="color: gray; font-size: medium; float: right">' . date("d-m-Y H:m", strtotime($rating->dagtijdstip)) . '</p>';
+            echo '<p style="color: gray; font-size: medium; float: right">' . date("d-m-Y H:i", strtotime($rating->dagtijdstip)) . '</p>';
             echo '</blockquote > ';
         }
 
@@ -240,7 +240,7 @@ if ($loggedIn) {
                         <p > ' . $beschrijving . '</p >
                         <p class="prijs" >€' . $prijs . ' </p >
                         <div class="veiling-info" >
-' . date("d-m-Y H:m", strtotime($voorwerp->looptijdeindeveiling)) . ' 
+' . date("d-m-Y H:i", strtotime($voorwerp->looptijdeindeveiling)) . ' 
                         </div >
                     </a >
                 </div > ';
