@@ -168,8 +168,6 @@ function showBieden(){
         echo "<div class='highest-bod'>Biedingen</div>";
     }
     else if(isset($_SESSION['user']) && date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('Y-m-d H:i:s')){
-        echo date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling));
-        echo date("Y-m-d H:i:s");
         if($biedingen[0]->gebruikersnaam != $_SESSION['user']) {
             echo '<div class="bieden">
                     <form action="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" method="post">
