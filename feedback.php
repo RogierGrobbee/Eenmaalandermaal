@@ -12,9 +12,13 @@ else{
 }
 
 session_start();
+if(isset($_SESSION['return'])){
+    unset($_SESSION['return']);
+}
+
 if(!isset($_SESSION['user'])){
     $_SESSION['message'] = "Log eerst in voordat u feedback achterlaat.";
-    $_SESSION['return'] = "feedback.php";
+    $_SESSION['return'] = $_GET['voorwerpnummer'];
     header('Location: login.php');
 }
 else{

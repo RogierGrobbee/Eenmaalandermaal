@@ -85,11 +85,11 @@ if(empty($list)){
 
 if($biedingen == null){
     $minimalePrijs = $voorwerp->startprijs + calculateIncrease($voorwerp->startprijs);
-    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
+    //$minimalePrijs = number_format((float)$minimalePrijs, 2, '.', ',');
 }
 else {
     $minimalePrijs = $biedingen[0]->bodbedrag + calculateIncrease($biedingen[0]->bodbedrag);
-    $minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
+    //$minimalePrijs = number_format((float)$minimalePrijs, 2, '.', '');
 }
 
 function insertNewBod(){
@@ -167,7 +167,9 @@ function showBieden(){
     if($_SESSION['user'] == $voorwerp->verkoper){
         echo "<div class='highest-bod'>Biedingen</div>";
     }
-    else if(isset($_SESSION['user']) && date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('d/m/y H:i:s')){
+    else if(isset($_SESSION['user']) && date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling)) > date('Y-m-d H:i:s')){
+        echo date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling));
+        echo date("Y-m-d H:i:s");
         if($biedingen[0]->gebruikersnaam != $_SESSION['user']) {
             echo '<div class="bieden">
                     <form action="veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" method="post">
@@ -179,12 +181,11 @@ function showBieden(){
                     </form>
                 </div>';
         }
-
         else{
             echo "<div class='highest-bod'>U heeft het hoogste bod</div>";
         }
     }
-    else if(date("d/m/y H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('d/m/y H:i:s')){
+    else if(date("Y-m-d H:i:s", strtotime($voorwerp->looptijdeindeveiling)) < date('Y-m-d H:i:s')){
 
     }
     else{
@@ -295,7 +296,7 @@ function suggestedVoorwerpen($rubrieknummer)
                         <div class='bodprijs'>€".$prijs."</div><br></div>";?>
             </div>
 
-            <p><?php echo "Dit voorwerp is aangeboden door <a href='profiel/overzicht.php?user=$voorwerp->verkoper'>$voorwerp->verkoper</a> ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
+            <p><?php echo "Dit voorwerp is aangeboden door <a style='color: #4d79ff' href='profiel/overzicht.php?user=$voorwerp->verkoper'>$voorwerp->verkoper</a> ($voorwerp->plaatsnaam, $voorwerp->land)"?></p>
 
             <h4>Beschrijving</h4>
             <p><?php echo strip_html_tags($voorwerp->beschrijving) ?></p>

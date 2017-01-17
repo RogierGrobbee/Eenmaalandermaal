@@ -185,10 +185,10 @@ if ($loggedIn) {
         $phoneNumbers = array();
         echo 'Telefoonnummers:';
         if (count($phoneNumbersObjects) < 2 && !isset($_POST['telefoon'])) {
-            echo ' < div class="row" ><p style = "float: left; margin-left: 20px" > ' . $phoneNumbersObjects[0]->telefoon . '</p ></div > ';
+            echo '<div class="row"><p class="telephone">' . $phoneNumbersObjects[0]->telefoon . '</p></div>';
         } else {
             foreach ($phoneNumbersObjects as $k => $number) {
-                echo '<div class="row" ><p style = "float: left; margin-left: 20px" > ' . $number->telefoon . '</p > <form method = "post" style = "float:left" ><button style = "float:left" type = "submit" name = "remove" value = "' . $number->telefoon . '" > X</button ></form ></div > ';
+                echo '<div class="row"><p class="telephone">' . $number->telefoon . '</p> <form method="post" style="float:left" ><button style="float:left; border-radius: 50px; " type="submit" name="remove" value="' . $number->telefoon . '"><b>X</b></button></form></div>';
                 array_push($phoneNumbers, $number->telefoon);
             }
             if (isset($_POST['telefoon'])) {
@@ -199,7 +199,7 @@ if ($loggedIn) {
                         $hoogsteVolgnr++;
 
                         insertPhoneNumber($hoogsteVolgnr, $username, $_POST['telefoon']);
-                        echo ' < div class="row" ><p style = "float: left; margin-left: 20px" > ' . $_POST['telefoon'] . ' </p ><form method = "post" style = "float: left" ><button style = "float: left" type = "submit" name = "remove" value = "' . $_POST['telefoon'] . '" > X</button > </form ></div > ';
+                        echo '<div class="row"><p class="telephone">' . $_POST['telefoon'] . '</p><form method="post" style="float: left"><button style="float: left; border-radius: 50px;" type="submit" name="remove" value="' . $_POST['telefoon'] . '"><b>X</b></button> </form></div>';
                     }
                 }
             }
@@ -238,7 +238,7 @@ if ($loggedIn) {
 
         echo '  <div class="veilingitem" >
                     <a href = "/veiling.php?voorwerpnummer=' . $voorwerp->voorwerpnummer . '" >
-                        <img src = "../pics/' . $image . '" alt = "veilingsfoto" >
+                        <img src = "../pics/' . $image . '" alt = "veilingsfoto" onError="this.onerror=null;this.src=\'../itemImages/'. $image . '\'">
                         <h4 > ' . $voorwerp->titel . '</h4 >
                         <p > ' . $beschrijving . '</p >
                         <p class="prijs" >€' . $prijs . ' </p >

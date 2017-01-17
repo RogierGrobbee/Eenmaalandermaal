@@ -30,12 +30,13 @@ if (isset($_POST['Login'])) {
 
             if (password_verify($password, $hash)) {
                 session_start();
-                $_SESSION['user'] = strtolower($username);
+                $_SESSION['user'] = getUserByUsername($username)->gebruikersnaam;
                 if(isset($_SESSION["return"])){
-                    unset($_SESSION['return']);
-                    header('Location: feedback.php');
+                    header('Location: feedback.php?voorwerpnummer='.$_SESSION['return']);
                 }
-                header('Location: index.php');
+                else {
+                    header('Location: index.php');
+                }
             } else {
                 $errorMessage = 'Combinatie gebruikersnaam en wachtwoord zijn onjuist.';
             }

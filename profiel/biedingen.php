@@ -88,7 +88,7 @@ function echoVoorwerp($voorwerp, $prijs, $image, $overboden)
         echo '<p class="prijs">€' . $prijs . '</p>';
     }
     echo '<div class="veiling-info">
-                            '.date("d-m-Y H:m", strtotime($voorwerp->bodtijdstip)).'
+                            '.date("d-m-Y H:i", strtotime($voorwerp->bodtijdstip)).'
                         </div>
                     </a>
                 </div>';

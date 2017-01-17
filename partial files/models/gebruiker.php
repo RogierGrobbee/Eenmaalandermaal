@@ -45,7 +45,7 @@ function addPhoneNumber($volgnr, $username, $phonenumber) {
 //registerGebruiker instead of insertGebruiker because it does more than just inserting a gebruiker.
 function registerGebruiker($gebruikersnaam, $voornaam, $achternaam, $adres, $postcode,
                          $plaatsnaam, $land, $geboortedatum, $email, $wachtwoord,
-                         $vraag, $validatieCode, $antwoord){
+                         $vraag, $telefoon, $validatieCode, $antwoord){
     global $db;
     $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
                 (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
@@ -79,6 +79,14 @@ function registerGebruiker($gebruikersnaam, $voornaam, $achternaam, $adres, $pos
     $stmt->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
     $stmt->bindValue(':antwoord', $antwoord, PDO::PARAM_STR);
     $stmt->execute();
+
+    $sql4 = "INSERT INTO gebruikerstelefoon (volgnr, gebruikersnaam, telefoon) VALUES
+                (:nummer, :gebruikersnaam, :tel)";
+    $stmt = $db->prepare($sql4);
+    $stmt->bindValue(':nummer', 0, PDO::PARAM_STR);
+    $stmt->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
+    $stmt->bindValue(':tel', $telefoon, PDO::PARAM_STR);
+    $stmt->execute();
 }
 
 // Replaces: doesUsernameAlreadyExist($username)
@@ -88,7 +96,12 @@ function doesUsernameExist($username) {
     $query = $db->prepare("SELECT gebruikersnaam FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam");
     $query->execute(array(':gebruikersnaam' => $username));
 
-    return !is_null($query->fetch(PDO::FETCH_OBJ)) ? true : false;
+    if($query->fetch(PDO::FETCH_OBJ)->gebruikersnaam == "username"){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 // Replaces: getPassword($username)

@@ -109,7 +109,7 @@ loadRubriekenSidebar(null);
     <h1>Nieuwe veilingen</h1>
     <div class="row">
     <?php
-        queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingASC'");
+        queryHomepageVoorwerpen("EXECUTE sp_gethomepageVoorwerpen @nSkippedRecords=0, @itemPerPage=3, @filter='looptijdbeginveilingDESC'");
     ?>
     </div>
 

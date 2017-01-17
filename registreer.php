@@ -73,7 +73,7 @@ if (isset($_POST['registreer'])) {
             $antwoord = hashPass($_POST['antwoord']);
 
             registerGebruiker($_POST['gebruikersnaam'], $_POST['voornaam'], $_POST['achternaam'], $_POST['adres'], $_POST['postcode'],
-                $_POST['plaats'], $_POST['country'], $_POST['geboortedatum'], $_POST['email'], $password, $_POST['geheimeVraag'],
+                $_POST['plaats'], $_POST['country'], $_POST['geboortedatum'], $_POST['email'], $password, $_POST['geheimeVraag'],$_POST['telefoon1'],
                 $validatieCode, $antwoord);
 
             header('Location: validatie.php');
