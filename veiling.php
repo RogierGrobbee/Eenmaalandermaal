@@ -251,10 +251,10 @@ function suggestedVoorwerpen($rubrieknummer)
                 <?php
                 showBieden();
 
-                if($_SESSION['user'] == $voorwerp->verkoper) {
-                    echo "<div class='highest-bod'>Er zijn nog geen biedingen!</div>";
-                }
-                else if($biedingen == null){
+//                if($_SESSION['user'] == $voorwerp->verkoper) {
+//                    echo "<div class='highest-bod'>Er zijn nog geen biedingen!</div>";
+//                }
+                if($biedingen == null){
                     echo "<div class='highest-bod'>Er zijn nog geen biedingen! Bied snel!</div>";
                 }
                 else {

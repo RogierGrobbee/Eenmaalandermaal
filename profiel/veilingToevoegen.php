@@ -75,9 +75,13 @@ function returnDuration()
     echo "<select class='form-control' name='Duration'>";
     foreach ($query as $row) {
         if ($row['looptijd'] == 7) {
-            echo "<option selected='selected' value = " . $row['looptijd'] . " >" . $row['looptijd'] . "</option>";
-        } else {
-            echo "<option value = " . $row['looptijd'] . " >" . $row['looptijd'] . "</option>";
+            echo "<option selected='selected' value = " . $row['looptijd'] . " >" . $row['looptijd'] . " dagen </option>";
+        }
+        else if($row['looptijd'] == 1){
+            echo "<option value = " . $row['looptijd'] . " >" . $row['looptijd'] . " dag </option>";
+        }
+        else {
+            echo "<option value = " . $row['looptijd'] . " >" . $row['looptijd'] . " dagen </option>";
         }
     }
     echo "</select>";
@@ -233,13 +237,13 @@ if (isset($_POST['toevoegen'])) {
             <div class="form-group">
                 <table class="registration-table">
                     <tr>
-                        <td>Titel</td>
+                        <td>Titel *</td>
                         <td><input class="form-control" maxlength="100" value="<?php if (isset($_POST['titel'])) {
                                 echo $_POST['titel'];
                             } ?>" type="text" name="titel"></td>
                     </tr>
                     <tr>
-                        <td>Beschrijving</td>
+                        <td>Beschrijving *</td>
                         <td>
                         <textarea class="form-control" maxlength="8000" rows="5"
                                   name="beschrijving"><?php if (isset($_POST['beschrijving'])) {
@@ -248,7 +252,7 @@ if (isset($_POST['toevoegen'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td>Startprijs</td>
+                        <td>Startprijs in euro's *</td>
                         <td><input class="form-control" value="<?php if (isset($_POST['startprijs'])) {
                                 echo $_POST['startprijs'];
                             } ?>" type="text" name="startprijs"></td>
@@ -267,7 +271,7 @@ if (isset($_POST['toevoegen'])) {
                                    } ?>" type="text" name="betalingsinstructie"></td>
                     </tr>
                     <tr>
-                        <td>Plaatsnaam</td>
+                        <td>Plaatsnaam *</td>
                         <td><input class="form-control" maxlength="30" value="<?php if (isset($_POST['plaatsnaam'])) {
                                 echo $_POST['plaatsnaam'];
                             } ?>" type="text" name="plaatsnaam"></td>
@@ -285,7 +289,7 @@ if (isset($_POST['toevoegen'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td>Verzendkosten</td>
+                        <td>Verzendkosten in euro's *</td>
                         <td><input class="form-control" maxlength="5" value="<?php if (isset($_POST['verzendkosten'])) {
                                 echo $_POST['verzendkosten'];
                             } ?>" type="text" name="verzendkosten"></td>
@@ -310,7 +314,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>
-                            Rubriek Toevoegen
+                            Rubriek Toevoegen *
                         </td>
                         <td>
                             <!-- Trigger the modal with a button -->
@@ -320,6 +324,11 @@ if (isset($_POST['toevoegen'])) {
                                 <button type="button" class="btn rubriek-button" data-toggle="modal" data-target="#myModal">Voeg rubriek toe</button>
                                 <button type="button" class="btn rubriek-button" id="delete-rubriek" disabled>Verwijder rubriek</button>
                         </td>
+                    <tr>
+                        <td>
+                            velden met een <b>*</b> zijn verplicht
+                        </td>
+                    </tr>
                         <!-- Modal -->
                         <div class="modal fade" id="myModal" role="dialog">
                             <div class="modal-dialog">

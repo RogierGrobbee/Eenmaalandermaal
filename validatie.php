@@ -34,8 +34,6 @@ function calculateExpire($code)
     } else {
         return true;
     }
-
-
 }
 
 $rubriekArray = loadAllRubrieken();
