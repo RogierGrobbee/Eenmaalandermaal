@@ -154,7 +154,7 @@ if (isset($_POST['toevoegen'])) {
                 $j = $j + 1;//increment the number of uploaded images according to the files in array
                 if ($_FILES["file"]["size"][$i] > 1000000) {
                     $errorMessage = "Het bestand is te groot.";
-                } else if (!in_array($file_extension, $validextensions)) {
+                } else if ($_FILES['file']['name'][$i] != "" && !in_array($file_extension, $validextensions)) {
                     $errorMessage = "Het bestand is niet het juiste type.";
                 } else {
                     $noError = true;
@@ -199,14 +199,16 @@ if (isset($_POST['toevoegen'])) {
                     $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
                     $file_extension = end($ext); //store extensions in the variable
                     $target_path_file = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
-                    move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
+                    if ($_FILES['file']['tmp_name'][$i] != "") {
+                        move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
 
-                    $sql = "INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
-                    $stmt = $db->prepare($sql);
-                    $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
-                    $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
-                    $stmt->execute();
-                    $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        $sql = "INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
+                        $stmt = $db->prepare($sql);
+                        $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
+                        $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
+                        $stmt->execute();
+                        $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    }
                 }
             }
 
