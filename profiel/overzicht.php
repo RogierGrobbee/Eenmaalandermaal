@@ -145,7 +145,7 @@ if ($loggedIn) {
 
             echo strip_tags($rating->commentaar);
             echo '</div>';
-            echo '<p style="color: gray; font-size: medium; float: left">' . $rating->gebruikersnaam . '</p>';
+            echo '<p style="color: gray; font-size: medium; float: left; margin-right: 10px">' . $rating->gebruikersnaam . '</p>';
             echo '<p style="color: gray; font-size: medium; float: right">' . date("d-m-Y H:i", strtotime($rating->dagtijdstip)) . '</p>';
             echo '</blockquote > ';
         }
