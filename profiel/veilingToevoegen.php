@@ -1,8 +1,11 @@
 <?php
 include_once('..\partial files\header.php');
-include_once('..\partial files\databaseconnection.php');
 include_once('..\partial files\models\rubriek.php');
+include_once('..\partial files\models\voorwerp.php');
 include_once('..\partial files\models\voorwerpinrubriek.php');
+include_once('..\partial files\models\betalingswijze.php');
+include_once('..\partial files\models\gebruiker.php');
+include_once('..\partial files\models\land.php');
 
 function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
@@ -11,65 +14,37 @@ function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/addImages.js"></script>';
 }
 
-
-function userIsVerkoper($username)
-{
-    global $db;
-    $statement = $db->prepare('SELECT verkoper FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam');
-    $statement->bindParam(':gebruikersnaam', $username);
-    $statement->execute();
-    $row = $statement->fetch();
-    return $row['verkoper'];
-}
-
-if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
+if (empty($_SESSION['user']) || IsGebruikerVerkoper($_SESSION['user']) == 0) {
     header('Location: ../login.php');
 }
 
-$rubriekArray = loadRubrieken();
-function getVoorwerpnummer($title, $username)
-{
-    global $db;
-    $statement = $db->prepare("select top 1 voorwerpnummer from voorwerp where titel=:title and verkoper=:username order by voorwerpnummer desc");
-    $statement->bindParam(':username', $username);
-    $statement->bindParam(':title', $title);
-    $statement->execute();
-    $row = $statement->fetch();
-    return $row['voorwerpnummer'];
-}
+$rubriekArray = loadAllRubrieken();
 
-function returnPaymentMethode()
-{
-    global $db;
-    $query = $db->query("SELECT betalingswijze FROM betalingswijze");
+function returnPaymentMethode() {
     echo "<select class='form-control' name='payment'>";
-    foreach ($query as $row) {
-        if ($row['betalingswijze'] == 'Contant') {
-            echo "<option selected='selected' value = " . $row['betalingswijze'] . " >" . $row['betalingswijze'] . "</option>";
+    foreach (getAllbetalingswijzen() as $row) {
+        if ($row->betalingswijze == 'Contant') {
+            echo "<option selected='selected' value = " . $row->betalingswijze . " >" . $row->betalingswijze . "</option>";
         } else {
-            echo "<option value = " . $row['betalingswijze'] . " >" . $row['betalingswijze'] . "</option>";
+            echo "<option value = " . $row->betalingswijze . " >" . $row->betalingswijze . "</option>";
         }
     }
     echo "</select>";
 }
 
-function returnAllCountries2()
-{
-    global $db;
-    $query = $db->query("SELECT landnaam FROM land");
+function showAllCountries() {
     echo "<select class='form-control' name='country'>";
-    foreach ($query as $row) {
-        if ($row['landnaam'] == 'Nederland') {
-            echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+    foreach (getAllLanden() as $row) {
+        if ($row->landnaam == 'Nederland') {
+            echo "<option selected='selected' value = " . $row->landnaam . " >" . $row->landnaam . "</option>";
         } else {
-            echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+            echo "<option value = " . $row->landnaam . " >" . $row->landnaam . "</option>";
         }
     }
     echo "</select>";
 }
 
-function returnDuration()
-{
+function returnDuration() {
     global $db;
     $query = $db->query("SELECT looptijd FROM looptijd");
     echo "<select class='form-control' name='Duration'>";
@@ -183,7 +158,6 @@ if (isset($_POST['toevoegen'])) {
             $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
             $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $successMessage = "Veiling is toegevoegd";
 
@@ -214,17 +188,6 @@ if (isset($_POST['toevoegen'])) {
 
             $_SESSION['message'] = 'Uw veiling is succesvol toegevoegd.';
             header('Location: veilingen.php');
-
-//            if (empty($errorMessage) && !empty($rubrieknummers)) {
-//                for ($i = 0; $i < count($rubrieknummers); $i++) {
-//                    $sql = " INSERT INTO voorwerpinrubriek (voorwerpnummer,rubriekoplaagsteniveau ) VALUES(:voorwerpnummer, :rubrieknummer)";
-//                    $stmt = $db->prepare($sql);
-//                    $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
-//                    $stmt->bindValue(':rubrieknummer', $rubrieknummers[$i], PDO::PARAM_STR);
-//                    $stmt->execute();
-//                    $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//                }
-//            }
         }
     }
 }
@@ -290,7 +253,7 @@ if (isset($_POST['toevoegen'])) {
                     <tr>
                         <td>Land</td>
                         <td>
-                            <?php echo returnAllCountries2(); ?>
+                            <?php echo showAllCountries(); ?>
                         </td>
                     </tr>
                     <tr>

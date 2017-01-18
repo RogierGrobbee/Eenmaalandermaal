@@ -93,8 +93,7 @@ function getVoorwerpenInRubriek($idArray, $nSkippedRecords, $itemsPerPage, $filt
 }
 
 //Replaces: featuredVoorwerp()
-function getFeaturedVoorwerp()
-{
+function getFeaturedVoorwerp() {
     global $db;
 
     $query = $db->query("SELECT TOP 1 v.voorwerpnummer,v.titel,v.beschrijving,v.startprijs,
@@ -149,4 +148,13 @@ function endVeilingByVoorwerpnummer($voorwerpnummer, $koper) {
     $query = $db->prepare("UPDATE voorwerp SET isVoltooid = 1, koper = :koper WHERE voorwerpnummer = :voorwerpnummer");
     return $query->execute(array(':koper' => $koper,
         ':voorwerpnummer' => $voorwerpnummer));
+}
+
+function getVoorwerpnummer($title, $username) {
+    global $db;
+    $query = $db->prepare("select top 1 voorwerpnummer from voorwerp where titel=:title and verkoper=:username order by voorwerpnummer desc");
+    $query->bindParam(':username', $username);
+    $query->bindParam(':title', $title);
+    $query->execute();
+    return ($query->fetch(PDO::FETCH_OBJ))->voorwerpnummer;
 }
