@@ -115,8 +115,8 @@ if (isset($_POST['toevoegen'])) {
         $errorMessage = "Niet alles ingevuld.";
     } else if (!is_numeric($_POST['startprijs'])) {
         $errorMessage = "Startprijs mag alleen cijfers bevatten.";
-    } else if (empty($_POST['startprijs'])) {
-        $errorMessage = "Startprijs moet hoger zijn dan €0";
+    } else if (empty($_POST['startprijs']) || $_POST['startprijs'] < 1) {
+        $errorMessage = "Startprijs moet hoger zijn dan €1";
     } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
     } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten']) || $_POST['verzendkosten'] > 9.99) {
@@ -255,7 +255,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Startprijs in euro's *</td>
-                        <td><input class="form-control" value="<?php if (isset($_POST['startprijs'])) {
+                        <td><input class="form-control" min="1" placeholder="Minimaal €1,-"<?php if (isset($_POST['startprijs'])) {
                                 echo $_POST['startprijs'];
                             } ?>" type="text" name="startprijs"></td>
                     </tr>
@@ -267,7 +267,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Betalingsinstructie</td>
-                        <td><input class="form-control" maxlength="255"
+                        <td><input class="form-control" maxlength="255" placeholder="bijv. Verzending na betaling ontvangst""
                                    value="<?php if (isset($_POST['betalingsinstructie'])) {
                                        echo $_POST['betalingsinstructie'];
                                    } ?>" type="text" name="betalingsinstructie"></td>
@@ -292,13 +292,13 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Verzendkosten in euro's</td>
-                        <td><input class="form-control" maxlength="4" max="9.99" value="<?php if (isset($_POST['verzendkosten'])) {
+                        <td><input class="form-control" maxlength="4" max="9.99" placeholder="Maximaal €9,99"<?php if (isset($_POST['verzendkosten'])) {
                                 echo $_POST['verzendkosten'];
                             } ?>" type="text" name="verzendkosten"></td>
                     </tr>
                     <tr>
                         <td>Verzendinstructies</td>
-                        <td><input class="form-control" maxlength="255"
+                        <td><input class="form-control" maxlength="255" placeholder="bijv. Alleen ophalen"
                                    value="<?php if (isset($_POST['verzendinstructies'])) {
                                        echo $_POST['verzendinstructies'];
                                    } ?>" type="text" name="verzendinstructies"></td>
