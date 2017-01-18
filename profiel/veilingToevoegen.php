@@ -7,6 +7,7 @@ include_once('..\partial files\models\betalingswijze.php');
 include_once('..\partial files\models\gebruiker.php');
 include_once('..\partial files\models\land.php');
 include_once('..\partial files\models\looptijd.php');
+include_once('..\partial files\models\bestand.php');
 
 function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
@@ -163,12 +164,7 @@ if (isset($_POST['toevoegen'])) {
                         if ($_FILES['file']['tmp_name'][$i] != "") {
                             move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
 
-                            $sql = "INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
-                            $stmt = $db->prepare($sql);
-                            $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
-                            $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
-                            $stmt->execute();
-                            $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                            echo (insertBestand($target_path_file, getVoorwerpnummer($titel, $_SESSION['user']))) ? 'true' : 'false';
                         } // END: if ($_FILES['file']['tmp_name'][$i] != "")
                     } // END: for
                 } // END: if (empty($errorMessage) && $itemUpload)
