@@ -13,7 +13,7 @@ function echoSearchPageNumber($pageNumber, $currentPageNumber, $search)
     if (($pageNumber) == $currentPageNumber) {
         echo '<b style="margin: 5px">' . $pageNumber . '</b>';
     } else {
-        echo '<a style="margin: 5px" href=./zoeken.php?search=' . $search . '&page=' . $pageNumber . '>' . $pageNumber . '</a>';
+        echo '<a style="margin: 5px" href="zoeken.php?search=' . trim($search) . '&page=' . $pageNumber . '">' . $pageNumber . '</a>';
     }
 }
 

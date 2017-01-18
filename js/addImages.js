@@ -28,7 +28,8 @@ $('body').on('change', '#file', function(){
                
 			    $(this).hide();
                 $("#abcd"+ abc).append($("<img/>", {id: 'img', src: '../images/x.png', alt: 'delete'}).click(function() {
-                $(this).parent().parent().remove();
+                    i--;
+                    $(this).parent().parent().remove();
                 }));
             }
         });

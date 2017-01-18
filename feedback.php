@@ -1,6 +1,7 @@
 <?php
 require('partial files\models\voorwerp.php');
 require('partial files\models\feedback.php');
+require('partial files\models\miscellaneous.php');
 
 $voorwerp = "";
 
@@ -38,7 +39,8 @@ else{
 }
 
 if(isset($_POST['beoordeling']) && isset($_POST['commentaar'])){
-    if(insertFeedbackKoper($voorwerp->voorwerpnummer, $_SESSION['user'], $_POST['beoordeling'], $_POST['commentaar'])){
+    if(insertFeedbackKoper($voorwerp->voorwerpnummer, $_SESSION['user'], strip_html_tags($_POST['beoordeling']),
+        strip_html_tags($_POST['commentaar']))){
         $_SESSION['message'] = "Bedankt voor het geven van feedback";
         header('Location: profiel/overzicht.php?user='.$voorwerp->verkoper);
     }
