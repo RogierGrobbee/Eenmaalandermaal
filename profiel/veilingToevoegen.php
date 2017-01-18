@@ -270,7 +270,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>
-                            Rubriek Toevoegen *
+                            Rubriek toevoegen *
                         </td>
                         <td>
                             <!-- Trigger the modal with a button -->
