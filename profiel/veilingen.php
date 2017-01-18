@@ -17,12 +17,28 @@ if ($username == "") {
 }
 
 
+function loadJSScripts() {
+    echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
+    echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>';
+}
+
 ?>
     <h1>Profiel</h1>
 <?php loadProfileSidebar($username, 4) ?>
     <div class="col-sm-12">
+        <?php
+        if (isset($_SESSION['message'])) {
+            echo '<div class="alert alert-success error alert-dismissable fade in"> ' .
+                    '<button type="button" class="close" data-dismiss="alert">x</button>' .
+                    $_SESSION['message'] .
+                '</div>';
+            unset($_SESSION['message']);
+        }
+        ?>
         <h3>Veilingen</h3>
-        <?php echoVeilingen($username) ?>
+        <?php
+        echoVeilingen($username)
+        ?>
     </div>
 
 <?php
