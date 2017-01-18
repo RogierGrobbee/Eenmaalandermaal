@@ -22,3 +22,13 @@ function loadBestandenByVoorwerpnummer($voorwerpnummer)
     return $query->fetchAll(PDO::FETCH_OBJ);
 }
 
+function insertBestand($bestand, $voorwerpnummer) {
+    global $db;
+
+    $query = $db->prepare("INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)");
+
+    return $query->execute(array(
+        ':bestand' => $bestand,
+        ':voorwerpnummer' => $voorwerpnummer
+    ));
+}

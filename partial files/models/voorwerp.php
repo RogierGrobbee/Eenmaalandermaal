@@ -158,3 +158,23 @@ function getVoorwerpnummer($title, $username) {
     $query->execute();
     return ($query->fetch(PDO::FETCH_OBJ))->voorwerpnummer;
 }
+
+function insertVoorwerp($titel, $beschrijving, $startprijs, $betalingswijze, $betalingsinstructie, $plaatsnaam, $land, $looptijd, $verzendkosten, $verzendinstructies, $verkoper) {
+    global $db;
+    $query = $db->prepare("INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
+                    (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)");
+
+    return $query->execute(array (
+        ':titel' => $titel,
+        ':beschrijving' => $beschrijving,
+        ':startprijs' => $startprijs,
+        ':betalingswijze' => $betalingswijze,
+        ':betalingsinstructie' => $betalingsinstructie,
+        ':plaatsnaam' => $plaatsnaam,
+        ':land' => $land,
+        ':looptijd' => $looptijd,
+        ':verzendkosten' => $verzendkosten,
+        ':verzendinstructies' => $verzendinstructies,
+        ':verkoper' => $verkoper
+    ));
+}
