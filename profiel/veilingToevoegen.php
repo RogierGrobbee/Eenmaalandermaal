@@ -116,6 +116,7 @@ if (isset($_POST['toevoegen'])) {
     } else if (!is_numeric($_POST['startprijs'])) {
         $errorMessage = "Startprijs mag alleen cijfers bevatten.";
     } else if (empty($_POST['startprijs']) || $_POST['startprijs'] < 1 || $_POST['startprijs'] > 99999.99) {
+        //
         $errorMessage = "Startprijs moet hoger zijn dan €1 en maximaal €99.999,99";
     } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
