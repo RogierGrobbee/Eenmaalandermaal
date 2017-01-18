@@ -119,8 +119,8 @@ if (isset($_POST['toevoegen'])) {
         $errorMessage = "Startprijs moet hoger zijn dan €0";
     } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
-    } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten'])) {
-        $errorMessage = "Verzendkosten mag alleen cijfers bevatten.";
+    } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten']) || $_POST['verzendkosten'] > 9.99) {
+        $errorMessage = "Verzendkosten mag alleen cijfers bevatten en mag maximaal €9,99 zijn.";
     } else {
         $titel = htmlspecialchars($_POST['titel']);
         $beschrijving = htmlspecialchars($_POST['beschrijving']);
@@ -291,8 +291,8 @@ if (isset($_POST['toevoegen'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td>Verzendkosten in euro's *</td>
-                        <td><input class="form-control" maxlength="5" value="<?php if (isset($_POST['verzendkosten'])) {
+                        <td>Verzendkosten in euro's</td>
+                        <td><input class="form-control" maxlength="4" max="9.99" value="<?php if (isset($_POST['verzendkosten'])) {
                                 echo $_POST['verzendkosten'];
                             } ?>" type="text" name="verzendkosten"></td>
                     </tr>
