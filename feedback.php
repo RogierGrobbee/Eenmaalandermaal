@@ -48,11 +48,11 @@ if(isset($_POST['beoordeling']) && isset($_POST['commentaar'])){
 
 require('partial files\header.php');
 require('partial files\models\rubriek.php');
-$rubriekArray = loadAllRubrieken();?>
+$rubriekArray = loadAllRubrieken();
 
-    <h1>Feedback op </h1>
+echo "<h1>Feedback op $voorwerp->titel</h1>";
 
-<?php require('partial files\sidebar.php');
+require('partial files\sidebar.php');
 loadRubriekenSidebar(null); ?>
 
     <?php
