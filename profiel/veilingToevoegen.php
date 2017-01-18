@@ -6,6 +6,7 @@ include_once('..\partial files\models\voorwerpinrubriek.php');
 include_once('..\partial files\models\betalingswijze.php');
 include_once('..\partial files\models\gebruiker.php');
 include_once('..\partial files\models\land.php');
+include_once('..\partial files\models\looptijd.php');
 
 function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
@@ -45,18 +46,16 @@ function showAllCountries() {
 }
 
 function returnDuration() {
-    global $db;
-    $query = $db->query("SELECT looptijd FROM looptijd");
     echo "<select class='form-control' name='Duration'>";
-    foreach ($query as $row) {
-        if ($row['looptijd'] == 7) {
-            echo "<option selected='selected' value = " . $row['looptijd'] . " >" . $row['looptijd'] . " dagen </option>";
+    foreach (getAllLooptijden() as $row) {
+        if ($row->looptijd == 7) {
+            echo "<option selected='selected' value = " . $row->looptijd . " >" . $row->looptijd . " dagen </option>";
         }
-        else if($row['looptijd'] == 1){
-            echo "<option value = " . $row['looptijd'] . " >" . $row['looptijd'] . " dag </option>";
+        else if($row->looptijd == 1){
+            echo "<option value = " . $row->looptijd . " >" . $row->looptijd . " dag </option>";
         }
         else {
-            echo "<option value = " . $row['looptijd'] . " >" . $row['looptijd'] . " dagen </option>";
+            echo "<option value = " . $row->looptijd . " >" . $row->looptijd . " dagen </option>";
         }
     }
     echo "</select>";
@@ -142,55 +141,48 @@ if (isset($_POST['toevoegen'])) {
             $errorMessage = "De veiling moet minimaal in 1 rubriek zitten.";
         }
         if ($noError) {
-            global $db;
-            $sql = "INSERT INTO voorwerp (titel, beschrijving, startprijs, betalingswijze, betalingsinstructie, plaatsnaam, land, looptijd, verzendkosten, verzendinstructies, verkoper)  VALUES
-                    (:titel, :beschrijving, :startprijs, :betalingswijze, :betalingsinstructie, :plaatsnaam, :land, :looptijd, :verzendkosten, :verzendinstructies, :verkoper)";
-            $stmt = $db->prepare($sql);
-            $stmt->bindValue(':titel', $titel, PDO::PARAM_STR);
-            $stmt->bindValue(':beschrijving', $beschrijving, PDO::PARAM_STR);
-            $stmt->bindValue(':startprijs', $_POST['startprijs'], PDO::PARAM_STR);
-            $stmt->bindValue(':betalingswijze', $_POST['payment'], PDO::PARAM_STR);
-            $stmt->bindValue(':betalingsinstructie', $betalingsinstructie, PDO::PARAM_STR);
-            $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
-            $stmt->bindValue(':land', $_POST['country'], PDO::PARAM_STR);
-            $stmt->bindValue(':looptijd', $_POST['Duration'], PDO::PARAM_STR);
-            $stmt->bindValue(':verzendkosten', $verzendkosten, PDO::PARAM_STR);
-            $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
-            $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
-            $stmt->execute();
 
-            $successMessage = "Veiling is toegevoegd";
+            if (insertVoorwerp($titel, $beschrijving, $_POST['startprijs'], $_POST['payment'],
+                $betalingsinstructie, $plaatsnaam, $_POST['country'], $_POST['Duration'],
+                $verzendkosten, $verzendinstructies, $_SESSION['user'])) {
 
-            if (empty($errorMessage) &&  isset($_POST['rubriekenList'])) {
-                for ($deIndex = 0; $deIndex < count($_POST['rubriekenList']); $deIndex++) {
-                    $voorwerpnummer = getVoorwerpnummer($titel, $_SESSION['user']);
-                    insertVoorwerpInRubriek($voorwerpnummer, $_POST['rubriekenList'][$deIndex]);
-                }
-            }
+                $successMessage = "Veiling is toegevoegd";
 
-            if (empty($errorMessage) && $itemUpload) {
-                for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
-                    $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
-                    $file_extension = end($ext); //store extensions in the variable
-                    $target_path_file = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
-                    if ($_FILES['file']['tmp_name'][$i] != "") {
-                        move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
-
-                        $sql = "INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
-                        $stmt = $db->prepare($sql);
-                        $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
-                        $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
-                        $stmt->execute();
-                        $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                if (empty($errorMessage) &&  isset($_POST['rubriekenList'])) {
+                    for ($deIndex = 0; $deIndex < count($_POST['rubriekenList']); $deIndex++) {
+                        $voorwerpnummer = getVoorwerpnummer($titel, $_SESSION['user']);
+                        insertVoorwerpInRubriek($voorwerpnummer, $_POST['rubriekenList'][$deIndex]);
                     }
                 }
+
+                if (empty($errorMessage) && $itemUpload) {
+                    for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+                        $ext = explode('.', basename($_FILES['file']['name'][$i]));//explode file name from dot(.)
+                        $file_extension = end($ext); //store extensions in the variable
+                        $target_path_file = $i . "-" . date('dmy') . "-" . getVoorwerpnummer($titel, $_SESSION['user']) . "." . $ext[count($ext) - 1];
+                        if ($_FILES['file']['tmp_name'][$i] != "") {
+                            move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path . $target_path_file);
+
+                            $sql = "INSERT INTO bestand (filenaam, voorwerpnummer) VALUES(:bestand, :voorwerpnummer)";
+                            $stmt = $db->prepare($sql);
+                            $stmt->bindValue(':bestand', $target_path_file, PDO::PARAM_STR);
+                            $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
+                            $stmt->execute();
+                            $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        } // END: if ($_FILES['file']['tmp_name'][$i] != "")
+                    } // END: for
+                } // END: if (empty($errorMessage) && $itemUpload)
+
+                $_SESSION['message'] = 'Uw veiling is succesvol toegevoegd.';
+                header('Location: veilingen.php');
+            } // END: insertVoorwerp(..)
+            else {
+                $errorMessage = "Er is iets mis gegaan tijdens het toevoegen van de veiling.";
             }
 
-            $_SESSION['message'] = 'Uw veiling is succesvol toegevoegd.';
-            header('Location: veilingen.php');
-        }
-    }
-}
+        }// END: if ($noError)
+    } // END: else of the(empty($_POST['titel'])....) if statement
+} // END: if (isset($_POST['toevoegen']))
     ?>
     <h1>Profiel</h1>
 
