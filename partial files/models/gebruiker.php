@@ -49,44 +49,44 @@ function registerGebruiker($gebruikersnaam, $voornaam, $achternaam, $adres, $pos
     global $db;
     $sql = "INSERT INTO gebruiker (gebruikersnaam, voornaam, achternaam, adresregel1, postcode, plaatsnaam, land, geboortedatum, email, wachtwoord, verkoper, vraag, gevalideerd) VALUES
                 (:username, :firstname, :lastname, :adres, :postcode, :plaatsnaam, :land, :geboortedatum, :email, :wachtwoord, :verkoper, :vraag, :gevalideerd)";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue(':username', $gebruikersnaam, PDO::PARAM_STR);
-    $stmt->bindValue(':firstname', $voornaam, PDO::PARAM_STR);
-    $stmt->bindValue(':lastname', $achternaam, PDO::PARAM_STR);
-    $stmt->bindValue(':adres', $adres, PDO::PARAM_STR);
-    $stmt->bindValue(':postcode', $postcode, PDO::PARAM_STR);
-    $stmt->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
-    $stmt->bindValue(':land', $land, PDO::PARAM_STR);                 //////////////////
-    $stmt->bindValue(':geboortedatum', $geboortedatum, PDO::PARAM_STR);
-    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-    $stmt->bindValue(':wachtwoord', $wachtwoord, PDO::PARAM_STR);
-    $stmt->bindValue(':verkoper', 0, PDO::PARAM_INT);
-    $stmt->bindValue(':vraag', $vraag, PDO::PARAM_INT);                 //////////////////
-    $stmt->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
-    $stmt->execute();
+    $query = $db->prepare($sql);
+    $query->bindValue(':username', $gebruikersnaam, PDO::PARAM_STR);
+    $query->bindValue(':firstname', $voornaam, PDO::PARAM_STR);
+    $query->bindValue(':lastname', $achternaam, PDO::PARAM_STR);
+    $query->bindValue(':adres', $adres, PDO::PARAM_STR);
+    $query->bindValue(':postcode', $postcode, PDO::PARAM_STR);
+    $query->bindValue(':plaatsnaam', $plaatsnaam, PDO::PARAM_STR);
+    $query->bindValue(':land', $land, PDO::PARAM_STR);                 //////////////////
+    $query->bindValue(':geboortedatum', $geboortedatum, PDO::PARAM_STR);
+    $query->bindValue(':email', $email, PDO::PARAM_STR);
+    $query->bindValue(':wachtwoord', $wachtwoord, PDO::PARAM_STR);
+    $query->bindValue(':verkoper', 0, PDO::PARAM_INT);
+    $query->bindValue(':vraag', $vraag, PDO::PARAM_INT);
+    $query->bindValue(':gevalideerd', 0, PDO::PARAM_INT);
+    $query->execute();
 
     $sql2 = "INSERT INTO validation (gebruikersnaam, validatiecode) VALUES
                 (:gebruiker, :validate)";
-    $stmt = $db->prepare($sql2);
-    $stmt->bindValue(':gebruiker', $gebruikersnaam, PDO::PARAM_STR);
-    $stmt->bindValue(':validate', $validatieCode, PDO::PARAM_STR);
-    $stmt->execute();
+    $query = $db->prepare($sql2);
+    $query->bindValue(':gebruiker', $gebruikersnaam, PDO::PARAM_STR);
+    $query->bindValue(':validate', $validatieCode, PDO::PARAM_STR);
+    $query->execute();
 
     $sql3 = "INSERT INTO antwoord (vraagnummer, gebruikersnaam, antwoordtekst) VALUES
                 (:nummer, :gebruikersnaam, :antwoord)";
-    $stmt = $db->prepare($sql3);
-    $stmt->bindValue(':nummer', $vraag, PDO::PARAM_STR);
-    $stmt->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
-    $stmt->bindValue(':antwoord', $antwoord, PDO::PARAM_STR);
-    $stmt->execute();
+    $query = $db->prepare($sql3);
+    $query->bindValue(':nummer', $vraag, PDO::PARAM_STR);
+    $query->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
+    $query->bindValue(':antwoord', $antwoord, PDO::PARAM_STR);
+    $query->execute();
 
     $sql4 = "INSERT INTO gebruikerstelefoon (volgnr, gebruikersnaam, telefoon) VALUES
                 (:nummer, :gebruikersnaam, :tel)";
-    $stmt = $db->prepare($sql4);
-    $stmt->bindValue(':nummer', 0, PDO::PARAM_STR);
-    $stmt->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
-    $stmt->bindValue(':tel', $telefoon, PDO::PARAM_STR);
-    $stmt->execute();
+    $query = $db->prepare($sql4);
+    $query->bindValue(':nummer', 0, PDO::PARAM_STR);
+    $query->bindValue(':gebruikersnaam', $gebruikersnaam, PDO::PARAM_STR);
+    $query->bindValue(':tel', $telefoon, PDO::PARAM_STR);
+    $query->execute();
 }
 
 // Replaces: doesUsernameAlreadyExist($username)
@@ -125,9 +125,9 @@ function getValidation($username) {
 // Replaces: getEmail($username)
 function getEmail($username) {
     global $db;
-    $statement = $db->prepare("SELECT email FROM gebruiker WHERE gebruikersnaam= :username");
-    $statement->execute(array(':username' => $username));
-    $row = $statement->fetch();
+    $query = $db->prepare("SELECT email FROM gebruiker WHERE gebruikersnaam= :username");
+    $query->execute(array(':username' => $username));
+    $row = $query->fetch();
     return $row['email'];
 }
 
@@ -142,30 +142,39 @@ function hashPass($pass) {
 
 function updateWachtwoord($username, $hash) {
     global $db;
-    $statement = $db->prepare("update gebruiker set wachtwoord=? where gebruikersnaam=?");
-    $statement->bindParam(1, $hash);
-    $statement->bindParam(2, $username);
-    $statement->execute();
+    $query = $db->prepare("update gebruiker set wachtwoord=? where gebruikersnaam=?");
+    $query->bindParam(1, $hash);
+    $query->bindParam(2, $username);
+    $query->execute();
 }
 
 function getVerkoperByVerkoopnummer($voorwerpnummer) {
     global $db;
-    $statement = $db->prepare("SELECT email FROM gebruiker
+    $query = $db->prepare("SELECT email FROM gebruiker
                                 WHERE gebruikersnaam in(
                                     SELECT verkoper FROM voorwerp where voorwerpnummer = :voorwerpnummer
                                 )");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    $row = $statement->fetch(PDO::FETCH_OBJ);
+    $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $row = $query->fetch(PDO::FETCH_OBJ);
     return $row;
 }
 
 function getTopBidderByVoorwerpnummer($voorwerpnummer) {
     global $db;
-    $statement = $db->prepare("SELECT gebruikersnaam, email from gebruiker WHERE gebruikersnaam in(
+    $query = $db->prepare("SELECT gebruikersnaam, email from gebruiker WHERE gebruikersnaam in(
                                     SELECT TOP 1 gebruikersnaam FROM bod where voorwerpnummer = :voorwerpnummer
                                     ORDER BY bodbedrag DESC
                                 )");
-    $statement->execute(array(':voorwerpnummer' => $voorwerpnummer));
-    $row = $statement->fetch(PDO::FETCH_OBJ);
+    $query->execute(array(':voorwerpnummer' => $voorwerpnummer));
+    $row = $query->fetch(PDO::FETCH_OBJ);
     return $row;
+}
+
+function IsGebruikerVerkoper($username)
+{
+    global $db;
+    $query = $db->prepare('SELECT verkoper FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam');
+    $query->execute(array(':gebruikersnaam' => $username));
+    $row = $query->fetch();
+    return $row['verkoper'];
 }

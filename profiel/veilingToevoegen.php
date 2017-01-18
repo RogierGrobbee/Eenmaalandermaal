@@ -1,8 +1,11 @@
 <?php
 include_once('..\partial files\header.php');
-include_once('..\partial files\databaseconnection.php');
 include_once('..\partial files\models\rubriek.php');
+include_once('..\partial files\models\voorwerp.php');
 include_once('..\partial files\models\voorwerpinrubriek.php');
+include_once('..\partial files\models\betalingswijze.php');
+include_once('..\partial files\models\gebruiker.php');
+include_once('..\partial files\models\land.php');
 
 function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>';
@@ -11,65 +14,37 @@ function loadJSScripts() {
     echo '<script type="text/javascript" src="../js/addImages.js"></script>';
 }
 
-
-function userIsVerkoper($username)
-{
-    global $db;
-    $statement = $db->prepare('SELECT verkoper FROM gebruiker WHERE gebruikersnaam = :gebruikersnaam');
-    $statement->bindParam(':gebruikersnaam', $username);
-    $statement->execute();
-    $row = $statement->fetch();
-    return $row['verkoper'];
-}
-
-if (empty($_SESSION['user']) || userIsVerkoper($_SESSION['user']) == 0) {
+if (empty($_SESSION['user']) || IsGebruikerVerkoper($_SESSION['user']) == 0) {
     header('Location: ../login.php');
 }
 
-$rubriekArray = loadRubrieken();
-function getVoorwerpnummer($title, $username)
-{
-    global $db;
-    $statement = $db->prepare("select top 1 voorwerpnummer from voorwerp where titel=:title and verkoper=:username order by voorwerpnummer desc");
-    $statement->bindParam(':username', $username);
-    $statement->bindParam(':title', $title);
-    $statement->execute();
-    $row = $statement->fetch();
-    return $row['voorwerpnummer'];
-}
+$rubriekArray = loadAllRubrieken();
 
-function returnPaymentMethode()
-{
-    global $db;
-    $query = $db->query("SELECT betalingswijze FROM betalingswijze");
+function returnPaymentMethode() {
     echo "<select class='form-control' name='payment'>";
-    foreach ($query as $row) {
-        if ($row['betalingswijze'] == 'Contant') {
-            echo "<option selected='selected' value = " . $row['betalingswijze'] . " >" . $row['betalingswijze'] . "</option>";
+    foreach (getAllbetalingswijzen() as $row) {
+        if ($row->betalingswijze == 'Contant') {
+            echo "<option selected='selected' value = " . $row->betalingswijze . " >" . $row->betalingswijze . "</option>";
         } else {
-            echo "<option value = " . $row['betalingswijze'] . " >" . $row['betalingswijze'] . "</option>";
+            echo "<option value = " . $row->betalingswijze . " >" . $row->betalingswijze . "</option>";
         }
     }
     echo "</select>";
 }
 
-function returnAllCountries2()
-{
-    global $db;
-    $query = $db->query("SELECT landnaam FROM land");
+function showAllCountries() {
     echo "<select class='form-control' name='country'>";
-    foreach ($query as $row) {
-        if ($row['landnaam'] == 'Nederland') {
-            echo "<option selected='selected' value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+    foreach (getAllLanden() as $row) {
+        if ($row->landnaam == 'Nederland') {
+            echo "<option selected='selected' value = " . $row->landnaam . " >" . $row->landnaam . "</option>";
         } else {
-            echo "<option value = " . $row['landnaam'] . " >" . $row['landnaam'] . "</option>";
+            echo "<option value = " . $row->landnaam . " >" . $row->landnaam . "</option>";
         }
     }
     echo "</select>";
 }
 
-function returnDuration()
-{
+function returnDuration() {
     global $db;
     $query = $db->query("SELECT looptijd FROM looptijd");
     echo "<select class='form-control' name='Duration'>";
@@ -115,8 +90,8 @@ if (isset($_POST['toevoegen'])) {
         $errorMessage = "Niet alles ingevuld.";
     } else if (!is_numeric($_POST['startprijs'])) {
         $errorMessage = "Startprijs mag alleen cijfers bevatten.";
-    } else if (empty($_POST['startprijs'])) {
-        $errorMessage = "Startprijs moet hoger zijn dan €0";
+    } else if (empty($_POST['startprijs']) || $_POST['startprijs'] < 1 || $_POST['startprijs'] > 99999.99) {
+        $errorMessage = "Startprijs moet hoger zijn dan €1 en maximaal €99.999,99";
     } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
     } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten']) || $_POST['verzendkosten'] > 9.99) {
@@ -183,7 +158,6 @@ if (isset($_POST['toevoegen'])) {
             $stmt->bindValue(':verzendinstructies', $verzendinstructies, PDO::PARAM_STR);
             $stmt->bindValue(':verkoper', $_SESSION['user'], PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $successMessage = "Veiling is toegevoegd";
 
@@ -212,16 +186,8 @@ if (isset($_POST['toevoegen'])) {
                 }
             }
 
-//            if (empty($errorMessage) && !empty($rubrieknummers)) {
-//                for ($i = 0; $i < count($rubrieknummers); $i++) {
-//                    $sql = " INSERT INTO voorwerpinrubriek (voorwerpnummer,rubriekoplaagsteniveau ) VALUES(:voorwerpnummer, :rubrieknummer)";
-//                    $stmt = $db->prepare($sql);
-//                    $stmt->bindValue(':voorwerpnummer', getVoorwerpnummer($titel, $_SESSION['user']), PDO::PARAM_STR);
-//                    $stmt->bindValue(':rubrieknummer', $rubrieknummers[$i], PDO::PARAM_STR);
-//                    $stmt->execute();
-//                    $stmt->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//                }
-//            }
+            $_SESSION['message'] = 'Uw veiling is succesvol toegevoegd.';
+            header('Location: veilingen.php');
         }
     }
 }
@@ -255,7 +221,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Startprijs in euro's *</td>
-                        <td><input class="form-control" value="<?php if (isset($_POST['startprijs'])) {
+                        <td><input class="form-control" min="1" max="99999.99" placeholder="Minimaal €1,- en maximaal €99.999,99" value="<?php if (isset($_POST['startprijs'])) {
                                 echo $_POST['startprijs'];
                             } ?>" type="text" name="startprijs"></td>
                     </tr>
@@ -267,7 +233,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Betalingsinstructie</td>
-                        <td><input class="form-control" maxlength="255"
+                        <td><input class="form-control" maxlength="255" placeholder="bijv. Verzending na betaling ontvangst""
                                    value="<?php if (isset($_POST['betalingsinstructie'])) {
                                        echo $_POST['betalingsinstructie'];
                                    } ?>" type="text" name="betalingsinstructie"></td>
@@ -287,18 +253,18 @@ if (isset($_POST['toevoegen'])) {
                     <tr>
                         <td>Land</td>
                         <td>
-                            <?php echo returnAllCountries2(); ?>
+                            <?php echo showAllCountries(); ?>
                         </td>
                     </tr>
                     <tr>
                         <td>Verzendkosten in euro's</td>
-                        <td><input class="form-control" maxlength="4" max="9.99" value="<?php if (isset($_POST['verzendkosten'])) {
+                        <td><input class="form-control" maxlength="4" max="9.99" placeholder="Maximaal €9,99" value="<?php if (isset($_POST['verzendkosten'])) {
                                 echo $_POST['verzendkosten'];
                             } ?>" type="text" name="verzendkosten"></td>
                     </tr>
                     <tr>
                         <td>Verzendinstructies</td>
-                        <td><input class="form-control" maxlength="255"
+                        <td><input class="form-control" maxlength="255" placeholder="bijv. Alleen ophalen"
                                    value="<?php if (isset($_POST['verzendinstructies'])) {
                                        echo $_POST['verzendinstructies'];
                                    } ?>" type="text" name="verzendinstructies"></td>
