@@ -115,8 +115,8 @@ if (isset($_POST['toevoegen'])) {
         $errorMessage = "Niet alles ingevuld.";
     } else if (!is_numeric($_POST['startprijs'])) {
         $errorMessage = "Startprijs mag alleen cijfers bevatten.";
-    } else if (empty($_POST['startprijs']) || $_POST['startprijs'] < 1) {
-        $errorMessage = "Startprijs moet hoger zijn dan €1";
+    } else if (empty($_POST['startprijs']) || $_POST['startprijs'] < 1 || $_POST['startprijs'] > 99999.99) {
+        $errorMessage = "Startprijs moet hoger zijn dan €1 en maximaal €99.999,99";
     } else if (!preg_match("/^[a-zA-Z]+$/", $_POST["plaatsnaam"])) {
         $errorMessage = "Plaatsnaam mag alleen letters bevatten.";
     } else if (!empty($_POST['verzendkosten']) && !is_numeric($_POST['verzendkosten']) || $_POST['verzendkosten'] > 9.99) {
@@ -255,7 +255,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Startprijs in euro's *</td>
-                        <td><input class="form-control" min="1" placeholder="Minimaal €1,-"<?php if (isset($_POST['startprijs'])) {
+                        <td><input class="form-control" min="1" max="99999.99" placeholder="Minimaal €1,- en maximaal €99.999,99" value="<?php if (isset($_POST['startprijs'])) {
                                 echo $_POST['startprijs'];
                             } ?>" type="text" name="startprijs"></td>
                     </tr>
@@ -292,7 +292,7 @@ if (isset($_POST['toevoegen'])) {
                     </tr>
                     <tr>
                         <td>Verzendkosten in euro's</td>
-                        <td><input class="form-control" maxlength="4" max="9.99" placeholder="Maximaal €9,99"<?php if (isset($_POST['verzendkosten'])) {
+                        <td><input class="form-control" maxlength="4" max="9.99" placeholder="Maximaal €9,99" value="<?php if (isset($_POST['verzendkosten'])) {
                                 echo $_POST['verzendkosten'];
                             } ?>" type="text" name="verzendkosten"></td>
                     </tr>
